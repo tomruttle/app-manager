@@ -4,7 +4,7 @@ const SUPPORTED_BROWSERS = ['last 2 versions', 'ie 9', 'ie 10'];
 
 module.exports = (env) => ({
   entry: {
-    'app-manager': path.join(__dirname, 'lib', 'app-manager.js'),
+    'app-manager': path.join(__dirname, 'lib', 'index.js'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -12,6 +12,9 @@ module.exports = (env) => ({
     library: 'app-manager',
   },
   devtool: !env === 'prod' ? 'inline-source-map' : false,
+  node: {
+    console: true,
+  },
   module: {
     rules: [
       {

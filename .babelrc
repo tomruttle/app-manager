@@ -1,0 +1,12 @@
+{
+  "presets": [
+    ["env", { "targets": { "node": "current" } }],
+    "flow"
+  ],
+  "plugins": ["transform-class-properties"],
+  "env": {
+    "test": {
+      "plugins": ["transform-async-to-generator"]
+    }
+  }
+}
