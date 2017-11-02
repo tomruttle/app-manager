@@ -57,6 +57,7 @@
     "eslint-plugin-mocha": "^4.11.0",
     "event-emitter": "^0.3.5",
     "flow-bin": "^0.58.0",
+    "husky": "^0.14.3",
     "mocha": "^4.0.1",
     "nyc": "^11.3.0",
     "sinon": "^4.0.2",
