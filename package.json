@@ -9,7 +9,7 @@
     "watch": "webpack --watch",
     "lint": "eslint --ext .js .",
     "test": "mocha ./test/*.test.js",
-    "coverage": "nyc mocha ./test/**/*.js",
+    "coverage": "nyc mocha ./test/*.test.js",
     "typecheck": "flow check",
     "precommit": "npm run lint",
     "prepush": "npm test"
