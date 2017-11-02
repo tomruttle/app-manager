@@ -12,7 +12,7 @@
     "coverage": "nyc mocha ./test/*.test.js",
     "typecheck": "flow check",
     "precommit": "npm run lint",
-    "prepush": "npm test"
+    "prepush": "npm run coverage"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,8 @@
     "check-coverage": true,
     "lines": 70,
     "statements": 70,
-    "functions": 70,
-    "branches": 70,
+    "functions": 100,
+    "branches": 65,
     "include": [
       "lib/**"
     ],
