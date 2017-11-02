@@ -4,12 +4,13 @@ const SUPPORTED_BROWSERS = ['last 2 versions', 'ie 9', 'ie 10'];
 
 module.exports = (env) => ({
   entry: {
-    'app-manager': path.join(__dirname, 'lib', 'index.js'),
+    'app-manager': ['babel-polyfill', path.join(__dirname, 'lib', 'index.js')],
   },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    library: 'app-manager',
+    library: 'AppManager',
+    libraryTarget: 'umd',
   },
   devtool: !env === 'prod' ? 'inline-source-map' : false,
   node: {
