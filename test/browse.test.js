@@ -202,7 +202,7 @@ describe('multi-step browser test', () => {
     expect(mockB.unmount.callCount).to.equals(1);
   });
 
-  it('does not browse to missing apps', async () => {
+  it('does not mount app scripts in missing slots', async () => {
     historystub.pushState({}, null, '/app-c');
 
     await waitForIO();
@@ -218,5 +218,10 @@ describe('multi-step browser test', () => {
     expect(mockB.mount.callCount).to.equals(1);
     expect(mockB.onStateChange.callCount).to.equals(2);
     expect(mockB.unmount.callCount).to.equals(1);
+
+    expect(mockC.hydrate.callCount).to.equals(0);
+    expect(mockC.mount.callCount).to.equals(0);
+    expect(mockC.onStateChange.callCount).to.equals(0);
+    expect(mockC.unmount.callCount).to.equals(0);
   });
 });
