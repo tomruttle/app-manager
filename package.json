@@ -2,8 +2,9 @@
   "name": "app-manager",
   "version": "0.0.1",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
-  "main": "index.js",
+  "main": "es5/index.js",
   "scripts": {
+    "compile": "babel lib -d es5",
     "build": "webpack",
     "build-prod": "webpack --env=prod -p",
     "watch": "webpack --watch",
@@ -39,6 +40,7 @@
     ]
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.2",

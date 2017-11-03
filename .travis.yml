@@ -3,9 +3,10 @@ branches:
   only:
   - master
 install: npm i
-script: npm run coverage
+script: npm run coverage && npm run compile
 deploy:
   provider: npm
   email: tom@tomruttle.com
   api_key: $NPM_TOKEN
   tags: true
+  skip_cleanup: true
