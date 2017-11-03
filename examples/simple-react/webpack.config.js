@@ -13,9 +13,11 @@ module.exports = {
   devServer: {
     open: true,
   },
+  node: {
+    console: true,
+  },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'My App',
       template: 'src/template.html',
       inject: true,
     }),
