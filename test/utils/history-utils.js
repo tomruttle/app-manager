@@ -39,22 +39,28 @@ export class HistoryStub {
 
   replaceState(data: Object, title: string, href: string) {
     const { data: currentData, title: currentTitle, hash: currentUrl } = this.state[this.position];
-    this.state[this.position] = {
+
+    const newState = {
       data: data || currentData,
       title: title || currentTitle,
       hash: href || currentUrl,
     };
+
+    this.state = [...this.state.slice(0, this.position), newState];
 
     this.historyEmitter.emit('updateState');
   }
 
   pushState(data: Object, title: ?string, href: string) {
     const { data: currentData, title: currentTitle, hash: currentUrl } = this.state[this.position];
-    this.state.push({
+
+    const newState = {
       data: data || currentData,
       title: title || currentTitle,
       hash: href || currentUrl,
-    });
+    };
+
+    this.state = [...this.state.slice(0, this.position + 1), newState];
 
     this.position = this.position + 1;
     this.historyEmitter.emit('updateState');

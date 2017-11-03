@@ -12,8 +12,24 @@ describe('multi-step browser test', () => {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  class MockApp {
+  class MockA implements GuestAppVersion2Type {
     version = 2
+    hydrate = sinon.spy()
+    mount = sinon.spy()
+    onStateChange = sinon.spy()
+    unmount = sinon.spy()
+  }
+
+  class MockB implements GuestAppVersion3Type {
+    version = 3
+    hydrate = sinon.spy()
+    mount = sinon.spy()
+    onStateChange = sinon.spy()
+    unmount = sinon.spy()
+  }
+
+  class MockC implements GuestAppVersion3Type {
+    version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
     onStateChange = sinon.spy()
@@ -22,12 +38,14 @@ describe('multi-step browser test', () => {
 
   const analytics = { namaspace: 'test', error() {} };
 
-  const mockB = new (class MockB extends MockApp {})();
-  const mockA = new (class MockA extends MockApp {})();
+  const mockA = new MockA();
+  const mockB = new MockB();
+  const mockC = new MockC();
 
   const appScriptImports = {
     SCRIPT_A: () => Promise.resolve(mockA),
     SCRIPT_B: () => Promise.resolve(mockB),
+    SCRIPT_C: () => Promise.resolve(mockC),
   };
 
   const guestApps = {
@@ -36,17 +54,23 @@ describe('multi-step browser test', () => {
       appPath: '/app-a/:entityId?',
       display: ['SCRIPT_A'],
     },
+
     APP_B: {
       name: 'APP_B',
       appPath: '/app-b/:entityId?',
       display: ['SCRIPT_B'],
+    },
+
+    APP_C: {
+      name: 'APP_C',
+      appPath: '/app-c/:entityId?',
+      display: ['SCRIPT_C'],
     },
   };
 
   const appSlots = {
     APP: {
       name: 'APP',
-      layout: 'main-content',
       elementClass: 'guest-app',
     },
   };
@@ -54,17 +78,20 @@ describe('multi-step browser test', () => {
   const guestAppScripts = {
     SCRIPT_A: {
       name: 'SCRIPT_A',
-      library: 'script-a',
       slots: ['APP'],
       managed: true,
-      permission: 'VIEW_SCRIPT_A',
     },
+
     SCRIPT_B: {
       name: 'SCRIPT_B',
-      library: 'script-b',
       slots: ['APP'],
       managed: true,
-      permission: 'VIEW_SCRIPT_B',
+    },
+
+    SCRIPT_C: {
+      name: 'SCRIPT_C',
+      slots: ['ERROR'],
+      managed: true,
     },
   };
 
@@ -168,6 +195,24 @@ describe('multi-step browser test', () => {
     expect(mockA.mount.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(1);
+
+    expect(mockB.hydrate.callCount).to.equals(0);
+    expect(mockB.mount.callCount).to.equals(1);
+    expect(mockB.onStateChange.callCount).to.equals(2);
+    expect(mockB.unmount.callCount).to.equals(1);
+  });
+
+  it('does not browse to missing apps', async () => {
+    historystub.pushState({}, null, '/app-c');
+
+    await waitForIO();
+
+    expect(appManager._currentAppName).to.equals(guestApps.APP_C.name);
+
+    expect(mockA.hydrate.callCount).to.equals(1);
+    expect(mockA.mount.callCount).to.equals(1);
+    expect(mockA.onStateChange.callCount).to.equals(0);
+    expect(mockA.unmount.callCount).to.equals(2);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(1);
