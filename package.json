@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/tomruttle/app-manager#readme",
   "nyc": {
-    "all": true,
     "check-coverage": true,
     "lines": 70,
     "statements": 70,

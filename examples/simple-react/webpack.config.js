@@ -10,11 +10,27 @@ module.exports = {
     filename: '[name].js',
   },
   devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    modules: ['node_modules', path.resolve(__dirname, '..', '..', 'dist')],
+  },
   devServer: {
     open: true,
   },
   node: {
     console: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js*/,
+        exclude: [/node_modules/, /dist/],
+        use: {
+          loader: 'babel-loader',
+          options: { presets: ['react'] },
+        },
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({

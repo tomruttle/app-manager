@@ -1,37 +1,13 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+// @flow
 
-const { default: AppManager } = require('../../../dist/app-manager');
+import ReactDOM from 'react-dom';
+import React from 'react';
 
-function getApp(action, history, { name }) {
-  return [
-    React.createElement('div', { key: 'div' }, `${action} ${name}`),
-    React.createElement('button', {
-      key: 'button',
-      onClick: (e) => {
-        e.preventDefault();
-        history.pushState({}, null, '/second-app');
-      },
-    }, 'CHANGE APP'),
-  ];
-}
+// $FlowFixMe
+import AppManager from 'app-manager';
 
-class MockApp {
-  constructor() {
-    this.version = 3;
-
-    this.hydrate = (container, history, currentApp) => ReactDOM.render(getApp('hydrated', history, currentApp), container);
-
-    this.mount = (container, history, currentApp) => ReactDOM.render(getApp('mounted', history, currentApp), container);
-
-    this.onStateChange = () => {};
-
-    this.unmount = (container) => ReactDOM.unmountComponentAtNode(container);
-  }
-}
-
-const firstScript = new (class FirstScript extends MockApp {})();
-const secondScript = new (class SecondScript extends MockApp {})();
+import firstScript from './first/first-script';
+import secondScript from './second/second-script';
 
 const appSlots = {
   MAIN: {
