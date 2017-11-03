@@ -3,7 +3,7 @@ branches:
   only:
   - master
 cache: npm
-install: npm
+install: npm i
 script: npm run coverage
 deploy:
   provider: npm
