@@ -1,0 +1,12 @@
+language: node_js
+branches:
+  only:
+  - master
+cache: npm
+install: npm
+script: npm run coverage
+deploy:
+  provider: npm
+  email: tom@tomruttle.com
+  api_key: $NPM_TOKEN
+  tags: true
