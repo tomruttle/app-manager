@@ -19,18 +19,14 @@ const appSlots = {
 const guestAppScripts = {
   FIRST_SCRIPT: {
     name: 'FIRST_SCRIPT',
-    library: 'first-script',
     slots: [appSlots.MAIN.name],
     managed: true,
-    permission: null,
   },
 
   SECOND_SCRIPT: {
     name: 'SECOND_SCRIPT',
-    library: 'second-script',
     slots: [appSlots.MAIN.name],
     managed: true,
-    permission: null,
   },
 };
 

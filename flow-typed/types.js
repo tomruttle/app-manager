@@ -11,24 +11,22 @@ declare var afterEach: any
 type WindowType = any;
 type Analytics = any;
 
-type GuestPropsType = {|
+type GuestPropsType = {
   name: string,
   appPath: string,
   display: Array<string>,
-|};
+};
 
 type GuestSlotsType = {
   name: string,
   elementClass: string,
 };
 
-type GuestAppScriptsType = {|
+type GuestAppScriptsType = {
   name: string,
-  library: string,
   slots: Array<string>,
   managed: boolean,
-  permission: ?string,
-|};
+};
 
 interface GuestAppVersion2Type {
   version: 2;
@@ -48,11 +46,11 @@ interface GuestAppVersion3Type {
 
 type GuestAppType = (GuestAppVersion2Type | GuestAppVersion3Type);
 
-type PageScriptType = {|
+type PageScriptType = {
   script: ?GuestAppType,
   slot: string,
   name: string,
-|};
+};
 
 type ConfigType = {|
   appScriptImports: { [appName: string]: ?() => Promise<GuestAppType> },
