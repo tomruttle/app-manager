@@ -1,12 +1,19 @@
 {
   "presets": [
-    ["env", { "targets": { "node": "current" } }],
-    "flow"
+    "flow",
   ],
-  "plugins": ["transform-class-properties"],
   "env": {
     "test": {
-      "plugins": ["transform-async-to-generator"]
+      "presets": [
+        ["env", { "targets": { "node": "current" } }]
+      ],
+      "plugins": ["transform-class-properties", "transform-async-to-generator"]
+    },
+    "development": {
+      "presets": [
+        ["env", { "loose": true, "modules": false, "targets": { "browsers": ["last 2 versions", "ie 9", "ie 10"] } }],
+      ],
+      "plugins": ["transform-class-properties"],
     }
   }
 }
