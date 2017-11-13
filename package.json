@@ -1,13 +1,13 @@
 {
   "name": "app-manager",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
     "compile": "babel lib -d es5",
+    "watch": "babel lib -d es5 --watch",
     "build": "webpack",
     "build-prod": "webpack --env=prod -p",
-    "watch": "webpack --watch",
     "lint": "eslint --ext .js .",
     "test": "mocha ./test/*.test.js",
     "coverage": "nyc mocha ./test/*.test.js",
