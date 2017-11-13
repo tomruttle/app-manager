@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
@@ -45,7 +45,6 @@
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "babel-register": "^6.26.0",
@@ -66,6 +65,7 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "html5-history": "^0.1.5",
     "path-to-regexp": "^2.1.0"
   }
