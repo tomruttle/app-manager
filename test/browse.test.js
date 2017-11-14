@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { WindowStub, HistoryStub } from '../utils/stubs';
+import { WindowStub, HistoryStub } from '../lib/utils/stubs';
 
 import initAppManager from '../lib/app-manager';
 
