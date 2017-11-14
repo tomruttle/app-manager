@@ -4,15 +4,17 @@ script: npm run coverage && npm run compile
 jobs:
   include:
     - stage: GitHub Release
-      script: echo "Deploying to GitHub releases ..."
+      script: skip
       deploy:
         provider: releases
         api_key: $GITHUB_TOKEN
         skip_cleanup: true
         on:
           tags: true
+          repo: tomruttle/app-manager
+          all_branches: true
     - stage: NPM Release
-      script: echo "Deploying to NPM ..."
+      script: skip
       deploy:
         provider: npm
         email: tom@tomruttle.com
@@ -20,3 +22,5 @@ jobs:
         skip_cleanup: true
         on:
           tags: true
+          repo: tomruttle/app-manager
+          all_branches: true
