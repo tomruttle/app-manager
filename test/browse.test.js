@@ -202,6 +202,24 @@ describe('multi-step browser test', () => {
     expect(mockB.unmount.callCount).to.equals(1);
   });
 
+  it('moves forward again', async () => {
+    historystub.forward();
+
+    await waitForIO();
+
+    expect(appManager._currentAppName).to.equals(guestApps.APP_B.name);
+
+    expect(mockA.hydrate.callCount).to.equals(1);
+    expect(mockA.mount.callCount).to.equals(1);
+    expect(mockA.onStateChange.callCount).to.equals(0);
+    expect(mockA.unmount.callCount).to.equals(2);
+
+    expect(mockB.hydrate.callCount).to.equals(0);
+    expect(mockB.mount.callCount).to.equals(2);
+    expect(mockB.onStateChange.callCount).to.equals(2);
+    expect(mockB.unmount.callCount).to.equals(1);
+  });
+
   it('does not mount app scripts in missing slots', async () => {
     historystub.pushState({}, null, '/app-c');
 
@@ -215,9 +233,9 @@ describe('multi-step browser test', () => {
     expect(mockA.unmount.callCount).to.equals(2);
 
     expect(mockB.hydrate.callCount).to.equals(0);
-    expect(mockB.mount.callCount).to.equals(1);
+    expect(mockB.mount.callCount).to.equals(2);
     expect(mockB.onStateChange.callCount).to.equals(2);
-    expect(mockB.unmount.callCount).to.equals(1);
+    expect(mockB.unmount.callCount).to.equals(2);
 
     expect(mockC.hydrate.callCount).to.equals(0);
     expect(mockC.mount.callCount).to.equals(0);
