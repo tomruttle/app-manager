@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
@@ -58,7 +58,6 @@
     "eslint-plugin-flowtype": "^2.39.1",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^4.11.0",
-    "event-emitter": "^0.3.5",
     "flow-bin": "^0.58.0",
     "husky": "^0.14.3",
     "mocha": "^4.0.1",
@@ -68,6 +67,7 @@
   },
   "dependencies": {
     "html5-history": "^0.1.5",
+    "event-emitter": "^0.3.5",
     "path-to-regexp": "^2.1.0"
   }
 }
