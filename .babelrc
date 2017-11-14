@@ -1,19 +1,7 @@
 {
   "presets": [
+    ["env", { "targets": { "browsers": ["last 2 versions", "ie 9", "ie 10"] } }],
     "flow",
   ],
-  "env": {
-    "test": {
-      "presets": [
-        ["env", { "targets": { "node": "current" } }]
-      ],
-      "plugins": ["transform-class-properties", "transform-async-to-generator"]
-    },
-    "development": {
-      "presets": [
-        ["env", { "targets": { "browsers": ["last 2 versions", "ie 9", "ie 10"] } }],
-      ],
-      "plugins": ["transform-class-properties", "transform-runtime"],
-    }
-  }
+  "plugins": ["transform-class-properties", "transform-runtime"]
 }
