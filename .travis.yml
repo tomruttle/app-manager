@@ -1,11 +1,8 @@
 language: node_js
-branches:
-  only:
-    - master
+install: npm i
+script: npm run coverage && npm run compile
 jobs:
   include:
-    - script: npm i
-    - script: npm run coverage && npm run compile
     - stage: GitHub Release
       script: echo "Deploying to GitHub releases ..."
       deploy:
