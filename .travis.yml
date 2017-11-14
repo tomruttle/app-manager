@@ -8,5 +8,6 @@ deploy:
   provider: npm
   email: tom@tomruttle.com
   api_key: $NPM_TOKEN
-  tags: true
   skip_cleanup: true
+  on:
+    tags: true
