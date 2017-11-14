@@ -2,12 +2,24 @@ language: node_js
 branches:
   only:
     - master
-install: npm i
-script: npm run coverage && npm run compile
-deploy:
-  provider: npm
-  email: tom@tomruttle.com
-  api_key: $NPM_TOKEN
-  skip_cleanup: true
-  on:
-    tags: true
+jobs:
+  include:
+    - script: npm i
+    - script: npm run coverage && npm run compile
+    - stage: GitHub Release
+      script: echo "Deploying to GitHub releases ..."
+      deploy:
+        provider: releases
+        api_key: $GITHUB_TOKEN
+        skip_cleanup: true
+        on:
+          tags: true
+    - stage: NPM Release
+      script: echo "Deploying to NPM ..."
+      deploy:
+        provider: npm
+        email: tom@tomruttle.com
+        api_key: $NPM_TOKEN
+        skip_cleanup: true
+        on:
+          tags: true
