@@ -36,8 +36,6 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  const analytics = { namaspace: 'test', error() {} };
-
   const mockA = new MockA();
   const mockB = new MockB();
   const mockC = new MockC();
@@ -112,7 +110,7 @@ describe('multi-step browser test', () => {
 
     const AppManager = initAppManager(windowStub, historystub);
 
-    appManager = new AppManager(config, analytics);
+    appManager = new AppManager(config);
     appManager.init();
   });
 
