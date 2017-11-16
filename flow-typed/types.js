@@ -28,14 +28,6 @@ type GuestAppScriptsType = {
   managed: boolean,
 };
 
-interface GuestAppVersion2Type {
-  version: 2;
-  hydrate(container: HTMLDivElement, currentApp: GuestPropsType): Promise<?void>;
-  mount(container: HTMLDivElement, currentApp: GuestPropsType): Promise<?void>;
-  unmount(container: HTMLDivElement, currentApp: GuestPropsType): boolean;
-  onStateChange(currentApp: GuestPropsType): Promise<?void>;
-}
-
 interface GuestAppVersion3Type {
   version: 3;
   hydrate(container: HTMLDivElement, history: History, currentApp: GuestPropsType): Promise<?void>;
@@ -44,7 +36,7 @@ interface GuestAppVersion3Type {
   onStateChange(history: History, currentApp: GuestPropsType): Promise<?void>;
 }
 
-type GuestAppType = (GuestAppVersion2Type | GuestAppVersion3Type);
+type GuestAppType = GuestAppVersion3Type;
 
 type PageScriptType = {
   script: ?GuestAppType,

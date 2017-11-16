@@ -12,8 +12,8 @@ describe('multi-step browser test', () => {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  class MockA implements GuestAppVersion2Type {
-    version = 2
+  class MockA implements GuestAppVersion3Type {
+    version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
     onStateChange = sinon.spy()
