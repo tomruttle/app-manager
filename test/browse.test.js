@@ -40,13 +40,7 @@ describe('multi-step browser test', () => {
   const mockB = new MockB();
   const mockC = new MockC();
 
-  const appScriptImports = {
-    SCRIPT_A: () => Promise.resolve(mockA),
-    SCRIPT_B: () => Promise.resolve(mockB),
-    SCRIPT_C: () => Promise.resolve(mockC),
-  };
-
-  const guestApps = {
+  const apps = {
     APP_A: {
       name: 'APP_A',
       appPath: '/app-a/:entityId?',
@@ -66,30 +60,33 @@ describe('multi-step browser test', () => {
     },
   };
 
-  const appSlots = {
+  const slots = {
     APP: {
       name: 'APP',
       elementClass: 'guest-app',
     },
   };
 
-  const guestAppScripts = {
+  const scripts = {
     SCRIPT_A: {
       name: 'SCRIPT_A',
       slots: ['APP'],
       managed: true,
+      import() { return Promise.resolve(mockA); },
     },
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
       slots: ['APP'],
       managed: true,
+      import() { return Promise.resolve(mockB); },
     },
 
     SCRIPT_C: {
       name: 'SCRIPT_C',
       slots: ['ERROR'],
       managed: true,
+      import() { return Promise.resolve(mockC); },
     },
   };
 
@@ -98,10 +95,9 @@ describe('multi-step browser test', () => {
 
   before(() => {
     const config = {
-      appScriptImports,
-      guestApps,
-      appSlots,
-      guestAppScripts,
+      apps,
+      slots,
+      scripts,
     };
 
     const windowStub = new WindowStub('/app-a');
@@ -115,7 +111,7 @@ describe('multi-step browser test', () => {
   });
 
   it('correctly initialises app manager with first guest app', () => {
-    expect(appManager._currentAppName).to.equals(guestApps.APP_A.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(0);
@@ -133,7 +129,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(0);
@@ -151,7 +147,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(0);
@@ -169,7 +165,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(0);
@@ -187,7 +183,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_A.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(1);
@@ -205,7 +201,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(1);
@@ -223,7 +219,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(guestApps.APP_C.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_C.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(1);

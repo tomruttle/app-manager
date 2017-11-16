@@ -11,18 +11,18 @@ declare var afterEach: any
 type WindowType = any;
 type Analytics = any;
 
-type GuestPropsType = {
+type AppType = {
   name: string,
   appPath: string,
   display: Array<string>,
 };
 
-type GuestSlotsType = {
+type SlotType = {
   name: string,
   elementClass: string,
 };
 
-type GuestAppScriptsType = {
+type ScriptType = {
   name: string,
   slots: Array<string>,
   managed: boolean,
@@ -30,10 +30,10 @@ type GuestAppScriptsType = {
 
 interface GuestAppVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, history: History, currentApp: GuestPropsType): Promise<?void>;
-  mount(container: HTMLDivElement, history: History, currentApp: GuestPropsType): Promise<?void>;
-  unmount(container: HTMLDivElement, history: History, currentApp: GuestPropsType): boolean;
-  onStateChange(history: History, currentApp: GuestPropsType): Promise<?void>;
+  hydrate(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
+  mount(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
+  unmount(container: HTMLDivElement, history: History, currentApp: AppType): boolean;
+  onStateChange(history: History, currentApp: AppType): Promise<?void>;
 }
 
 type GuestAppType = GuestAppVersion3Type;
@@ -45,8 +45,7 @@ type PageScriptType = {
 };
 
 type ConfigType = {|
-  appScriptImports: { [appName: string]: ?() => Promise<GuestAppType> },
-  guestApps: { [guestApp: string]: GuestPropsType },
-  appSlots: { [slot: string]: GuestSlotsType },
-  guestAppScripts: { [guestAppScript: string]: GuestAppScriptsType },
+  apps: { [app: string]: AppType },
+  slots: { [slot: string]: SlotType },
+  scripts: { [script: string]: ScriptType },
 |};

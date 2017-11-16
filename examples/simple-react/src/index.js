@@ -9,51 +9,47 @@ import AppManager from 'app-manager';
 import firstScript from './first/first-script';
 import secondScript from './second/second-script';
 
-const appSlots = {
+const slots = {
   MAIN: {
     name: 'MAIN',
     elementClass: 'app-slot',
   },
 };
 
-const guestAppScripts = {
+const scripts = {
   FIRST_SCRIPT: {
     name: 'FIRST_SCRIPT',
-    slots: [appSlots.MAIN.name],
+    slots: [slots.MAIN.name],
     managed: true,
+    import() { return Promise.resolve(firstScript); },
   },
 
   SECOND_SCRIPT: {
     name: 'SECOND_SCRIPT',
-    slots: [appSlots.MAIN.name],
+    slots: [slots.MAIN.name],
     managed: true,
+    import() { return Promise.resolve(secondScript); },
   },
 };
 
-const guestApps = {
+const apps = {
   FIRST_APP: {
     name: 'FIRST_APP',
     appPath: '/',
-    display: [guestAppScripts.FIRST_SCRIPT.name],
+    display: [scripts.FIRST_SCRIPT.name],
   },
 
   SECOND_APP: {
     name: 'SECOND_APP',
     appPath: '/second-app',
-    display: [guestAppScripts.SECOND_SCRIPT.name],
+    display: [scripts.SECOND_SCRIPT.name],
   },
 };
 
-const appScriptImports = {
-  [guestAppScripts.FIRST_SCRIPT.name]() { return Promise.resolve(firstScript); },
-  [guestAppScripts.SECOND_SCRIPT.name]() { return Promise.resolve(secondScript); },
-};
-
 const config = {
-  appScriptImports,
-  guestApps,
-  appSlots,
-  guestAppScripts,
+  apps,
+  slots,
+  scripts,
 };
 
 const analytics = {
