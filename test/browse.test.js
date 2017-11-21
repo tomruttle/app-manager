@@ -84,9 +84,8 @@ describe('multi-step browser test', () => {
 
     SCRIPT_C: {
       name: 'SCRIPT_C',
-      slots: ['ERROR'],
+      slots: ['APP'],
       managed: true,
-      import() { return Promise.resolve(mockC); },
     },
   };
 
@@ -214,7 +213,7 @@ describe('multi-step browser test', () => {
     expect(mockB.unmount.callCount).to.equals(1);
   });
 
-  it('does not mount app scripts in missing slots', async () => {
+  it('does not mount app scripts with missing import functions', async () => {
     historystub.pushState({}, null, '/app-c');
 
     await waitForIO();

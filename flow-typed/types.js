@@ -26,6 +26,7 @@ type ScriptType = {
   name: string,
   slots: Array<string>,
   managed: boolean,
+  import?: () => Promise<GuestAppType>,
 };
 
 interface GuestAppVersion3Type {
