@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "clean": "rimraf ./es5",
     "compile": "babel lib -d es5",
     "copy": "flow-copy-source -v lib es5",
-    "ci": "npm run coverage && npm run clean && npm run compile && npm run copy",
+    "build": "npm run clean && npm run compile && npm run copy",
+    "ci": "npm run coverage && npm run build",
     "watch": "babel lib -d es5 --watch",
     "build": "webpack",
     "build-prod": "webpack --env=prod -p",
