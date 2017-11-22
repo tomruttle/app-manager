@@ -108,12 +108,11 @@ describe('multi-step browser test', () => {
     appManager = new AppManager(config);
   });
 
-  it('initialises correctly', async () => {
+  it('correctly initialises app manager with first guest app', async () => {
     const initSuccess = await appManager.init();
-    expect(initSuccess).to.be.true;
-  });
 
-  it('correctly initialises app manager with first guest app', () => {
+    expect(initSuccess).to.be.true;
+
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
