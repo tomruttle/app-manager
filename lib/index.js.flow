@@ -1,0 +1,52 @@
+declare module 'app-manager' {
+  declare type AnalyticsType = any;
+
+  declare type OptionsType = {
+    importTimeout?: number,
+  };
+
+  declare type AppType = {
+    name: string,
+    appPath: string,
+    display: Array<string>,
+  };
+
+  declare interface GuestAppVersion3Type {
+    version: 3;
+    hydrate(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
+    mount(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
+    unmount(container: HTMLDivElement, history: History, currentApp: AppType): boolean;
+    onStateChange(history: History, currentApp: AppType): Promise<?void>;
+  }
+
+  declare type GuestAppType = GuestAppVersion3Type;
+
+  declare type SlotType = {
+    name: string,
+    elementClass: string,
+  };
+
+  declare type ScriptType = {
+    name: string,
+    slots: Array<string>,
+    managed: boolean,
+    load?: () => Promise<GuestAppType>,
+  };
+
+  declare type PageScriptType = {
+    script: ?GuestAppType,
+    slot: string,
+    name: string,
+  };
+
+  declare type ConfigType = {|
+    apps: { [app: string]: AppType },
+    slots: { [slot: string]: SlotType },
+    scripts: { [script: string]: ScriptType },
+  |};
+
+  declare export default class AppManager {
+    constructor(config: ConfigType, analytics: AnalyticsType, options: OptionsType): void;
+    init: () => Promise<boolean>;
+  }
+}

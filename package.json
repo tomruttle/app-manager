@@ -1,13 +1,13 @@
 {
   "name": "app-manager",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
     "coverage": "nyc mocha ./test/*.test.js",
     "clean": "rimraf ./es5 ./dist",
     "compile": "babel lib -d es5",
-    "copy": "flow-copy-source -v lib es5",
+    "copy": "cp ./lib/index.js.flow ./es5",
     "build": "npm run compile && npm run copy",
     "bundle": "webpack",
     "bundle-prod": "webpack --env=prod -p",
@@ -67,7 +67,6 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^4.11.0",
     "flow-bin": "^0.59.0",
-    "flow-copy-source": "^1.2.1",
     "husky": "^0.14.3",
     "mocha": "^4.0.1",
     "nyc": "^11.3.0",

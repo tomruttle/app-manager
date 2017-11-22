@@ -7,7 +7,7 @@ import { WindowStub, HistoryStub } from '../lib/utils/stubs';
 
 import initAppManager from '../lib/app-manager';
 
-import type { GuestAppVersion3Type } from '../lib/app-manager';
+import type { GuestAppVersion3Type } from '../lib/index';
 
 describe('multi-step browser test', () => {
   function waitForIO() {
