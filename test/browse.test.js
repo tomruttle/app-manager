@@ -221,7 +221,7 @@ describe('multi-step browser test', () => {
 
     await waitForIO();
 
-    expect(appManager._currentAppName).to.equals(apps.APP_C.name);
+    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.mount.callCount).to.equals(1);
