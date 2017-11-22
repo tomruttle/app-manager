@@ -9,7 +9,11 @@ declare var beforeEach: any
 declare var afterEach: any
 
 type WindowType = any;
-type Analytics = any;
+type AnalyticsType = any;
+
+type OptionsType = {
+  importTimeout?: number,
+};
 
 type AppType = {
   name: string,
