@@ -106,7 +106,11 @@ describe('multi-step browser test', () => {
     const AppManager = initAppManager(windowStub, historystub);
 
     appManager = new AppManager(config);
-    appManager.init();
+  });
+
+  it('initialises correctly', async () => {
+    const initSuccess = await appManager.init();
+    expect(initSuccess).to.be.true;
   });
 
   it('correctly initialises app manager with first guest app', () => {
