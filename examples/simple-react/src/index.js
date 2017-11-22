@@ -21,14 +21,14 @@ const scripts = {
     name: 'FIRST_SCRIPT',
     slots: [slots.MAIN.name],
     managed: true,
-    import() { return Promise.resolve(firstScript); },
+    load: () => Promise.resolve(firstScript),
   },
 
   SECOND_SCRIPT: {
     name: 'SECOND_SCRIPT',
     slots: [slots.MAIN.name],
     managed: true,
-    import() { return Promise.resolve(secondScript); },
+    load: () => Promise.resolve(secondScript),
   },
 };
 

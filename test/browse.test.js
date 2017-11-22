@@ -7,6 +7,8 @@ import { WindowStub, HistoryStub } from '../lib/utils/stubs';
 
 import initAppManager from '../lib/app-manager';
 
+import type { GuestAppVersion3Type } from '../lib/app-manager';
+
 describe('multi-step browser test', () => {
   function waitForIO() {
     return new Promise((resolve) => setImmediate(resolve));
@@ -36,9 +38,9 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  const mockA = new MockA();
-  const mockB = new MockB();
-  const mockC = new MockC();
+  const mockA: GuestAppVersion3Type = new MockA();
+  const mockB: GuestAppVersion3Type = new MockB();
+  const mockC: GuestAppVersion3Type = new MockC();
 
   const apps = {
     APP_A: {
@@ -72,14 +74,14 @@ describe('multi-step browser test', () => {
       name: 'SCRIPT_A',
       slots: ['APP'],
       managed: true,
-      import() { return Promise.resolve(mockA); },
+      load: () => Promise.resolve(mockA),
     },
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
       slots: ['APP'],
       managed: true,
-      import() { return Promise.resolve(mockB); },
+      load: () => Promise.resolve(mockB),
     },
 
     SCRIPT_C: {
