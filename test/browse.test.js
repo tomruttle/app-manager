@@ -231,7 +231,7 @@ describe('multi-step browser test', () => {
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(2);
     expect(mockB.onStateChange.callCount).to.equals(2);
-    expect(mockB.unmount.callCount).to.equals(2);
+    expect(mockB.unmount.callCount).to.equals(1);
 
     expect(mockC.hydrate.callCount).to.equals(0);
     expect(mockC.mount.callCount).to.equals(0);
