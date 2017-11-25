@@ -7,6 +7,9 @@ import ReactDOM from 'react-dom';
 
 import SecondApp from './second-app';
 
+const STATUS_CHANGE = 'statuschange';
+const SCRIPT_ID = 'SecondScript';
+
 class SecondScript implements GuestAppVersion3Type {
   version = 3;
 
@@ -22,7 +25,7 @@ class SecondScript implements GuestAppVersion3Type {
 
   onStateChange = async () => {};
 
-  unmount = (container: HTMLDivElement) => ReactDOM.unmountComponentAtNode(container);
+  unmount = (container: HTMLDivElement, history: History) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new SecondScript();

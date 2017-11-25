@@ -47,6 +47,7 @@ declare module 'app-manager' {
 
   declare export default class AppManager {
     constructor(config: ConfigType, analytics: AnalyticsType, options: OptionsType): void;
+    onStateChange: () => Promise<boolean>;
     init: () => Promise<boolean>;
   }
 }

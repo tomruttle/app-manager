@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { WindowStub, HistoryStub } from '../lib/utils/stubs';
+import decorateHistory from '../lib/utils/history-events';
 
 import initAppManager from '../lib/app-manager';
 
@@ -103,7 +104,7 @@ describe('multi-step browser test', () => {
 
     const windowStub = new WindowStub('/app-a');
 
-    historystub = new HistoryStub();
+    historystub = decorateHistory(windowStub, new HistoryStub());
 
     const AppManager = initAppManager(windowStub, historystub);
 
