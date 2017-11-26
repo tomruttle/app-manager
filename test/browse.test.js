@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { WindowStub, HistoryStub } from '../lib/utils/stubs';
-import decorateHistory from '../lib/utils/history-events';
+import decorateHistory from '../lib/utils/decorate-history';
 
 import initAppManager from '../lib/app-manager';
 
