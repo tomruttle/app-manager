@@ -137,7 +137,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('highest priority scripts take the slots', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND'] };
+    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
 
     const slots = {
       LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
@@ -147,7 +147,7 @@ describe('getManagedSlotScripts', () => {
     const scripts = {
       FIRST: { name: 'FIRST', slots: ['RIGHT', 'LEFT'], managed: true },
       SECOND: { name: 'SECOND', slots: ['RIGHT'], managed: true },
-      THIRD: { name: 'SECOND', slots: ['LEFT', 'RIGHT'], managed: true },
+      THIRD: { name: 'THIRD', slots: ['LEFT', 'RIGHT'], managed: true },
     };
 
     const managedSlotScripts = getManagedSlotScripts(slots, scripts, app);
