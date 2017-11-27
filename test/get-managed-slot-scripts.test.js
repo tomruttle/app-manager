@@ -23,8 +23,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'INVALID', appPath: '/', display: ['NONEXISTENT'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const managedSlotScripts = getManagedSlotScripts(slots, {}, app);
@@ -36,8 +36,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['INVALID'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -53,8 +53,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['UNMANAGED'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -70,8 +70,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -87,8 +87,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -104,8 +104,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -122,8 +122,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -140,8 +140,8 @@ describe('getManagedSlotScripts', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
 
     const slots = {
-      LEFT: { name: 'LEFT', appPath: '/', elementClass: '.left' },
-      RIGHT: { name: 'RIGHT', appPath: '/', elementClass: '.right' },
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
     };
 
     const scripts = {
@@ -153,5 +153,25 @@ describe('getManagedSlotScripts', () => {
     const managedSlotScripts = getManagedSlotScripts(slots, scripts, app);
 
     expect(managedSlotScripts).to.deep.equals({ LEFT: 'FIRST', RIGHT: 'SECOND' });
+  });
+
+  it.only('Aims for the best preferences', () => {
+    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
+
+    const slots = {
+      LEFT: { name: 'LEFT', elementClass: '.left' },
+      RIGHT: { name: 'RIGHT', elementClass: '.right' },
+      CENTER: { name: 'CENTER', elementClass: '.center' },
+    };
+
+    const scripts = {
+      FIRST: { name: 'FIRST', slots: ['LEFT', 'RIGHT', 'CENTER'], managed: true },
+      SECOND: { name: 'SECOND', slots: ['LEFT', 'RIGHT', 'CENTER'], managed: true },
+      THIRD: { name: 'THIRD', slots: ['LEFT', 'RIGHT', 'CENTER'], managed: true },
+    };
+
+    const managedSlotScripts = getManagedSlotScripts(slots, scripts, app);
+
+    expect(managedSlotScripts).to.deep.equals({ LEFT: 'FIRST', RIGHT: 'SECOND', CENTER: 'THIRD' });
   });
 });
