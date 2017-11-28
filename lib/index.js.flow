@@ -1,12 +1,13 @@
 // @flow
 
-export type ErrorType = {
+export type AnalyticsErrorType = {
   eventTitle: string,
+  id?: string,
 };
 
 export type AnalyticsType = {
   namespace: string,
-  error: (error: ErrorType) => any,
+  error: (error: AnalyticsErrorType) => any,
 };
 
 export type OptionsType = {
@@ -53,10 +54,8 @@ export type ConfigType = {|
   scripts: { [script: string]: ScriptType },
 |};
 
-declare module 'app-manager' {
-  declare export default class AppManager {
-    constructor(config: ConfigType, analytics?: AnalyticsType, options?: OptionsType): void;
-    onStateChange: () => Promise<boolean>;
-    init: () => Promise<boolean>;
-  }
+declare export default class AppManager {
+  constructor(config: ConfigType, analytics?: AnalyticsType, options?: OptionsType): AppManager,
+  onStateChange: () => Promise<boolean>,
+  init: () => Promise<boolean>,
 }
