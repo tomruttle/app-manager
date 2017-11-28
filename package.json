@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
