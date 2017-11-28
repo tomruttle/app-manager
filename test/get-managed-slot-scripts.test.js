@@ -155,7 +155,7 @@ describe('getManagedSlotScripts', () => {
     expect(managedSlotScripts).to.deep.equals({ LEFT: 'FIRST', RIGHT: 'SECOND' });
   });
 
-  it.only('Aims for the best preferences', () => {
+  it('Aims for the best preferences', () => {
     const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
 
     const slots = {
