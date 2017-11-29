@@ -24,12 +24,25 @@ export type AppType = {
   scripts: Array<ScriptNameType>,
 };
 
+export interface HistoryType {
+  pushState(data: ?Object, title?: ?string, href?: string): void;
+  replaceState(data: ?Object, title?: ?string, href?: string): void;
+  getState(): Object;
+  back(): void;
+  forward(): void;
+  events: {
+    bind(event: string, id: string, callback: Function): void,
+    unbind(event: string, id: string): void,
+    trigger(event: string, data?: mixed): void
+  }
+}
+
 export interface FragmentVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
-  mount(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
-  unmount(container: HTMLDivElement, history: History, currentApp: AppType): boolean;
-  onStateChange(history: History, currentApp: AppType): Promise<?void>;
+  hydrate(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
+  mount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
+  unmount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): boolean;
+  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
 export type FragmentType = FragmentVersion3Type;

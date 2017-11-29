@@ -7,10 +7,10 @@ Script for managing the lifecycles of multiple apps on a single page
 ## Use Case
 
   * Your app has been built with a microservices architecture.
-  * You are using a tool like [https://github.com/tes/compoxure](compoxure) to split the page into fragments, which are rendered on disparate servers and compiled
+  * You are using a tool like [compoxure](https://github.com/tes/compoxure) to split the page into fragments, which are rendered on disparate servers and compiled
   * Your front-end code has become sufficiently complex that it warrants splitting up and/or is isomorphically rendered
   * You wish to keep your app 'feeling' like an SPA
-  * You are able to split your scripts and fetch them from disparate servers using a tool like [https://github.com/tes/async-define](async-define)
+  * You are able to split your scripts and fetch them from disparate servers using a tool like [async-define](https://github.com/tes/async-define)
 
 ## Concepts
 
@@ -56,11 +56,11 @@ This is the same library Express uses to parse route paths, so if you have used 
 
 ### history.js
 
-Cross-browser HTML5 history implementation, which a little extra on top (event listeners, state). Detects changes in browser state and calls the appropriate lifecycle methods in response. The live instance of the `history` object is passed down to each `fragment` through the lifecycle functions, so your `fragments` can mutate the browser state themselves.
+Cross-browser HTML5 history implementation, with a little extra on top (events system, state). Detects changes in browser state and calls the appropriate lifecycle methods in response. The live instance of the `history` object is passed down to each `fragment` through the lifecycle functions, so your `fragments` can mutate the browser state themselves.
 
 ## API
 
-app-manager exports a class (`AppManager`) whose constructor takes three parameters: `config`, `analytics`, and `options`:
+`app-manager` exports a class `AppManager` whose constructor takes three parameters: `config`, `analytics`, and `options`:
 
 ```typescript
 type AppNameType = string;
@@ -87,12 +87,25 @@ type AppType = {
   scripts: Array<ScriptNameType>,
 };
 
+interface HistoryType {
+  pushState(data: ?Object, title?: ?string, href?: string): void;
+  replaceState(data: ?Object, title?: ?string, href?: string): void;
+  getState(): Object;
+  back(): void;
+  forward(): void;
+  events: {
+    bind(event: string, id: string, callback: Function): void,
+    unbind(event: string, id: string): void,
+    trigger(event: string, data?: mixed): void
+  }
+}
+
 interface FragmentVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
-  mount(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
-  unmount(container: HTMLDivElement, history: History, currentApp: AppType): boolean;
-  onStateChange(history: History, currentApp: AppType): Promise<?void>;
+  hydrate(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
+  mount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
+  unmount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): boolean;
+  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
 type FragmentType = FragmentVersion3Type;
