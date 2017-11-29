@@ -54,9 +54,19 @@ There are four events that `app-manager` handles. Your `fragment` must provide a
 
 This is the same library Express uses to parse route paths, so if you have used Express you should be familiar with the syntax (`/path/:param(valid|options)/:optional?`). `app-manager` uses it to determine which `app` to display, and to extract url parameters.
 
+[https://github.com/pillarjs/path-to-regexp](https://github.com/pillarjs/path-to-regexp)
+
 ### history.js
 
 Cross-browser HTML5 history implementation, with a little extra on top (events system, state). Detects changes in browser state and calls the appropriate lifecycle methods in response. The live instance of the `history` object is passed down to each `fragment` through the lifecycle functions, so your `fragments` can mutate the browser state themselves.
+
+[https://github.com/browserstate/history.js/](https://github.com/browserstate/history.js/)
+
+### slot-finder
+
+A small script that provides the algorithm to decide which script goes in which slot.
+
+[https://github.com/tomruttle/slot-finder](https://github.com/tomruttle/slot-finder)
 
 ## API
 
