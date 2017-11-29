@@ -17,27 +17,27 @@ Script for managing the lifecycles of multiple apps on a single page
 app-manager exports a class (`AppManager`) whose constructor takes three parameters: `config`, `analytics`, and `options` such that:
 
 ```typescript
-export type AnalyticsErrorType = {
+type AnalyticsErrorType = {
   eventTitle: string,
   id?: string,
 };
 
-export type AnalyticsType = {
+type AnalyticsType = {
   namespace: string,
   error: (error: AnalyticsErrorType) => any,
 };
 
-export type OptionsType = {
+type OptionsType = {
   importTimeout?: number,
 };
 
-export type AppType = {
+type AppType = {
   name: string,
   appPath: string,
   display: Array<string>,
 };
 
-export interface GuestAppVersion3Type {
+interface GuestAppVersion3Type {
   version: 3;
   hydrate(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
   mount(container: HTMLDivElement, history: History, currentApp: AppType): Promise<?void>;
@@ -45,27 +45,27 @@ export interface GuestAppVersion3Type {
   onStateChange(history: History, currentApp: AppType): Promise<?void>;
 }
 
-export type GuestAppType = GuestAppVersion3Type;
+type GuestAppType = GuestAppVersion3Type;
 
-export type SlotType = {
+type SlotType = {
   name: string,
   elementClass: string,
 };
 
-export type ScriptType = {
+type ScriptType = {
   name: string,
   slots: Array<string>,
   managed: boolean,
   load?: () => Promise<GuestAppType>,
 };
 
-export type ConfigType = {|
+type ConfigType = {|
   apps: { [app: string]: AppType },
   slots: { [slot: string]: SlotType },
   scripts: { [script: string]: ScriptType },
 |};
 
-declare export default class AppManager {
+export default class AppManager {
   constructor(config: ConfigType, analytics?: AnalyticsType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
   init: () => Promise<boolean>,
