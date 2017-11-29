@@ -17,7 +17,7 @@ describe('events', () => {
       APP_A: {
         name: 'APP_A',
         appPath: '/app-a/:entityId?',
-        display: ['SCRIPT_A'],
+        scripts: ['SCRIPT_A'],
       },
     };
 

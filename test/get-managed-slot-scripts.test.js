@@ -12,7 +12,7 @@ describe('getManagedSlotScripts', () => {
     expect(managedSlotScripts).to.be.null;
   });
 
-  it('returns null if app has no display prop', () => {
+  it('returns null if app has no scripts prop', () => {
     // $FlowFixMe
     const managedSlotScripts = getManagedSlotScripts({}, {}, { name: 'INVALID', appPath: '/' });
 
@@ -20,7 +20,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('returns empty slots if no matching scripts are found', () => {
-    const app = { name: 'INVALID', appPath: '/', display: ['NONEXISTENT'] };
+    const app = { name: 'INVALID', appPath: '/', scripts: ['NONEXISTENT'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -33,7 +33,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('returns empty slots if no matching slots for scripts are found', () => {
-    const app = { name: 'APP', appPath: '/', display: ['INVALID'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['INVALID'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -50,7 +50,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('returns empty slots if scripts is not managed by app-manager', () => {
-    const app = { name: 'APP', appPath: '/', display: ['UNMANAGED'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['UNMANAGED'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -67,7 +67,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('returns managed scripts in slots', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -84,7 +84,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('does not duplicate a script on a page', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -101,7 +101,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('maximises the number of scripts shown on a page', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST', 'SECOND'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -119,7 +119,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('gurarantees the presence of the first script', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST', 'SECOND'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -137,7 +137,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('highest priority scripts take the slots', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST', 'SECOND', 'THIRD'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },
@@ -156,7 +156,7 @@ describe('getManagedSlotScripts', () => {
   });
 
   it('Aims for the best preferences', () => {
-    const app = { name: 'APP', appPath: '/', display: ['FIRST', 'SECOND', 'THIRD'] };
+    const app = { name: 'APP', appPath: '/', scripts: ['FIRST', 'SECOND', 'THIRD'] };
 
     const slots = {
       LEFT: { name: 'LEFT', elementClass: '.left' },

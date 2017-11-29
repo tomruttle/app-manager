@@ -8,14 +8,14 @@ import decorateHistory from '../lib/utils/decorate-history';
 
 import initAppManager from '../lib/app-manager';
 
-import type { GuestAppVersion3Type } from '../lib/index';
+import type { FragmentVersion3Type } from '../lib/index';
 
 describe('multi-step browser test', () => {
   function waitForIO() {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  class MockA implements GuestAppVersion3Type {
+  class MockA implements FragmentVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -23,7 +23,7 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  class MockB implements GuestAppVersion3Type {
+  class MockB implements FragmentVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -31,7 +31,7 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  class MockC implements GuestAppVersion3Type {
+  class MockC implements FragmentVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -39,34 +39,34 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  const mockA: GuestAppVersion3Type = new MockA();
-  const mockB: GuestAppVersion3Type = new MockB();
-  const mockC: GuestAppVersion3Type = new MockC();
+  const mockA: FragmentVersion3Type = new MockA();
+  const mockB: FragmentVersion3Type = new MockB();
+  const mockC: FragmentVersion3Type = new MockC();
 
   const apps = {
     APP_A: {
       name: 'APP_A',
       appPath: '/app-a/:entityId?',
-      display: ['SCRIPT_A'],
+      scripts: ['SCRIPT_A'],
     },
 
     APP_B: {
       name: 'APP_B',
       appPath: '/app-b/:entityId?',
-      display: ['SCRIPT_B'],
+      scripts: ['SCRIPT_B'],
     },
 
     APP_C: {
       name: 'APP_C',
       appPath: '/app-c/:entityId?',
-      display: ['SCRIPT_C'],
+      scripts: ['SCRIPT_C'],
     },
   };
 
   const slots = {
     APP: {
       name: 'APP',
-      elementClass: 'guest-app',
+      elementClass: 'fragment',
     },
   };
 
@@ -111,7 +111,7 @@ describe('multi-step browser test', () => {
     appManager = new AppManager(config);
   });
 
-  it('correctly initialises app manager with first guest app', async () => {
+  it('correctly initialises app manager with first fragment', async () => {
     const initSuccess = await appManager.init();
 
     expect(initSuccess).to.be.true;

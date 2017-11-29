@@ -2,7 +2,9 @@
 
 import React from 'react';
 
-export default function FirstApp({ history, currentApp, action }: { history: History, currentApp: GuestPropsType, action: string }) {
+import type { FragmentPropsType } from '../../../../es5/index'; 
+
+export default function FirstApp({ history, currentApp, action }: { history: History, currentApp: FragmentPropsType, action: string }) {
   return (
     <div>
       <p>This is {currentApp.name}. It has just been {action}</p>

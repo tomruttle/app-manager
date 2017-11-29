@@ -36,13 +36,13 @@ const apps = {
   FIRST_APP: {
     name: 'FIRST_APP',
     appPath: '/',
-    display: [scripts.FIRST_SCRIPT.name],
+    scripts: [scripts.FIRST_SCRIPT.name],
   },
 
   SECOND_APP: {
     name: 'SECOND_APP',
     appPath: '/second-app',
-    display: [scripts.SECOND_SCRIPT.name],
+    scripts: [scripts.SECOND_SCRIPT.name],
   },
 };
 
