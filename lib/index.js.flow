@@ -1,5 +1,7 @@
 // @flow
 
+import { appStatuses, eventTitles } from './constants';
+
 type AppNameType = string;
 type SlotNameType = string;
 type ScriptNameType = string;
@@ -61,6 +63,12 @@ export type ConfigType = {|
 |};
 
 declare export default class AppManager {
+  static eventTitles: typeof eventTitles,
+  static appStatuses: typeof appStatuses,
+
+  static triggerEvent: (eventTitle: $Values<typeof eventTitles>, data: any) => void,
+  static bindEvent: (eventTitle: $Values<typeof eventTitles>, callback: (data: any) => any) => void,
+
   constructor(config: ConfigType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
   init: () => Promise<boolean>,
