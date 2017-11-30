@@ -70,7 +70,7 @@ A small script that provides the algorithm to decide which script goes in which 
 
 ## API
 
-`app-manager` exports a class `AppManager` whose constructor takes three parameters: `config`, `analytics`, and `options`:
+`app-manager` exports a class `AppManager` whose constructor takes two parameters: `config` and `options`:
 
 ```typescript
 type AppNameType = string;
@@ -80,11 +80,6 @@ type ScriptNameType = string;
 type AnalyticsErrorType = {
   eventTitle: string,
   id?: string,
-};
-
-type AnalyticsType = {
-  namespace: string,
-  error: (error: AnalyticsErrorType) => any,
 };
 
 type OptionsType = {
@@ -139,7 +134,7 @@ type ConfigType = {|
 |};
 
 export default class AppManager {
-  constructor(config: ConfigType, analytics?: AnalyticsType, options?: OptionsType): AppManager,
+  constructor(config: ConfigType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
   init: () => Promise<boolean>,
 }

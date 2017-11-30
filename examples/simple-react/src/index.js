@@ -52,14 +52,10 @@ const config = {
   scripts,
 };
 
-const analytics = {
-  namespace: 'simple-react',
+const appManager = new AppManager(config);
 
-  error(data) {
-    console.error(data); // eslint-disable-line no-console
-  },
-};
-
-const appManager = new AppManager(config, analytics);
+AppManager.bindEvent(AppManager.eventTitles.ERROR, (data) => {
+  console.error('An error has occurred: ', data);
+});
 
 appManager.init();

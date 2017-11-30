@@ -13,6 +13,8 @@ describe('events', () => {
   }
 
   it('unbinds the statechange event listener if the init call fails', async () => {
+    let errorTitle;
+
     const apps = {
       APP_A: {
         name: 'APP_A',
@@ -35,6 +37,10 @@ describe('events', () => {
 
     const appManager = new AppManager(config);
 
+    AppManager.bindEvent('error', (data) => {
+      errorTitle = data.title;
+    });
+
     expect(appManager._status).to.equals('DEFAULT');
 
     historystub.pushState({}, null, '/app-b');
@@ -46,6 +52,8 @@ describe('events', () => {
     expect(success).to.be.false;
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
+
+    expect(errorTitle).to.equals('init.no_route');
 
     historystub.pushState({}, null, '/app-a');
 

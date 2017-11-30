@@ -9,11 +9,6 @@ export type AnalyticsErrorType = {
   id?: string,
 };
 
-export type AnalyticsType = {
-  namespace: string,
-  error: (error: AnalyticsErrorType) => any,
-};
-
 export type OptionsType = {
   importTimeout?: number,
 };
@@ -31,8 +26,8 @@ export interface HistoryType {
   back(): void;
   forward(): void;
   events: {
-    bind(event: string, id: string, callback: Function): void,
-    unbind(event: string, id: string): void,
+    bind(event: string, callback: Function): void,
+    unbind(event: string): void,
     trigger(event: string, data?: mixed): void
   }
 }
@@ -66,7 +61,7 @@ export type ConfigType = {|
 |};
 
 declare export default class AppManager {
-  constructor(config: ConfigType, analytics?: AnalyticsType, options?: OptionsType): AppManager,
+  constructor(config: ConfigType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
   init: () => Promise<boolean>,
 }
