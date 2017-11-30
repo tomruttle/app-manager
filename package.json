@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.13.0",
+  "version": "0.12.1",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "es5/index.js",
   "scripts": {
@@ -77,6 +77,6 @@
   "dependencies": {
     "html5-history": "^0.1.5",
     "path-to-regexp": "^2.1.0",
-    "slot-finder": "0.0.1"
+    "slot-finder": "0.0.2"
   }
 }
