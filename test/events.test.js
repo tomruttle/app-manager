@@ -37,7 +37,7 @@ describe('events', () => {
 
     const appManager = new AppManager(config);
 
-    AppManager.bindEvent('error', (data) => {
+    AppManager.bindEvent('am-error', (data) => {
       errorTitle = data.title;
     });
 
