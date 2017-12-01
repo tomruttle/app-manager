@@ -78,7 +78,7 @@ type SlotNameType = string;
 type ScriptNameType = string;
 
 type AnalyticsErrorType = {
-  eventTitle: string,
+  event: string,
   id?: string,
 };
 
@@ -134,12 +134,12 @@ type ConfigType = {|
 |};
 
 export default class AppManager {
-  static eventTitles: typeof eventTitles,
-  static appStatuses: typeof appStatuses,
+  static events: typeof events,
+  static statuses: typeof statuses,
 
-  static triggerEvent: (eventTitle: $Values<typeof eventTitles>, data: mixed) => void,
-  static bindEvent: (eventTitle: $Values<typeof eventTitles>, callback: (data: mixed) => mixed) => void,
-  static unbindEvent: (eventTitle: $Values<typeof eventTitles>) => void,
+  static triggerEvent: (event: $Values<typeof events>, data: mixed) => void,
+  static bindEvent: (event: $Values<typeof events>, callback: (data: mixed) => mixed) => void,
+  static unbindEvent: (event: $Values<typeof events>) => void,
 
   constructor(config: ConfigType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
