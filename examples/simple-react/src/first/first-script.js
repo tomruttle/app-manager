@@ -1,31 +1,27 @@
-// @flow
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import type { FragmentAppVersion3Type, FragmentPropsType } from '../../../../es5/index';
 
 import FirstApp from './first-app';
 
 const STATUS_CHANGE = 'statuschange';
 const SCRIPT_ID = 'FirstScript';
 
-class FirstScript implements FragmentAppVersion3Type {
+class FirstScript {
   version = 3;
 
-  hydrate = async (container: HTMLDivElement, history: HistoryType, currentApp: FragmentPropsType) => {
+  hydrate = async (container, history, currentApp) => {
     const app = <FirstApp history={history} currentApp={currentApp} action='hydrated' />;
     return ReactDOM.render(app, container);
   }
 
-  mount = async (container: HTMLDivElement, history: HistoryType, currentApp: FragmentPropsType) => {
+  mount = async (container, history, currentApp) => {
     const app = <FirstApp history={history} currentApp={currentApp} action='mounted' />;
     return ReactDOM.render(app, container);
   }
 
   onStateChange = async () => {};
 
-  unmount = (container: HTMLDivElement, history: HistoryType) => ReactDOM.unmountComponentAtNode(container);
+  unmount = (container, history) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new FirstScript();

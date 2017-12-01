@@ -99,7 +99,7 @@ interface HistoryType {
   back(): void;
   forward(): void;
   events: {
-    bind(event: string, id: string, callback: Function): void,
+    bind(event: string, id: string, callback: () => mixed): void,
     unbind(event: string, id: string): void,
     trigger(event: string, data?: mixed): void
   }
@@ -134,6 +134,13 @@ type ConfigType = {|
 |};
 
 export default class AppManager {
+  static eventTitles: typeof eventTitles,
+  static appStatuses: typeof appStatuses,
+
+  static triggerEvent: (eventTitle: $Values<typeof eventTitles>, data: mixed) => void,
+  static bindEvent: (eventTitle: $Values<typeof eventTitles>, callback: (data: mixed) => mixed) => void,
+  static unbindEvent: (eventTitle: $Values<typeof eventTitles>) => void,
+
   constructor(config: ConfigType, options?: OptionsType): AppManager,
   onStateChange: () => Promise<boolean>,
   init: () => Promise<boolean>,

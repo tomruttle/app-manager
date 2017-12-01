@@ -1,9 +1,6 @@
-// @flow
-
 import ReactDOM from 'react-dom';
 import React from 'react';
 
-// $FlowFixMe
 import AppManager from 'app-manager';
 
 import firstScript from './first/first-script';

@@ -1,10 +1,6 @@
-// @flow
-
 import React from 'react';
 
-import type { FragmentPropsType } from '../../../../es5/index';
-
-export default function SecondApp({ history, currentApp, action }: { history: HistoryType, currentApp: FragmentPropsType, action: string }) {
+export default function SecondApp({ history, currentApp, action }) {
   return (
     <div>
       <p>This is {currentApp.name}. It has just been {action}</p>

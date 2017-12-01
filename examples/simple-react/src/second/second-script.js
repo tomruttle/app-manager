@@ -1,31 +1,27 @@
-// @flow
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import type { FragmentAppVersion3Type, FragmentPropsType } from '../../../../es5/index';
 
 import SecondApp from './second-app';
 
 const STATUS_CHANGE = 'statuschange';
 const SCRIPT_ID = 'SecondScript';
 
-class SecondScript implements FragmentAppVersion3Type {
+class SecondScript {
   version = 3;
 
-  hydrate = async (container: HTMLDivElement, history: HistoryType, currentApp: FragmentPropsType) => {
+  hydrate = async (container, history, currentApp) => {
     const app = <SecondApp history={history} currentApp={currentApp} action='hydrated' />;
     return ReactDOM.render(app, container);
   }
 
-  mount = async (container: HTMLDivElement, history: HistoryType, currentApp: FragmentPropsType) => {
+  mount = async (container, history, currentApp) => {
     const app = <SecondApp history={history} currentApp={currentApp} action='mounted' />;
     return ReactDOM.render(app, container);
   }
 
   onStateChange = async () => {};
 
-  unmount = (container: HTMLDivElement, history: HistoryType) => ReactDOM.unmountComponentAtNode(container);
+  unmount = (container, history) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new SecondScript();

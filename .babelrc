@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["env", { "targets": { "browsers": ["last 2 versions", "ie 9", "ie 10"] } }],
+    ["env", { "targets": { "browsers": ["last 2 versions", "ie 11"] } }],
     "flow",
   ],
   "plugins": ["transform-class-properties", "transform-runtime"]

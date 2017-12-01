@@ -12,7 +12,7 @@ describe('events', () => {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  it('unbinds the statechange event listener if the init call fails', async () => {
+  it('Can bind and unbind event listeners', async () => {
     let errorTitle;
 
     const apps = {
@@ -56,6 +56,15 @@ describe('events', () => {
     expect(errorTitle).to.equals('init.no_route');
 
     historystub.pushState({}, null, '/app-a');
+
+    await waitForIO();
+
+    expect(appManager._currentAppName).to.be.null;
+    expect(appManager._status).to.equals('ERROR');
+
+    AppManager.unbindEvent('am-error');
+
+    historystub.pushState({}, null, '/app-c');
 
     await waitForIO();
 
