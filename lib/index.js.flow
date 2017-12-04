@@ -57,9 +57,9 @@ export type FragmentType = {
 };
 
 export type ConfigType = {|
-  apps: { [app: string]: AppType },
-  slots: { [slot: string]: SlotType },
-  fragments: { [script: string]: FragmentType },
+  apps: { [appName: AppNameType]: AppType },
+  slots: { [slotName: SlotNameType]: SlotType },
+  fragments: { [fragmentName: FragmentNameType]: FragmentType },
 |};
 
 declare export default class AppManager {
