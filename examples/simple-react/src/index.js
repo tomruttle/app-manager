@@ -51,7 +51,7 @@ const config = {
 
 const appManager = new AppManager(config);
 
-AppManager.bindEvent(AppManager.eventTitles.ERROR, (data) => {
+AppManager.bindEvent(AppManager.events.ERROR, (data) => {
   console.error('An error has occurred: ', data);
 });
 

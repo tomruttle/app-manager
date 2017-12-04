@@ -19,14 +19,14 @@ describe('events', () => {
       APP_A: {
         name: 'APP_A',
         appPath: '/app-a/:entityId?',
-        scripts: ['SCRIPT_A'],
+        fragments: ['SCRIPT_A'],
       },
     };
 
     const config = {
       apps,
       slots: {},
-      scripts: {},
+      fragments: {},
     };
 
     const windowStub = new WindowStub('/app-a');
@@ -38,7 +38,9 @@ describe('events', () => {
     const appManager = new AppManager(config);
 
     AppManager.bindEvent('am-error', (data) => {
-      errorTitle = data.title;
+      if (data && data.title) {
+        errorTitle = data.title;
+      }
     });
 
     expect(appManager._status).to.equals('DEFAULT');

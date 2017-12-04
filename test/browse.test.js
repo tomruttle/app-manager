@@ -8,14 +8,14 @@ import decorateHistory from '../lib/utils/decorate-history';
 
 import initAppManager from '../lib/app-manager';
 
-import type { FragmentVersion3Type } from '../lib/index';
+import type { ScriptVersion3Type } from '../lib/index';
 
 describe('multi-step browser test', () => {
   function waitForIO() {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  class MockA implements FragmentVersion3Type {
+  class MockA implements ScriptVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -23,7 +23,7 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  class MockB implements FragmentVersion3Type {
+  class MockB implements ScriptVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -31,7 +31,7 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  class MockC implements FragmentVersion3Type {
+  class MockC implements ScriptVersion3Type {
     version = 3
     hydrate = sinon.spy()
     mount = sinon.spy()
@@ -39,27 +39,27 @@ describe('multi-step browser test', () => {
     unmount = sinon.spy()
   }
 
-  const mockA: FragmentVersion3Type = new MockA();
-  const mockB: FragmentVersion3Type = new MockB();
-  const mockC: FragmentVersion3Type = new MockC();
+  const mockA: ScriptVersion3Type = new MockA();
+  const mockB: ScriptVersion3Type = new MockB();
+  const mockC: ScriptVersion3Type = new MockC();
 
   const apps = {
     APP_A: {
       name: 'APP_A',
       appPath: '/app-a/:entityId?',
-      scripts: ['SCRIPT_A'],
+      fragments: ['SCRIPT_A'],
     },
 
     APP_B: {
       name: 'APP_B',
       appPath: '/app-b/:entityId?',
-      scripts: ['SCRIPT_B'],
+      fragments: ['SCRIPT_B'],
     },
 
     APP_C: {
       name: 'APP_C',
       appPath: '/app-c/:entityId?',
-      scripts: ['SCRIPT_C'],
+      fragments: ['SCRIPT_C'],
     },
   };
 
@@ -70,7 +70,7 @@ describe('multi-step browser test', () => {
     },
   };
 
-  const scripts = {
+  const fragments = {
     SCRIPT_A: {
       name: 'SCRIPT_A',
       slots: ['APP'],
@@ -99,7 +99,7 @@ describe('multi-step browser test', () => {
     const config = {
       apps,
       slots,
-      scripts,
+      fragments,
     };
 
     const windowStub = new WindowStub('/app-a');
