@@ -9,19 +9,19 @@ const SCRIPT_ID = 'SecondScript';
 class SecondScript {
   version = 3;
 
-  hydrate = async (container, history, currentApp) => {
-    const app = <SecondApp history={history} currentApp={currentApp} action='hydrated' />;
+  hydrate = async (container, events, currentApp) => {
+    const app = <SecondApp currentApp={currentApp} action='hydrated' />;
     return ReactDOM.render(app, container);
   }
 
-  mount = async (container, history, currentApp) => {
-    const app = <SecondApp history={history} currentApp={currentApp} action='mounted' />;
+  mount = async (container, events, currentApp) => {
+    const app = <SecondApp currentApp={currentApp} action='mounted' />;
     return ReactDOM.render(app, container);
   }
 
   onStateChange = async () => {};
 
-  unmount = (container, history) => ReactDOM.unmountComponentAtNode(container);
+  unmount = async (container) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new SecondScript();

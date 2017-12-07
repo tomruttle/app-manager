@@ -1,9 +1,9 @@
 // @flow
 
 import { expect } from 'chai';
+import EventEmitter from 'eventemitter3';
 
-import { WindowStub, HistoryStub } from '../lib/utils/stubs';
-import decorateHistory from '../lib/utils/decorate-history';
+import WindowStub from '../lib/utils/window-stub';
 
 import initAppManager from '../lib/app-manager';
 
@@ -29,23 +29,23 @@ describe('events', () => {
       fragments: {},
     };
 
-    const windowStub = new WindowStub('/app-a');
+    const windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
 
-    const historystub = decorateHistory(windowStub, new HistoryStub());
+    const AppManager = initAppManager(windowStub);
 
-    const AppManager = initAppManager(windowStub, historystub);
+    const appManager = new AppManager(config, new EventEmitter());
 
-    const appManager = new AppManager(config);
-
-    AppManager.bindEvent('am-error', (data) => {
+    function errorListener(data) {
       if (data && data.title) {
         errorTitle = data.title;
       }
-    });
+    }
+
+    appManager.on('am-error', errorListener);
 
     expect(appManager._status).to.equals('DEFAULT');
 
-    historystub.pushState({}, null, '/app-b');
+    windowStub.history.pushState({}, null, '/app-b');
 
     await waitForIO();
 
@@ -57,16 +57,16 @@ describe('events', () => {
 
     expect(errorTitle).to.equals('init.no_route');
 
-    historystub.pushState({}, null, '/app-a');
+    windowStub.history.pushState({}, null, '/app-a');
 
     await waitForIO();
 
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
 
-    AppManager.unbindEvent('am-error');
+    appManager.removeListener('am-error', errorListener);
 
-    historystub.pushState({}, null, '/app-c');
+    windowStub.history.pushState({}, null, '/app-c');
 
     await waitForIO();
 

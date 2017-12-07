@@ -2,9 +2,9 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import EventEmitter from 'eventemitter3';
 
-import { WindowStub, HistoryStub } from '../lib/utils/stubs';
-import decorateHistory from '../lib/utils/decorate-history';
+import WindowStub from '../lib/utils/window-stub';
 
 import initAppManager from '../lib/app-manager';
 
@@ -93,7 +93,7 @@ describe('multi-step browser test', () => {
   };
 
   let appManager;
-  let historystub;
+  let windowStub;
 
   before(() => {
     const config = {
@@ -102,13 +102,11 @@ describe('multi-step browser test', () => {
       fragments,
     };
 
-    const windowStub = new WindowStub('/app-a');
+    windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
 
-    historystub = decorateHistory(windowStub, new HistoryStub());
+    const AppManager = initAppManager(windowStub);
 
-    const AppManager = initAppManager(windowStub, historystub);
-
-    appManager = new AppManager(config);
+    appManager = new AppManager(config, new EventEmitter());
   });
 
   it('correctly initialises app manager with first fragment', async () => {
@@ -130,7 +128,7 @@ describe('multi-step browser test', () => {
   });
 
   it('browses to new app', async () => {
-    historystub.pushState({}, null, '/app-b');
+    windowStub.history.pushState({}, null, '/app-b');
 
     await waitForIO();
 
@@ -148,7 +146,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves within an app', async () => {
-    historystub.pushState({}, null, '/app-b/entity');
+    windowStub.history.pushState({}, null, '/app-b/entity');
 
     await waitForIO();
 
@@ -166,7 +164,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves back within an app', async () => {
-    historystub.back();
+    windowStub.history.back();
 
     await waitForIO();
 
@@ -184,7 +182,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves back to the old app', async () => {
-    historystub.back();
+    windowStub.history.back();
 
     await waitForIO();
 
@@ -202,7 +200,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves forward again', async () => {
-    historystub.forward();
+    windowStub.history.forward();
 
     await waitForIO();
 
@@ -220,7 +218,7 @@ describe('multi-step browser test', () => {
   });
 
   it('does not mount app scripts with missing import functions', async () => {
-    historystub.pushState({}, null, '/app-c');
+    windowStub.history.pushState({}, null, '/app-c');
 
     await waitForIO();
 

@@ -75,7 +75,7 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
-    "html5-history": "^0.1.5",
+    "eventemitter3": "^3.0.0",
     "path-to-regexp": "^2.1.0",
     "slot-finder": "0.0.2"
   }
