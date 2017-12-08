@@ -29,9 +29,9 @@ export type EventsType = {
 
 export interface ScriptVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, events: EventsType, currentApp: AppType): Promise<?void>;
-  mount(container: HTMLDivElement, events: EventsType, currentApp: AppType): Promise<?void>;
-  unmount(container: HTMLDivElement, events: EventsType, currentApp: AppType): Promise<?void>;
+  hydrate(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
+  mount(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
   onStateChange(events: EventsType, currentApp: AppType): Promise<?void>;
 }
 

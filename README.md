@@ -107,9 +107,9 @@ interface HistoryType {
 
 interface ScriptVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
-  mount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): boolean;
+  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, history: HistoryType, currentApp: AppType): boolean;
   onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
