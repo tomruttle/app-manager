@@ -164,7 +164,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves back within an app', async () => {
-    windowStub.history.back();
+    windowStub.history.go(-1);
 
     await waitForIO();
 
