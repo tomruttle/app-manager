@@ -7,7 +7,7 @@ const STATUS_CHANGE = 'statuschange';
 const SCRIPT_ID = 'SecondScript';
 
 class SecondScript {
-  version = 3;
+  version = 4;
 
   hydrate = async (container, currentApp) => {
     const app = <SecondApp currentApp={currentApp} action='hydrated' />;
@@ -20,6 +20,8 @@ class SecondScript {
   }
 
   onStateChange = async () => {};
+
+  onUpdateStatus = async () => {};
 
   unmount = async (container) => ReactDOM.unmountComponentAtNode(container);
 }
