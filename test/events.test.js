@@ -14,8 +14,6 @@ describe('events', () => {
   }
 
   it('Can bind and unbind event listeners', async () => {
-    let errorTitle;
-
     const apps = {
       APP_A: {
         name: 'APP_A',
@@ -36,13 +34,9 @@ describe('events', () => {
 
     const appManager = new AppManager(config, new EventEmitter());
 
-    function errorListener(data) {
-      if (data && data.title) {
-        errorTitle = data.title;
-      }
-    }
+    const onErrorSpy = sinon.spy();
 
-    appManager.on('am-error', errorListener);
+    appManager.on('am-error', onErrorSpy);
 
     expect(appManager._status).to.equals('DEFAULT');
 
@@ -56,7 +50,8 @@ describe('events', () => {
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
 
-    expect(errorTitle).to.equals('init.no_route');
+    expect(onErrorSpy.callCount).to.equals(1);
+    expect(onErrorSpy.args[0][0].title).to.equals('init.no_route');
 
     windowStub.history.pushState({}, null, '/app-a');
 
@@ -65,7 +60,10 @@ describe('events', () => {
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
 
-    appManager.removeListener('am-error', errorListener);
+    expect(onErrorSpy.callCount).to.equals(2);
+    expect(onErrorSpy.args[1][0].title).to.equals('handle_state_change.app_not_ready');
+
+    appManager.removeListener('am-error', onErrorSpy);
 
     windowStub.history.pushState(null, null, '/app-c');
 
@@ -73,6 +71,9 @@ describe('events', () => {
 
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
+
+    expect(onErrorSpy.callCount).to.equals(2);
+    expect(onErrorSpy.args[1][0].title).to.equals('handle_state_change.app_not_ready');
   });
 
   it('calling replaceState emits correct events', () => {

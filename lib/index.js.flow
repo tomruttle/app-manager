@@ -29,15 +29,26 @@ export type EventsType = {
   removeListener: (eventName: string, listener: () => mixed) => mixed,
 }
 
+export type HistoryType = Object;
+
 export interface ScriptVersion3Type {
   version: 3;
-  hydrate(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
-  mount(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, events: EventsType, currentApp: AppType): Promise<?void>;
-  onStateChange(events: EventsType, currentApp: AppType): Promise<?void>;
+  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
-export type ScriptType = ScriptVersion3Type;
+export interface ScriptVersion4Type {
+  version: 4;
+  hydrate(container: Element, currentApp: AppType): Promise<?void>;
+  mount(container: Element, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, currentApp: AppType): Promise<?void>;
+  onUpdateStatus(status: string, currentApp: AppType): Promise<?void>;
+  onStateChange(currentApp: AppType): Promise<?void>;
+}
+
+export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
 
 export type SlotType = {
   name: SlotNameType,
