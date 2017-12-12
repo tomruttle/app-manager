@@ -117,7 +117,6 @@ describe('events', () => {
     appManager.init();
 
     windowStub._events.emit(AppManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-
     expect(beforeunloadSpy.calledOnce).to.be.true;
 
     windowStub.history.pushState(null, null, '/app-c');

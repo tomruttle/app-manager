@@ -256,4 +256,15 @@ describe('multi-step browser test', () => {
     expect(mockC.onStateChange.callCount).to.equals(0);
     expect(mockC.unmount.callCount).to.equals(0);
   });
+
+  it('should keep the history state in sync', () => {
+    // $FlowFixMe
+    const state = windowStub.history.getState();
+
+    expect(state).to.deep.equals({
+      data: {},
+      hash: '/app-c',
+      title: null,
+    });
+  });
 });
