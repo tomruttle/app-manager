@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import EventEmitter from 'eventemitter3';
+import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extraneous-dependencies
 
 import WindowStub from '../lib/utils/window-stub';
 

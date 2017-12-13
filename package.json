@@ -75,9 +75,11 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "eventemitter3": "^3.0.0",
     "path-to-regexp": "^2.1.0",
-    "slot-finder": "0.0.2",
+    "slot-finder": "0.0.2"
+  },
+  "optionalDependencies": {
+    "eventemitter3": "^3.0.0",
     "url-parse": "^1.2.0"
   }
 }
