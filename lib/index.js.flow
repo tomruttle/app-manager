@@ -72,7 +72,7 @@ declare export default class AppManager {
   static eventTitles: $Values<typeof eventTitles>;
   static statuses: $Values<typeof statuses>;
 
-  constructor(config: ConfigType, options?: OptionsType): AppManager,
+  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
 
   init: () => Promise<boolean>,
   emit: (eventTitle: $Values<typeof eventTitles>, data: mixed) => void,
