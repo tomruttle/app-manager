@@ -46,7 +46,7 @@ There are four events that `app-manager` handles. Your `script` must provide a h
   * `unmount`: Called when the user browses away from an app, and `scripts` are to be unloaded from the page. Useful to clear up any event listeners, and to reset any mutable state.
     * If you are using React, you will need to call `ReactDOM.unmountComponentAtNode` in order to free up the `slot`.
   * `mount`: Called when you browse to the `appPath` of a new app. The page will not refresh when the new set of `fragments` load the required `scripts`, so any initial state much be fetched by xhr.
-  * `onStateChange`: Called when `history` detects a change in the browser state. This event will calculate if the `app` has changed, and if so, decide which `scripts` to unmount and which to mount in their place.
+  * `onStateChange`: Called when the HTML5 history api is used to change the browser state. This event will calculate if the `app` has changed, and if so, decide which `scripts` to unmount and which to mount in their place.
 
 ## Dependencies
 
@@ -55,12 +55,6 @@ There are four events that `app-manager` handles. Your `script` must provide a h
 This is the same library Express uses to parse route paths, so if you have used Express you should be familiar with the syntax (`/path/:param(valid|options)/:optional?`). `app-manager` uses it to determine which `app` to display, and to extract url parameters.
 
 [https://github.com/pillarjs/path-to-regexp](https://github.com/pillarjs/path-to-regexp)
-
-### history.js
-
-Cross-browser HTML5 history implementation, with a little extra on top (events system, state). Detects changes in browser state and calls the appropriate lifecycle methods in response. The live instance of the `history` object is passed down to each `script` through the lifecycle functions, so your `scripts` can mutate the browser state themselves.
-
-[https://github.com/browserstate/history.js/](https://github.com/browserstate/history.js/)
 
 ### slot-finder
 
@@ -76,11 +70,8 @@ A small script that provides the algorithm to decide which script goes in which 
 type AppNameType = string;
 type SlotNameType = string;
 type FragmentNameType = string;
-
-type AnalyticsErrorType = {
-  event: string,
-  id?: string,
-};
+type EventTitleType = $Values<typeof eventTitles>;
+type StatusType = $Values<typeof statuses>;
 
 type OptionsType = {
   importTimeout?: number,
@@ -92,28 +83,37 @@ type AppType = {
   fragments: Array<FragmentNameType>,
 };
 
-interface HistoryType {
-  pushState(data: ?Object, title?: ?string, href?: string): void;
-  replaceState(data: ?Object, title?: ?string, href?: string): void;
-  getState(): Object;
-  back(): void;
-  forward(): void;
-  events: {
-    bind(event: string, callback: () => mixed): void,
-    unbind(event: string): void,
-    trigger(event: string, data?: mixed): void
-  }
+type EventCallbackType = (...data: Array<mixed>) => mixed;
+type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
+type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+
+type EventsType = {
+  emit: EmitterType,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
+
+type HistoryType = Object;
 
 interface ScriptVersion3Type {
   version: 3;
   hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
   mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, history: HistoryType, currentApp: AppType): boolean;
+  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
   onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
-type ScriptType = ScriptVersion3Type;
+interface ScriptVersion4Type {
+  version: 4;
+  hydrate(container: Element, currentApp: AppType): Promise<?void>;
+  mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  onUpdateStatus(status: StatusType, currentApp: AppType): Promise<?void>;
+  onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+}
+
+type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
 
 type SlotType = {
   name: SlotNameType,
@@ -133,17 +133,18 @@ type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: FragmentType },
 |};
 
-export default class AppManager {
-  static events: typeof events,
-  static statuses: typeof statuses,
+declare export default class AppManager {
+  static eventTitles: typeof eventTitles;
+  static statuses: typeof statuses;
 
-  static triggerEvent: (event: $Values<typeof events>, data: mixed) => void,
-  static bindEvent: (event: $Values<typeof events>, callback: (data: mixed) => mixed) => void,
-  static unbindEvent: (event: $Values<typeof events>) => void,
+  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
 
-  constructor(config: ConfigType, options?: OptionsType): AppManager,
   init: () => Promise<boolean>,
+  emit: EmitterType,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
+
 ```
 
 When you have instantiated the `AppManager` class, call `init()` to initialise the page and `mount` all of the appropriate `scripts`.

@@ -6,6 +6,7 @@ export type AppNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
 export type EventTitleType = $Values<typeof eventTitles>;
+export type StatusType = $Values<typeof statuses>;
 
 export type OptionsType = {
   importTimeout?: number,
@@ -43,7 +44,7 @@ export interface ScriptVersion4Type {
   hydrate(container: Element, currentApp: AppType): Promise<?void>;
   mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
   unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-  onUpdateStatus(status: string, currentApp: AppType): Promise<?void>;
+  onUpdateStatus(status: StatusType, currentApp: AppType): Promise<?void>;
   onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
 }
 
