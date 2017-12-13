@@ -5,11 +5,7 @@ import { eventTitles, statuses } from './constants';
 export type AppNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
-
-export type AnalyticsErrorType = {
-  event: string,
-  id?: string,
-};
+export type EventTitleType = $Values<typeof eventTitles>;
 
 export type OptionsType = {
   importTimeout?: number,
@@ -21,12 +17,15 @@ export type AppType = {
   fragments: Array<FragmentNameType>,
 };
 
-export type EmitterType = (eventName: string, ...data: Array<mixed>) => mixed
+export type EventCallbackType = (...data: Array<mixed>) => mixed;
+export type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
+export type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+export type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
 
 export type EventsType = {
   emit: EmitterType,
-  on: (eventName: string, listener: () => mixed) => mixed,
-  removeListener: (eventName: string, listener: () => mixed) => mixed,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
 
 export type HistoryType = Object;
@@ -42,10 +41,10 @@ export interface ScriptVersion3Type {
 export interface ScriptVersion4Type {
   version: 4;
   hydrate(container: Element, currentApp: AppType): Promise<?void>;
-  mount(container: Element, eventTitle: string, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, eventTitle: string, currentApp: AppType): Promise<?void>;
+  mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
   onUpdateStatus(status: string, currentApp: AppType): Promise<?void>;
-  onStateChange(eventTitle: string, currentApp: AppType): Promise<?void>;
+  onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
@@ -69,13 +68,13 @@ export type ConfigType = {|
 |};
 
 declare export default class AppManager {
-  static eventTitles: $Values<typeof eventTitles>;
-  static statuses: $Values<typeof statuses>;
+  static eventTitles: typeof eventTitles;
+  static statuses: typeof statuses;
 
   constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
 
   init: () => Promise<boolean>,
-  emit: (eventTitle: $Values<typeof eventTitles>, data: mixed) => void,
-  on: (eventTitle: $Values<typeof eventTitles>, callback: (data: mixed) => mixed) => void,
-  removeListener: (event: $Values<typeof eventTitles>) => void,
+  emit: EmitterType,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
