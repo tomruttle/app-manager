@@ -94,16 +94,6 @@ type EventsType = {
   removeListener: RemoveListenerType,
 }
 
-type HistoryType = Object;
-
-interface ScriptVersion3Type {
-  version: 3;
-  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
-}
-
 interface ScriptVersion4Type {
   version: 4;
   hydrate(container: Element, currentApp: AppType): Promise<?void>;
@@ -113,7 +103,7 @@ interface ScriptVersion4Type {
   onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
 }
 
-type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
+type ScriptType = ScriptVersion4Type;
 
 type SlotType = {
   name: SlotNameType,
