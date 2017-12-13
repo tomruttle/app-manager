@@ -42,10 +42,10 @@ export interface ScriptVersion3Type {
 export interface ScriptVersion4Type {
   version: 4;
   hydrate(container: Element, currentApp: AppType): Promise<?void>;
-  mount(container: Element, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, currentApp: AppType): Promise<?void>;
+  mount(container: Element, eventTitle: string, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, eventTitle: string, currentApp: AppType): Promise<?void>;
   onUpdateStatus(status: string, currentApp: AppType): Promise<?void>;
-  onStateChange(currentApp: AppType): Promise<?void>;
+  onStateChange(eventTitle: string, currentApp: AppType): Promise<?void>;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
@@ -75,7 +75,7 @@ declare export default class AppManager {
   constructor(config: ConfigType, options?: OptionsType): AppManager,
 
   init: () => Promise<boolean>,
-  emit: (event: $Values<typeof eventTitles>, data: mixed) => void,
-  on: (event: $Values<typeof eventTitles>, callback: (data: mixed) => mixed) => void,
+  emit: (eventTitle: $Values<typeof eventTitles>, data: mixed) => void,
+  on: (eventTitle: $Values<typeof eventTitles>, callback: (data: mixed) => mixed) => void,
   removeListener: (event: $Values<typeof eventTitles>) => void,
 }
