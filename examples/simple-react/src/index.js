@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+import EventEmitter from 'eventemitter3';
 
 import AppManager from 'app-manager';
 
@@ -13,16 +14,16 @@ const slots = {
   },
 };
 
-const scripts = {
-  FIRST_SCRIPT: {
-    name: 'FIRST_SCRIPT',
+const fragments = {
+  FIRST_FRAGMENT: {
+    name: 'FIRST_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
     load: () => Promise.resolve(firstScript),
   },
 
-  SECOND_SCRIPT: {
-    name: 'SECOND_SCRIPT',
+  SECOND_FRAGMENT: {
+    name: 'SECOND_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
     load: () => Promise.resolve(secondScript),
@@ -33,25 +34,25 @@ const apps = {
   FIRST_APP: {
     name: 'FIRST_APP',
     appPath: '/',
-    scripts: [scripts.FIRST_SCRIPT.name],
+    fragments: [fragments.FIRST_FRAGMENT.name],
   },
 
   SECOND_APP: {
     name: 'SECOND_APP',
     appPath: '/second-app',
-    scripts: [scripts.SECOND_SCRIPT.name],
+    fragments: [fragments.SECOND_FRAGMENT.name],
   },
 };
 
 const config = {
   apps,
   slots,
-  scripts,
+  fragments,
 };
 
-const appManager = new AppManager(config);
+const appManager = new AppManager(config, new EventEmitter());
 
-AppManager.bindEvent(AppManager.events.ERROR, (data) => {
+appManager.on(AppManager.eventTitles.ERROR, (data) => {
   console.error('An error has occurred: ', data);
 });
 

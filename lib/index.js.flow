@@ -1,15 +1,12 @@
 // @flow
 
-import { statuses, events } from './constants';
+import { eventTitles, statuses } from './constants';
 
 export type AppNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
-
-export type AnalyticsErrorType = {
-  event: string,
-  id?: string,
-};
+export type EventTitleType = $Values<typeof eventTitles>;
+export type StatusType = $Values<typeof statuses>;
 
 export type OptionsType = {
   importTimeout?: number,
@@ -21,28 +18,37 @@ export type AppType = {
   fragments: Array<FragmentNameType>,
 };
 
-export interface HistoryType {
-  pushState(data: ?Object, title?: ?string, href?: string): void;
-  replaceState(data: ?Object, title?: ?string, href?: string): void;
-  getState(): Object;
-  back(): void;
-  forward(): void;
-  events: {
-    bind(event: string, callback: () => mixed): void,
-    unbind(event: string): void,
-    trigger(event: string, data?: mixed): void
-  }
+export type EventCallbackType = (...data: Array<mixed>) => mixed;
+export type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
+export type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+export type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+
+export type EventsType = {
+  emit: EmitterType,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
+
+export type HistoryType = Object;
 
 export interface ScriptVersion3Type {
   version: 3;
-  hydrate(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
-  mount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: HTMLDivElement, history: HistoryType, currentApp: AppType): boolean;
+  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
   onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
-export type ScriptType = ScriptVersion3Type;
+export interface ScriptVersion4Type {
+  version: 4;
+  hydrate(container: Element, currentApp: AppType): Promise<?void>;
+  mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  onUpdateStatus(status: StatusType, currentApp: AppType): Promise<?void>;
+  onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+}
+
+export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
 
 export type SlotType = {
   name: SlotNameType,
@@ -63,14 +69,13 @@ export type ConfigType = {|
 |};
 
 declare export default class AppManager {
-  static events: typeof events,
-  static statuses: typeof statuses,
+  static eventTitles: typeof eventTitles;
+  static statuses: typeof statuses;
 
-  static triggerEvent: (event: $Values<typeof events>, data: mixed) => void,
-  static bindEvent: (event: $Values<typeof events>, callback: (data: mixed) => mixed) => void,
-  static unbindEvent: (event: $Values<typeof events>) => void,
-
-  constructor(config: ConfigType, options?: OptionsType): AppManager,
+  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
 
   init: () => Promise<boolean>,
+  emit: EmitterType,
+  on: SubscriberType,
+  removeListener: RemoveListenerType,
 }
