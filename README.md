@@ -64,7 +64,7 @@ A small script that provides the algorithm to decide which script goes in which 
 
 ## API
 
-`app-manager` exports a class `AppManager` whose constructor takes two parameters: `config` and (optionally) `options`:
+`app-manager` exports a class `AppManager` whose constructor takes two parameters: `config`, an `events` module with the same API as the native node.js module, and (optionally) `options`:
 
 ```typescript
 type AppNameType = string;
