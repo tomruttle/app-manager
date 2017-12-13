@@ -38,7 +38,7 @@ describe('events', () => {
 
     appManager.on('am-error', onErrorSpy);
 
-    expect(appManager._status).to.equals('DEFAULT');
+    expect(appManager._status).to.equals('UNINITIALISED');
 
     windowStub.history.pushState({}, null, '/app-b');
 
@@ -60,8 +60,7 @@ describe('events', () => {
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
 
-    expect(onErrorSpy.callCount).to.equals(2);
-    expect(onErrorSpy.args[1][0].title).to.equals('handle_state_change.app_not_ready');
+    expect(onErrorSpy.callCount).to.equals(1);
 
     appManager.removeListener('am-error', onErrorSpy);
 
@@ -72,8 +71,7 @@ describe('events', () => {
     expect(appManager._currentAppName).to.be.null;
     expect(appManager._status).to.equals('ERROR');
 
-    expect(onErrorSpy.callCount).to.equals(2);
-    expect(onErrorSpy.args[1][0].title).to.equals('handle_state_change.app_not_ready');
+    expect(onErrorSpy.callCount).to.equals(1);
   });
 
   it('calling replaceState emits correct events', () => {
