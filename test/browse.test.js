@@ -105,7 +105,7 @@ describe('multi-step browser test', () => {
       fragments,
     };
 
-    windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
+    windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
     const AppManager = initAppManager(windowStub);
 
@@ -263,7 +263,7 @@ describe('multi-step browser test', () => {
 
     expect(state).to.deep.equals({
       data: {},
-      hash: '/app-c',
+      url: '/app-c',
       title: null,
     });
   });

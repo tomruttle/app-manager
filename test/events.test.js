@@ -28,7 +28,7 @@ describe('events', () => {
       fragments: {},
     };
 
-    const windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
+    const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
     const AppManager = initAppManager(windowStub);
 
@@ -75,7 +75,7 @@ describe('events', () => {
   });
 
   it('calling replaceState emits correct events', () => {
-    const windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
+    const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
     const AppManager = initAppManager(windowStub);
 
     const config = { apps: {}, slots: {}, fragments: {} };
@@ -96,7 +96,7 @@ describe('events', () => {
   });
 
   it('resets the history functions before unloading', () => {
-    const windowStub = new WindowStub([{ data: {}, title: null, hash: '/app-a' }]);
+    const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
     const beforeunloadSpy = sinon.spy();
     const pushStateSpy = sinon.spy();
