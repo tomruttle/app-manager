@@ -264,6 +264,7 @@ describe('multi-step browser test', () => {
     expect(state).to.deep.equals({
       data: {},
       url: '/app-c',
+      hash: '/app-c',
       title: null,
     });
   });
