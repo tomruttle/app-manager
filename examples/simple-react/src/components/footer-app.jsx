@@ -17,11 +17,21 @@ type FooterAppState = {
 };
 
 const Footer = styled.div`
-  margin-top: 50px;
+  margin-top: 4em;
 `;
 
 const ScrollableMenu = styled.div`
-  height: 160px;
+  height: 10em;
+`;
+
+const EventItem = styled.li`
+  color: grey;
+  font-size: 0.8em;
+`;
+
+const SmallPre = styled.pre`
+  display: inline-block;
+  margin: 0;
 `;
 
 export default class FooterApp extends Component<FooterAppProps, FooterAppState> {
@@ -44,7 +54,11 @@ export default class FooterApp extends Component<FooterAppProps, FooterAppState>
       <ScrollableMenu className="pure-menu pure-menu-scrollable">
         <ul className="pure-menu-list">
 
-          {this.state.events.map((event: EventType, index: number) => <li className="pure-menu-item" key={event.id}>{this.state.events.length - index}. {event.data}</li>)}
+          {this.state.events.map((event: EventType, index: number) => (
+            <EventItem className="pure-menu-item" key={event.id}>
+              {this.state.events.length - index}. <SmallPre>{event.data}</SmallPre>
+            </EventItem>
+          ))}
 
         </ul>
       </ScrollableMenu>

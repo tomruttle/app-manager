@@ -9,12 +9,15 @@ type SwitcherButtonProps = {
 }
 
 const Button = styled.button`
-  padding: 20px;
-  border-radius: 15px;
-  border: 2px solid #888;
-  background-color: PaleGreen;
+  border: 0;
+  padding: 1em;
+  box-shadow: 1px 1px #ddd;
   font-weight: bold;
-  width: 20em;
+  font-size: 0.8em;
+`;
+
+const RightAlignDiv = styled.div`
+  text-align: right;
 `;
 
 export default class SwitcherButton extends PureComponent<SwitcherButtonProps> {
@@ -23,8 +26,8 @@ export default class SwitcherButton extends PureComponent<SwitcherButtonProps> {
   };
 
   render = () => (
-    <Button onClick={this.handleClick}>
-      Go to {this.props.appName}.
-    </Button>
+    <RightAlignDiv>
+      <Button onClick={this.handleClick}>Go to {this.props.appName}</Button>
+    </RightAlignDiv>
   );
 }

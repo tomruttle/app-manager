@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import SwitcherButton from './switcher-button';
 
 const TextDiv = styled.div`
-  margin-bottom: 50px;
+  color: DarkSlateBlue;
 `;
 
 export default function FirstApp() {
