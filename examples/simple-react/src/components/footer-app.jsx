@@ -5,7 +5,7 @@ import React from 'react';
 export default function FooterApp() {
   return (
     <div>
-      <p>This is Footer App.</p>
+      <h3>Footer App</h3>
     </div>
   );
 }

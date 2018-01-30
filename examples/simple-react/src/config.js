@@ -3,8 +3,14 @@
 import firstScript from './guests/first-script';
 import secondScript from './guests/second-script';
 import footerScript from './guests/footer-script';
+import headerScript from './guests/header-script';
 
 export const slots = {
+  HEADER: {
+    name: 'HEADER',
+    elementClass: 'header-slot',
+  },
+
   MAIN: {
     name: 'MAIN',
     elementClass: 'app-slot',
@@ -17,6 +23,13 @@ export const slots = {
 };
 
 export const fragments = {
+  HEADER_FRAGMENT: {
+    name: 'HEADER_FRAGMENT',
+    slots: [slots.HEADER.name],
+    managed: true,
+    load: async () => headerScript,
+  },
+
   FIRST_FRAGMENT: {
     name: 'FIRST_FRAGMENT',
     slots: [slots.MAIN.name],
@@ -43,13 +56,13 @@ export const apps = {
   FIRST_APP: {
     name: 'FIRST_APP',
     appPath: '/first-app',
-    fragments: [fragments.FIRST_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
+    fragments: [fragments.FIRST_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 
   SECOND_APP: {
     name: 'SECOND_APP',
     appPath: '/second-app',
-    fragments: [fragments.SECOND_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
+    fragments: [fragments.SECOND_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
 

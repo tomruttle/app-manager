@@ -8,7 +8,7 @@ import render from '../utils/render';
 
 import FooterApp from '../components/footer-app';
 
-class FirstScript implements ScriptVersion4Type {
+class FooterScript implements ScriptVersion4Type {
   version = 4;
 
   hydrate = async (container: Element) => {
@@ -30,4 +30,4 @@ class FirstScript implements ScriptVersion4Type {
   };
 }
 
-export default new FirstScript();
+export default new FooterScript();
