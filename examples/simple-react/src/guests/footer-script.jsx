@@ -17,22 +17,18 @@ class FooterScript implements ScriptVersion4Type {
 
   version = 4;
 
-  _getApp = () => (
-    <FooterApp>
-      {(updateEventsCallback) => {
-        this._updateEventsCallback = updateEventsCallback;
-      }}
-    </FooterApp>
-  );
-
-  hydrate = async (container: Element, currentApp: AppType) => {
-    this._currentAppName = currentApp.name;
-    return render(this._getApp(), container);
-  }
-
   mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
     this._currentAppName = currentApp.name;
-    return render(this._getApp(), container);
+
+    const app = (
+      <FooterApp>
+        {(updateEventsCallback) => {
+          this._updateEventsCallback = updateEventsCallback;
+        }}
+      </FooterApp>
+    );
+
+    return render(app, container);
   }
 
   onStateChange = async (eventTitle: EventTitleType, currentApp: AppType) => {

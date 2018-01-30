@@ -14,18 +14,18 @@ class HeaderScript implements ScriptVersion4Type {
 
   version = 4;
 
-  _getApp = (currentApp: AppType) => (
-    <HeaderApp {...currentApp}>
-      {(activeAppCallback, statusCallback) => {
-        this._activeAppCallback = activeAppCallback;
-        this._statusCallback = statusCallback;
-      }}
-    </HeaderApp>
-  );
+  mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
+    const app = (
+      <HeaderApp {...currentApp}>
+        {(activeAppCallback, statusCallback) => {
+          this._activeAppCallback = activeAppCallback;
+          this._statusCallback = statusCallback;
+        }}
+      </HeaderApp>
+    );
 
-  hydrate = async (container: Element, currentApp: AppType) => render(this._getApp(currentApp), container);
-
-  mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => render(this._getApp(currentApp), container);
+    return render(app, container);
+  };
 
   onStateChange = async (eventTitle: string, currentApp: AppType) => {
     if (typeof this._activeAppCallback === 'function') {

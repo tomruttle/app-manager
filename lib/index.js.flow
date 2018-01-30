@@ -41,11 +41,11 @@ export interface ScriptVersion3Type {
 
 export interface ScriptVersion4Type {
   version: 4;
-  hydrate(container: Element, currentApp: AppType): Promise<?void>;
-  mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-  onUpdateStatus(status: StatusType, currentApp: AppType): Promise<?void>;
-  onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
+  hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
+  mount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
+  unmount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
+  onUpdateStatus?: (status: StatusType, currentApp: AppType) => Promise<?void>;
+  onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);

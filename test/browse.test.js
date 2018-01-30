@@ -8,43 +8,37 @@ import WindowStub from '../lib/utils/window-stub';
 
 import initAppManager from '../lib/app-manager';
 
-import type { ScriptVersion3Type, ScriptVersion4Type } from '../lib/index';
-
 describe('multi-step browser test', () => {
   function waitForIO() {
     return new Promise((resolve) => setImmediate(resolve));
   }
 
-  class MockA implements ScriptVersion4Type {
-    version = 4
-    hydrate = sinon.spy()
-    mount = sinon.spy()
-    onStateChange = sinon.spy()
-    onUpdateStatus = sinon.spy()
-    unmount = sinon.spy()
-  }
+  const mockA = {
+    version: 4,
+    hydrate: sinon.spy(),
+    mount: sinon.spy(),
+    onStateChange: sinon.spy(),
+    onUpdateStatus: sinon.spy(),
+    unmount: sinon.spy(),
+  };
 
-  class MockB implements ScriptVersion4Type {
-    version = 4
-    hydrate = sinon.spy()
-    mount = sinon.spy()
-    onStateChange = sinon.spy()
-    onUpdateStatus = sinon.spy()
-    unmount = sinon.spy()
-  }
+  const mockB = {
+    version: 4,
+    hydrate: sinon.spy(),
+    mount: sinon.spy(),
+    onStateChange: sinon.spy(),
+    onUpdateStatus: sinon.spy(),
+    unmount: sinon.spy(),
+  };
 
-  class MockC implements ScriptVersion3Type {
-    version = 3
-    hydrate = sinon.spy()
-    mount = sinon.spy()
-    onStateChange = sinon.spy()
-    onUpdateStatus = sinon.spy()
-    unmount = sinon.spy()
-  }
-
-  const mockA: ScriptVersion4Type = new MockA();
-  const mockB: ScriptVersion4Type = new MockB();
-  const mockC: ScriptVersion3Type = new MockC();
+  const mockC = {
+    version: 3,
+    hydrate: sinon.spy(),
+    mount: sinon.spy(),
+    onStateChange: sinon.spy(),
+    onUpdateStatus: sinon.spy(),
+    unmount: sinon.spy(),
+  };
 
   const apps = {
     APP_A: {
@@ -78,14 +72,14 @@ describe('multi-step browser test', () => {
       name: 'SCRIPT_A',
       slots: ['APP'],
       managed: true,
-      load: () => Promise.resolve(mockA),
+      load: async () => mockA,
     },
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
       slots: ['APP'],
       managed: true,
-      load: () => Promise.resolve(mockB),
+      load: async () => mockB,
     },
 
     SCRIPT_C: {
