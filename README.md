@@ -20,7 +20,7 @@ Each app must have a unique `appPath` (analogous to an express route) which is u
 
 An `app` also has an ordered array of `fragments` that should be mounted onto the page and initialised when the user browses to the `appPath`.
 
-### Script
+### Fragment
 
 A `fragment` is the container for your `script`. It includes:
 
