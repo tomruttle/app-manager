@@ -16,6 +16,8 @@ module.exports = {
   },
   devServer: {
     open: true,
+    openPage: 'first-app',
+    historyApiFallback: true,
   },
   node: {
     console: true,

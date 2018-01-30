@@ -33,7 +33,7 @@ const fragments = {
 const apps = {
   FIRST_APP: {
     name: 'FIRST_APP',
-    appPath: '/',
+    appPath: '/first-app',
     fragments: [fragments.FIRST_FRAGMENT.name],
   },
 
