@@ -1,6 +1,15 @@
+// @flow
+
 import React from 'react';
 
-export default function SecondApp({ currentApp, action }) {
+import type { AppType } from '../../../../lib/index';
+
+type SecondAppProps = {
+  currentApp: AppType,
+  action: string,
+};
+
+export default function SecondApp({ currentApp, action }: SecondAppProps) {
   return (
     <div>
       <p>This is {currentApp.name}. It has just been {action}</p>

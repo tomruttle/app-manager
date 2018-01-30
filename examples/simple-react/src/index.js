@@ -1,8 +1,10 @@
+// @flow
+
 import ReactDOM from 'react-dom';
 import React from 'react';
 import EventEmitter from 'eventemitter3';
 
-import AppManager from 'app-manager';
+import AppManager from '../../../dist/app-manager';
 
 import firstScript from './first/first-script';
 import secondScript from './second/second-script';
