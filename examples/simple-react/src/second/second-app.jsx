@@ -13,9 +13,10 @@ export default function SecondApp({ currentApp, action }: SecondAppProps) {
   return (
     <div>
       <p>This is {currentApp.name}. It has just been {action}</p>
-      <button
-        onClick={() => window.history.pushState({}, 'First App', '/')}
-      >Click me to switch</button>
+
+      <button onClick={() => window.history.pushState({}, 'First App', '/')} >
+        Click me to switch
+      </button>
     </div>
   );
 }

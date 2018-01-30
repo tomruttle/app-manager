@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
+    "lint": "eslint --ext .js,.jsx .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -28,6 +29,7 @@
   },
   "dependencies": {
     "app-manager": "^0.16.5",
+    "eventemitter3": "^3.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   }
