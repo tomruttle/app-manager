@@ -12,7 +12,7 @@ module.exports = {
   devtool: 'inline-source-map',
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: ['node_modules', path.resolve(__dirname, '..', '..', 'dist')],
+    modules: ['node_modules'],
   },
   devServer: {
     open: true,
