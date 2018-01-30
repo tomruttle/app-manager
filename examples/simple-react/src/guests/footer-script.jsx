@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import shortId from 'shortid';
 
-import type { ScriptVersion4Type, StatusType, AppType, EventTitleType } from '../../../../lib/index';
+import type { ScriptVersion4Type, AppType, EventTitleType } from '../../../../lib/index';
 import type { EventType } from '../components/footer-app';
 
 import render from '../utils/render';
@@ -16,6 +16,17 @@ class FooterScript implements ScriptVersion4Type {
   _updateEventsCallback: ?(event: EventType) => void = null;
 
   version = 4;
+
+  onError = async (errorDetails: string) => {
+    const eventId = shortId.generate();
+
+    if (typeof this._updateEventsCallback === 'function') {
+      this._updateEventsCallback({
+        id: eventId,
+        data: errorDetails,
+      });
+    }
+  };
 
   mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
     this._currentAppName = currentApp.name;
@@ -38,19 +49,6 @@ class FooterScript implements ScriptVersion4Type {
       this._updateEventsCallback({
         id: eventId,
         data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${currentApp.name} MOUNTED`,
-      });
-    }
-
-    this._currentAppName = currentApp.name;
-  };
-
-  onUpdateStatus = async (status: StatusType, currentApp: AppType) => {
-    const eventId = shortId.generate();
-
-    if (status === 'ERROR' && typeof this._updateEventsCallback === 'function') {
-      this._updateEventsCallback({
-        id: eventId,
-        data: 'ERROR OCCURRED',
       });
     }
 
