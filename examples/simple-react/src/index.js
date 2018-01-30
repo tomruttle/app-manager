@@ -19,14 +19,14 @@ const fragments = {
     name: 'FIRST_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: () => Promise.resolve(firstScript),
+    load: async () => firstScript,
   },
 
   SECOND_FRAGMENT: {
     name: 'SECOND_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: () => Promise.resolve(secondScript),
+    load: async () => secondScript,
   },
 };
 
