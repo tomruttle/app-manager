@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
 type SwitcherButtonProps = {
@@ -17,10 +17,14 @@ const Button = styled.button`
   width: 20em;
 `;
 
-export default function SwitcherButton({ appName, appPath }: SwitcherButtonProps) {
-  return (
-    <Button onClick={() => window.history.pushState({}, appName, appPath)}>
-      Go to {appName}.
+export default class SwitcherButton extends PureComponent<SwitcherButtonProps> {
+  handleClick = () => {
+    window.history.pushState({}, this.props.appName, this.props.appPath);
+  };
+
+  render = () => (
+    <Button onClick={this.handleClick}>
+      Go to {this.props.appName}.
     </Button>
   );
 }
