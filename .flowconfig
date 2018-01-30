@@ -1,5 +1,3 @@
 [ignore]
 <PROJECT_ROOT>/examples
 
-[options]
-unsafe.enable_getters_and_setters=true
