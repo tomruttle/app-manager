@@ -3,18 +3,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import type { ScriptVersion4Type, AppType, EventTitleType, StatusType } from '../../../../lib/index';
+import type { ScriptVersion5Type, StateType } from '../../../../lib/index';
 
 import render from '../utils/render';
 import HeaderApp from '../components/header-app';
 
-class HeaderScript implements ScriptVersion4Type {
+class HeaderScript implements ScriptVersion5Type {
   _activeAppCallback: ?(appName: string) => void = null;
   _statusCallback: ?(status: string) => void = null;
 
-  version = 4;
+  version = 5;
 
-  mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
+  render = async (container: Element, { currentApp }: StateType) => {
     const app = (
       <HeaderApp {...currentApp}>
         {(activeAppCallback, statusCallback) => {
@@ -27,19 +27,19 @@ class HeaderScript implements ScriptVersion4Type {
     return render(app, container);
   };
 
-  onStateChange = async (eventTitle: string, currentApp: AppType) => {
+  onStateChange = async ({ currentApp }: StateType) => {
     if (typeof this._activeAppCallback === 'function') {
       this._activeAppCallback(currentApp.name);
     }
   };
 
-  onUpdateStatus = async (status: StatusType) => {
-    if (typeof this._statusCallback === 'function') {
-      this._statusCallback(status);
+  onUpdateStatus = async ({ appStatus }: StateType) => {
+    if (appStatus && typeof this._statusCallback === 'function') {
+      this._statusCallback(appStatus);
     }
   };
 
-  unmount = async (container: Element) => { ReactDOM.unmountComponentAtNode(container); };
+  unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new HeaderScript();

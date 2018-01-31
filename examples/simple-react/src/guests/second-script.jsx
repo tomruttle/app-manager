@@ -7,9 +7,9 @@ import SecondApp from '../components/second-app';
 import render from '../utils/render';
 
 export default {
-  version: 4,
+  version: 5,
 
   mount: async (container: Element) => render(<SecondApp />, container),
 
-  unmount: async (container: Element) => { ReactDOM.unmountComponentAtNode(container); },
+  unmount: async (container: Element) => ReactDOM.unmountComponentAtNode(container),
 };

@@ -29,6 +29,13 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
+export type StateType = {
+  eventTitle?: EventTitleType,
+  prevApp?: AppType,
+  currentApp: AppType,
+  appStatus?: string,
+};
+
 export type HistoryType = Object;
 
 export interface ScriptVersion3Type {
@@ -47,13 +54,6 @@ export interface ScriptVersion4Type {
   onUpdateStatus?: (status: StatusType, currentApp: AppType) => Promise<?void>;
   onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
 }
-
-type StateType = {
-  eventTitle?: EventTitleType,
-  prevApp?: AppType,
-  currentApp?: AppType,
-  appStatus?: string,
-};
 
 export interface ScriptVersion5Type {
   version: 5;

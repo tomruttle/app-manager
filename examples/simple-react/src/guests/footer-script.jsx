@@ -4,18 +4,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import shortId from 'shortid';
 
-import type { ScriptVersion4Type, AppType, EventTitleType } from '../../../../lib/index';
+import type { ScriptVersion5Type, StateType } from '../../../../lib/index';
 import type { EventType } from '../components/footer-app';
 
 import render from '../utils/render';
 
 import FooterApp from '../components/footer-app';
 
-class FooterScript implements ScriptVersion4Type {
+class FooterScript implements ScriptVersion5Type {
   _currentAppName: ?string = null;
   _updateEventsCallback: ?(event: EventType) => void = null;
 
-  version = 4;
+  version = 5;
 
   onError = async (errorDetails: string) => {
     const eventId = shortId.generate();
@@ -28,7 +28,7 @@ class FooterScript implements ScriptVersion4Type {
     }
   };
 
-  mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
+  render = async (container: Element, { currentApp }: StateType) => {
     this._currentAppName = currentApp.name;
 
     const app = (
@@ -42,7 +42,7 @@ class FooterScript implements ScriptVersion4Type {
     return render(app, container);
   }
 
-  onStateChange = async (eventTitle: EventTitleType, currentApp: AppType) => {
+  onStateChange = async ({ currentApp }: StateType) => {
     const eventId = shortId.generate();
 
     if (typeof this._updateEventsCallback === 'function') {
@@ -55,9 +55,7 @@ class FooterScript implements ScriptVersion4Type {
     this._currentAppName = currentApp.name;
   };
 
-  unmount = async (container: Element) => {
-    ReactDOM.unmountComponentAtNode(container);
-  };
+  unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new FooterScript();
