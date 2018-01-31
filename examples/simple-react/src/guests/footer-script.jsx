@@ -4,18 +4,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import shortId from 'shortid';
 
-import type { ScriptVersion4Type, AppType, EventTitleType } from '../../../../lib/index';
+import type { ScriptVersion5Type, StateType } from '../../../../lib/index';
 import type { EventType } from '../components/footer-app';
 
 import render from '../utils/render';
 
 import FooterApp from '../components/footer-app';
 
-class FooterScript implements ScriptVersion4Type {
+class FooterScript implements ScriptVersion5Type {
   _currentAppName: ?string = null;
   _updateEventsCallback: ?(event: EventType) => void = null;
 
-  version = 4;
+  version = 5;
 
   onError = async (errorDetails: string) => {
     const eventId = shortId.generate();
@@ -28,10 +28,10 @@ class FooterScript implements ScriptVersion4Type {
     }
   };
 
-  mount = async (container: Element, eventTitle: EventTitleType, currentApp: AppType) => {
-    this._currentAppName = currentApp.name;
+  render = async (container: Element, { app }: StateType) => {
+    this._currentAppName = app.name;
 
-    const app = (
+    const footerApp = (
       <FooterApp>
         {(updateEventsCallback) => {
           this._updateEventsCallback = updateEventsCallback;
@@ -39,25 +39,23 @@ class FooterScript implements ScriptVersion4Type {
       </FooterApp>
     );
 
-    return render(app, container);
+    return render(footerApp, container);
   }
 
-  onStateChange = async (eventTitle: EventTitleType, currentApp: AppType) => {
+  onStateChange = async ({ app }: StateType) => {
     const eventId = shortId.generate();
 
     if (typeof this._updateEventsCallback === 'function') {
       this._updateEventsCallback({
         id: eventId,
-        data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${currentApp.name} MOUNTED`,
+        data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${app.name} MOUNTED`,
       });
     }
 
-    this._currentAppName = currentApp.name;
+    this._currentAppName = app.name;
   };
 
-  unmount = async (container: Element) => {
-    ReactDOM.unmountComponentAtNode(container);
-  };
+  unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
 }
 
 export default new FooterScript();

@@ -1,20 +1,51 @@
 // @flow
 
-import React from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import SwitcherButton from './switcher-button';
+type SwitcherButtonProps = {
+  appName: string,
+  appPath: string,
+}
 
-const TextDiv = styled.div`
-  color: Maroon;
+const Button = styled.button`
+  border: 0;
+  padding: 1em;
+  box-shadow: 1px 1px #ddd;
+  font-weight: bold;
+  font-size: 0.8em;
 `;
 
-export default function SecondApp() {
+const RightAlignDiv = styled.div`
+  text-align: right;
+`;
+
+const TextDiv = styled.div`
+  color: ${({ colour }) => colour || 'Maroon'};
+`;
+
+class SwitcherButton extends PureComponent<SwitcherButtonProps> {
+  handleClick = () => {
+    window.history.pushState({}, this.props.appName, this.props.appPath);
+  };
+
+  render = () => (
+    <RightAlignDiv>
+      <Button onClick={this.handleClick}>Go to {this.props.appName}</Button>
+    </RightAlignDiv>
+  );
+}
+
+type SecondAppProps = {
+  colour: ?string,
+};
+
+export default function SecondApp({ colour }: SecondAppProps) {
   return (
     <div>
       <h3>Second App</h3>
 
-      <TextDiv>
+      <TextDiv colour={colour}>
         <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
 
         <ul>

@@ -29,6 +29,17 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
+export type ParamsType = { [paramName: string]: string };
+
+export type StateType = {|
+  status: ?string,
+  event: ?string,
+  path: string,
+  params: ParamsType,
+  prevApp: ?AppType,
+  app: AppType,
+|};
+
 export type HistoryType = Object;
 
 export interface ScriptVersion3Type {
@@ -48,11 +59,20 @@ export interface ScriptVersion4Type {
   onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
 }
 
-export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type);
+export interface ScriptVersion5Type {
+  version: 5;
+  hydrate?: (container: Element, state: StateType) => mixed;
+  render?: (container: Element, state: StateType) => mixed;
+  unmount?: (container: Element, state: StateType) => mixed;
+  onUpdateStatus?: (state: StateType) => mixed;
+  onStateChange?: (state: StateType) => mixed;
+}
+
+export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
 export type SlotType = {
   name: SlotNameType,
-  elementClass: string,
+  querySelector: ?string,
 };
 
 export type FragmentType = {
