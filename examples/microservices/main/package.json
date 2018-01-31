@@ -1,0 +1,36 @@
+{
+  "name": "app-manager-examples-microservices",
+  "version": "0.0.1",
+  "description": "A simple react example for app-manager",
+  "main": "src/server/index.js",
+  "scripts": {
+    "start": "babel-node src/server/index.js",
+    "bundle": "webpack",
+    "bundle:watch": "webpack --watch",
+    "lint": "eslint --ext .js,.jsx .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-flowtype": "^2.42.0",
+    "eslint-plugin-import": "^2.8.0",
+    "flow-bin": "^0.64.0",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "app-manager": "^0.16.5",
+    "eventemitter3": "^3.0.0",
+    "express": "^4.16.2"
+  }
+}
