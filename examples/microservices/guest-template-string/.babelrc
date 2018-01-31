@@ -1,0 +1,7 @@
+{
+  "presets": [
+    ["env", { "targets": { "node": "current" } }],
+    "flow",
+  ],
+  "plugins": ["transform-class-properties", "transform-runtime"]
+}

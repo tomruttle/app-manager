@@ -1,0 +1,14 @@
+[ignore]
+
+[include]
+../../../lib/
+../../../dist/app-manager.js
+../../../node_modules
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]
