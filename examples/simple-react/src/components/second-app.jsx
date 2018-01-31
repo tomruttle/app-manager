@@ -21,7 +21,7 @@ const RightAlignDiv = styled.div`
 `;
 
 const TextDiv = styled.div`
-  color: Maroon;
+  color: ${({ colour }) => colour || 'Maroon'};
 `;
 
 class SwitcherButton extends PureComponent<SwitcherButtonProps> {
@@ -36,12 +36,16 @@ class SwitcherButton extends PureComponent<SwitcherButtonProps> {
   );
 }
 
-export default function SecondApp() {
+type SecondAppProps = {
+  colour: ?string,
+};
+
+export default function SecondApp({ colour }: SecondAppProps) {
   return (
     <div>
       <h3>Second App</h3>
 
-      <TextDiv>
+      <TextDiv colour={colour}>
         <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
 
         <ul>

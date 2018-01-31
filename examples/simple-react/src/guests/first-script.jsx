@@ -1,9 +1,11 @@
 // @flow
 
-export default {
+import type { ScriptVersion5Type } from '../../../../lib/index';
+
+const firstScript: ScriptVersion5Type = {
   version: 5,
 
-  render: (container: Element) => {
+  render: (container, _state) => {
     /* eslint-disable no-param-reassign */
 
     container.innerHTML = /* @html */`
@@ -29,3 +31,5 @@ export default {
     `;
   },
 };
+
+export default firstScript;

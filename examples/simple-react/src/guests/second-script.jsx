@@ -3,13 +3,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import type { ScriptVersion5Type } from '../../../../lib/index';
+
 import SecondApp from '../components/second-app';
 import render from '../utils/render';
 
-export default {
+const secondScript: ScriptVersion5Type = {
   version: 5,
 
-  render: async (container: Element) => render(<SecondApp />, container),
+  render: async (container, { params }) => render(<SecondApp colour={params.colour} />, container),
 
-  unmount: async (container: Element) => ReactDOM.unmountComponentAtNode(container),
+  unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
 };
+
+export default secondScript;

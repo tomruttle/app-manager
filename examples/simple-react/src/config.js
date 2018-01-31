@@ -61,7 +61,7 @@ export const apps = {
 
   SECOND_APP: {
     name: 'SECOND_APP',
-    appPath: '/second-app',
+    appPath: '/second-app/:colour?',
     fragments: [fragments.SECOND_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
