@@ -14,9 +14,9 @@ describe('multi-step browser test', () => {
   }
 
   const mockA = {
-    version: 4,
+    version: 5,
     hydrate: sinon.spy(),
-    mount: sinon.spy(),
+    render: sinon.spy(),
     onStateChange: sinon.spy(),
     onUpdateStatus: sinon.spy(),
     unmount: sinon.spy(),
@@ -114,7 +114,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(0);
+    expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(0);
@@ -134,7 +134,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(0);
+    expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(2);
     expect(mockA.unmount.callCount).to.equals(1);
@@ -154,7 +154,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(0);
+    expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(2);
     expect(mockA.unmount.callCount).to.equals(1);
@@ -174,7 +174,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(0);
+    expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(2);
     expect(mockA.unmount.callCount).to.equals(1);
@@ -194,7 +194,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(1);
+    expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(3);
     expect(mockA.unmount.callCount).to.equals(1);
@@ -214,7 +214,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(1);
+    expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(4);
     expect(mockA.unmount.callCount).to.equals(2);
@@ -234,7 +234,7 @@ describe('multi-step browser test', () => {
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
-    expect(mockA.mount.callCount).to.equals(1);
+    expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.onUpdateStatus.callCount).to.equals(4);
     expect(mockA.unmount.callCount).to.equals(2);
