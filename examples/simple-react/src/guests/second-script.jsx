@@ -9,7 +9,7 @@ import render from '../utils/render';
 export default {
   version: 5,
 
-  mount: async (container: Element) => render(<SecondApp />, container),
+  render: async (container: Element) => render(<SecondApp />, container),
 
   unmount: async (container: Element) => ReactDOM.unmountComponentAtNode(container),
 };

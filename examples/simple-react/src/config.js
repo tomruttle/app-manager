@@ -8,17 +8,17 @@ import headerScript from './guests/header-script';
 export const slots = {
   HEADER: {
     name: 'HEADER',
-    elementClass: 'header-slot',
+    querySelector: '.header-slot',
   },
 
   MAIN: {
     name: 'MAIN',
-    elementClass: 'app-slot',
+    querySelector: '.app-slot',
   },
 
   FOOTER: {
     name: 'FOOTER',
-    elementClass: 'footer-slot',
+    querySelector: '.footer-slot',
   },
 };
 

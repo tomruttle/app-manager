@@ -68,7 +68,7 @@ export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersio
 
 export type SlotType = {
   name: SlotNameType,
-  elementClass: string,
+  querySelector: ?string,
 };
 
 export type FragmentType = {

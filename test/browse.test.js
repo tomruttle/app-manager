@@ -63,7 +63,7 @@ describe('multi-step browser test', () => {
   const slots = {
     APP: {
       name: 'APP',
-      elementClass: 'fragment',
+      querySelector: '.fragment',
     },
   };
 
