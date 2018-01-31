@@ -14,9 +14,9 @@ class HeaderScript implements ScriptVersion5Type {
 
   version = 5;
 
-  render = async (container: Element, { currentApp }: StateType) => {
-    const app = (
-      <HeaderApp {...currentApp}>
+  render = async (container: Element, { app }: StateType) => {
+    const headerApp = (
+      <HeaderApp {...app}>
         {(activeAppCallback, statusCallback) => {
           this._activeAppCallback = activeAppCallback;
           this._statusCallback = statusCallback;
@@ -24,18 +24,18 @@ class HeaderScript implements ScriptVersion5Type {
       </HeaderApp>
     );
 
-    return render(app, container);
+    return render(headerApp, container);
   };
 
-  onStateChange = async ({ currentApp }: StateType) => {
+  onStateChange = async ({ app }: StateType) => {
     if (typeof this._activeAppCallback === 'function') {
-      this._activeAppCallback(currentApp.name);
+      this._activeAppCallback(app.name);
     }
   };
 
-  onUpdateStatus = async ({ appStatus }: StateType) => {
-    if (appStatus && typeof this._statusCallback === 'function') {
-      this._statusCallback(appStatus);
+  onUpdateStatus = async ({ status }: StateType) => {
+    if (status && typeof this._statusCallback === 'function') {
+      this._statusCallback(status);
     }
   };
 

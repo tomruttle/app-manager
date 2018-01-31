@@ -29,12 +29,16 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
-export type StateType = {
-  eventTitle?: EventTitleType,
-  prevApp?: AppType,
-  currentApp: AppType,
-  appStatus?: string,
-};
+export type ParamsType = { [paramName: string]: string };
+
+export type StateType = {|
+  status: ?string,
+  event: ?string,
+  path: string,
+  params: ParamsType,
+  prevApp: ?AppType,
+  app: AppType,
+|};
 
 export type HistoryType = Object;
 

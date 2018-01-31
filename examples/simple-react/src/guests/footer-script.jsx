@@ -28,10 +28,10 @@ class FooterScript implements ScriptVersion5Type {
     }
   };
 
-  render = async (container: Element, { currentApp }: StateType) => {
-    this._currentAppName = currentApp.name;
+  render = async (container: Element, { app }: StateType) => {
+    this._currentAppName = app.name;
 
-    const app = (
+    const footerApp = (
       <FooterApp>
         {(updateEventsCallback) => {
           this._updateEventsCallback = updateEventsCallback;
@@ -39,20 +39,20 @@ class FooterScript implements ScriptVersion5Type {
       </FooterApp>
     );
 
-    return render(app, container);
+    return render(footerApp, container);
   }
 
-  onStateChange = async ({ currentApp }: StateType) => {
+  onStateChange = async ({ app }: StateType) => {
     const eventId = shortId.generate();
 
     if (typeof this._updateEventsCallback === 'function') {
       this._updateEventsCallback({
         id: eventId,
-        data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${currentApp.name} MOUNTED`,
+        data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${app.name} MOUNTED`,
       });
     }
 
-    this._currentAppName = currentApp.name;
+    this._currentAppName = app.name;
   };
 
   unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
