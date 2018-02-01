@@ -15,7 +15,7 @@ module.exports = {
       name: 'EXAMPLE1_FRAGMENT',
       slots: ['APP'],
       managed: true,
-      load() {
+      loadScript() {
         return {
           version: 5,
           render(container) { container.innerHTML = example1Markup; },
@@ -30,7 +30,7 @@ module.exports = {
       name: 'EXAMPLE2_FRAGMENT',
       slots: ['APP'],
       managed: true,
-      load() {
+      loadScript() {
         return {
           version: 5,
           render(container) { container.innerHTML = example2Markup; },

@@ -47,7 +47,7 @@ const fragments = {
     name: 'HEADER_FRAGMENT',
     slots: [slots.HEADER.name],
     managed: true,
-    load: loadScriptFromWindow('header'),
+    loadScript: loadScriptFromWindow('header'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8081/app');
       const { markup, styles } = res.body;
@@ -62,7 +62,7 @@ const fragments = {
     name: 'GUEST_TEMPLATE_STRING_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: loadScriptFromWindow('guest-template-string'),
+    loadScript: loadScriptFromWindow('guest-template-string'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8084/app');
       return /* @html */`
@@ -75,7 +75,7 @@ const fragments = {
     name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: loadScriptFromWindow('guest-react'),
+    loadScript: loadScriptFromWindow('guest-react'),
     getMarkup: async ({ params }: StateType) => {
       const res = await superagent(`http://localhost:8083/app${params.colour ? `/${params.colour}` : ''}`);
       const { markup, styles } = res.body;
@@ -90,7 +90,7 @@ const fragments = {
     name: 'FOOTER_FRAGMENT',
     slots: [slots.FOOTER.name],
     managed: true,
-    load: loadScriptFromWindow('footer'),
+    loadScript: loadScriptFromWindow('footer'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8082/app');
       const { markup, styles } = res.body;

@@ -9,7 +9,7 @@ export type EventType = {
 }
 
 type FooterAppProps = {
-  children: (updateEvents: (event: EventType) => void) => void,
+  children?: (updateEvents: (event: EventType) => void) => void,
 };
 
 type FooterAppState = {
@@ -40,7 +40,11 @@ export default class FooterApp extends Component<FooterAppProps, FooterAppState>
   };
 
   componentDidMount = () => {
-    this.props.children(this.updateEvents);
+    const { children } = this.props;
+
+    if (typeof children === 'function') {
+      children(this.updateEvents);
+    }
   }
 
   updateEvents = (event: EventType) => {

@@ -69,14 +69,14 @@ describe('multi-step browser test', () => {
       name: 'SCRIPT_A',
       slots: ['APP'],
       managed: true,
-      load: async () => mockA,
+      loadScript: async () => mockA,
     },
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
       slots: ['APP'],
       managed: true,
-      load: async () => mockB,
+      loadScript: async () => mockB,
     },
 
     SCRIPT_C: {

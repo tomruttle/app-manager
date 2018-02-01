@@ -39,15 +39,15 @@ class FooterScript implements ScriptVersion5Type {
 
   onStateChange = async ({ app, prevApp }: StateType) => {
     const eventId = shortId.generate();
+    const callback = this._updateEventsCallback;
 
-    if (typeof this._updateEventsCallback === 'function') {
-      this._updateEventsCallback({
-        id: eventId,
-        data: `${prevApp ? `${prevApp.name} UNMOUNTED AND ` : ''}${app.name} MOUNTED`,
-      });
+    if (typeof callback === 'function') {
+      if (prevApp && prevApp.name !== app.name) {
+        callback({ id: eventId, data: `${prevApp.name} UNMOUNTED AND ${app.name} MOUNTED` });
+      } else {
+        callback({ id: eventId, data: `${app.name} UPDATED` });
+      }
     }
-
-    this._currentAppName = app.name;
   };
 
   unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
