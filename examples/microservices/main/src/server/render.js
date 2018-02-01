@@ -1,6 +1,6 @@
 // @flow
 
-import AppManagerServer from '../../../../../es5/server';
+import AppManagerServer from '../../../../../lib/server';
 
 import config from '../common/config';
 
@@ -13,7 +13,9 @@ export default async function thing(path: string) {
   const getMarkupPromises = Object.keys(appFragments).map(async (slotName) => {
     const fragmentName = appFragments[slotName];
     const fragment = config.fragments[fragmentName];
-    const markup = await fragment.getMarkup();
+
+    const markup = typeof fragment.getMarkup === 'function' ? await fragment.getMarkup() : '';
+
     return { slotName, markup };
   });
 

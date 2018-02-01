@@ -2,7 +2,7 @@
 
 import superagent from 'superagent';
 
-export const slots = {
+const slots = {
   HEADER: {
     name: 'HEADER',
     querySelector: '.header-slot',
@@ -19,7 +19,7 @@ export const slots = {
   },
 };
 
-export const fragments = {
+const fragments = {
   HEADER_FRAGMENT: {
     name: 'HEADER_FRAGMENT',
     slots: [slots.HEADER.name],
@@ -65,7 +65,7 @@ export const fragments = {
   },
 };
 
-export const apps = {
+const apps = {
   GUEST_TEMPLATE_STRING_APP: {
     name: 'GUEST_TEMPLATE_STRING_APP',
     appPath: '/apps/guest-template-string',

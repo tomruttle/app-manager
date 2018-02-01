@@ -47,14 +47,14 @@ export default class HeaderApp extends Component<HeaderAppProps, HeaderAppState>
       <div className="pure-menu pure-menu-horizontal">
         <ul className="pure-menu-list">
           <li className={`pure-menu-item ${this.state.activeAppName === 'FIRST_APP' ? 'pure-menu-selected' : ''} ${this.state.appStatus === 'LOADING' ? 'pure-menu-disabled' : ''}`}>
-            <a href="/first-app" onClick={this.handleClick} className="pure-menu-link">
-              First App
+            <a href="/apps/guest-template-string" onClick={this.handleClick} className="pure-menu-link">
+              Guest Template String
             </a>
           </li>
 
           <li className={`pure-menu-item ${this.state.activeAppName === 'SECOND_APP' ? 'pure-menu-selected' : ''} ${this.state.appStatus === 'LOADING' ? 'pure-menu-disabled' : ''}`}>
-            <a href="/second-app" onClick={this.handleClick} className="pure-menu-link">
-              SecondApp
+            <a href="/apps/guest-react" onClick={this.handleClick} className="pure-menu-link">
+              Guest React
             </a>
           </li>
         </ul>

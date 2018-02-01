@@ -8,7 +8,7 @@ type SwitcherButtonProps = {
   appPath: string,
 }
 
-const Button = styled.button`
+const Button = styled.a`
   border: 0;
   padding: 1em;
   box-shadow: 1px 1px #ddd;
@@ -31,19 +31,19 @@ class SwitcherButton extends PureComponent<SwitcherButtonProps> {
 
   render = () => (
     <RightAlignDiv>
-      <Button onClick={this.handleClick}>Go to {this.props.appName}</Button>
+      <Button onClick={this.handleClick} href={this.props.appPath}>Go to {this.props.appName}</Button>
     </RightAlignDiv>
   );
 }
 
-type SecondAppProps = {
+type GuestReactProps = {
   colour: ?string,
 };
 
-export default function SecondApp({ colour }: SecondAppProps) {
+export default function GuestReact({ colour }: GuestReactProps) {
   return (
     <div>
-      <h3>Second App</h3>
+      <h3>Guest React</h3>
 
       <TextDiv colour={colour}>
         <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
@@ -61,7 +61,7 @@ export default function SecondApp({ colour }: SecondAppProps) {
         <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis.</p>
       </TextDiv>
 
-      <SwitcherButton appName="First App" appPath="/first-app" />
+      <SwitcherButton appName="Guest Template String" appPath="/apps/guest-template-string" />
     </div>
   );
 }
