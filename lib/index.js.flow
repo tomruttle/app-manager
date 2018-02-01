@@ -70,18 +70,18 @@ export interface ScriptVersion5Type {
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
-export type SlotType = {|
+export type SlotType = {
   name: SlotNameType,
   querySelector: ?string,
-|};
+};
 
-export type FragmentType = {|
+export type FragmentType = {
   name: FragmentNameType,
   slots: Array<SlotNameType>,
   managed: boolean,
   loadScript?: (state: StateType) => Promise<ScriptType>,
   getMarkup?: (state: StateType) => Promise<string>,
-|};
+};
 
 export type ConfigType = {|
   apps: { [appName: AppNameType]: AppType },
