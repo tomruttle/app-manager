@@ -3,17 +3,21 @@
 import express from 'express';
 import path from 'path';
 
-import render from './render';
+import AppManagerServer from '../../../../../lib/server';
+
+import config from '../common/config';
 import layout from './layout';
 
 const PORT_NUMBER = 8080;
 
 const app = express();
 
+const appManagerServer = new AppManagerServer(config);
+
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/apps/*', async (req, res) => {
-  const renderedMarkup = await render(req.originalUrl);
+  const renderedMarkup = await appManagerServer.init(req.originalUrl);
   const markup = layout(renderedMarkup);
   return res.send(markup);
 });

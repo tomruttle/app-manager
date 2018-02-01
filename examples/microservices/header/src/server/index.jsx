@@ -4,6 +4,7 @@ import express from 'express';
 import path from 'path';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
 
 import HeaderApp from '../common/app';
 
@@ -20,8 +21,11 @@ app.use((req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/app', (req, res) => {
-  const markup = ReactDOM.renderToString(<HeaderApp />);
-  return res.send(markup);
+  const sheet = new ServerStyleSheet();
+  const markup = ReactDOM.renderToString(sheet.collectStyles(<HeaderApp />));
+  const styles = sheet.getStyleTags();
+
+  return res.json({ markup, styles });
 });
 
 app.listen(PORT_NUMBER, () => {

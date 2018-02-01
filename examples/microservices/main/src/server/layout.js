@@ -13,21 +13,15 @@ export default function getLayout(renderedMarkup: { [slotName: string]: string }
 
       <body>
         <div class="pure-g">
-          <div class="pure-u-1-3"></div>
-          <div class="pure-u-1-3 header-slot">${renderedMarkup.HEADER}</div>
-          <div class="pure-u-1-3"></div>
+          <div class="pure-u-2-5" style="margin: auto">${renderedMarkup.HEADER}</div>
         </div>
 
         <div class="pure-g">
-          <div class="pure-u-1-3"></div>
-          <div class="pure-u-1-3 app-slot">${renderedMarkup.MAIN}</div>
-          <div class="pure-u-1-3"></div>
+          <div class="pure-u-2-5" style="margin: auto">${renderedMarkup.MAIN}</div>
         </div>
 
         <div class="pure-g">
-          <div class="pure-u-1-3"></div>
-          <div class="pure-u footer-slot">${renderedMarkup.FOOTER}</div>
-          <div class="pure-u-1-3"></div>
+          <div class="pure-u-2-5" style="margin: auto">${renderedMarkup.FOOTER}</div>
         </div>
 
         <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
