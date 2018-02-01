@@ -1,6 +1,7 @@
 // @flow
 
 import express from 'express';
+import path from 'path';
 
 import layout from './layout';
 
@@ -8,10 +9,16 @@ const PORT_NUMBER = 8082;
 
 const app = express();
 
-app.use('/static', express.static('dist'));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
-app.get('*', (req, res) => {
-  const markup = layout(PORT_NUMBER);
+app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
+
+app.get('/apps/*', (req, res) => {
+  const markup = layout();
   return res.send(markup);
 });
 

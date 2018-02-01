@@ -10,7 +10,7 @@ const appManager = new AppManager(config, new EventEmitter());
 
 appManager.on(AppManager.eventTitles.ERROR, ({ title, id, err }) => {
   /* eslint-disable no-console */
-  console.error(title, id, err.message);
+  console.error(title, id, err);
 });
 
 appManager.init();

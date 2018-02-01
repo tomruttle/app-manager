@@ -30,10 +30,13 @@ export default function getLayout(): string {
           <div class="pure-u-1-3"></div>
         </div>
 
-        <script src="http://localhost:8081/static/header.js"></script>
-        <script src="http://localhost:8082/static/footer.js"></script>
-        <script src="http://localhost:8083/static/guest-react.js"></script>
-        <script src="http://localhost:8084/static/guest-template-string.js"></script>
+        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+        <script crossorigin src="http://localhost:8081/static/header.js"></script>
+        <script crossorigin src="http://localhost:8082/static/footer.js"></script>
+        <script crossorigin src="http://localhost:8083/static/guest-react.js"></script>
+        <script crossorigin src="http://localhost:8084/static/guest-template-string.js"></script>
 
         <script src="http://localhost:8080/static/main.js"></script>
       </body>

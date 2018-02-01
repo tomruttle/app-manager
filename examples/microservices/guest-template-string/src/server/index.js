@@ -1,6 +1,7 @@
 // @flow
 
 import express from 'express';
+import path from 'path';
 
 import appMarkup from '../common/app';
 
@@ -8,9 +9,15 @@ const PORT_NUMBER = 8084;
 
 const app = express();
 
-app.use('/static', express.static('dist'));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
-app.get('*', (req, res) => res.send(appMarkup));
+app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
+
+app.get('/apps/*', (req, res) => res.send(appMarkup));
 
 app.listen(PORT_NUMBER, () => {
   /* eslint-disable no-console */
