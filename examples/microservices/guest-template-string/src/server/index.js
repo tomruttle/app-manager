@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/apps/*', (req, res) => res.send(appMarkup));
+app.get('/app', (req, res) => res.send(appMarkup));
 
 app.listen(PORT_NUMBER, () => {
   /* eslint-disable no-console */

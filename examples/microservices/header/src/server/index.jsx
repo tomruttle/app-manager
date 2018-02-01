@@ -2,8 +2,10 @@
 
 import express from 'express';
 import path from 'path';
+import React from 'react';
+import ReactDOM from 'react-dom/server';
 
-import layout from './layout';
+import HeaderApp from '../common/app';
 
 const PORT_NUMBER = 8081;
 
@@ -17,8 +19,8 @@ app.use((req, res, next) => {
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/apps/*', (req, res) => {
-  const markup = layout();
+app.get('/app', (req, res) => {
+  const markup = ReactDOM.renderToString(<HeaderApp />);
   return res.send(markup);
 });
 

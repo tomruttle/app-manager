@@ -3,22 +3,18 @@
 import express from 'express';
 import path from 'path';
 
+import render from './render';
 import layout from './layout';
 
 const PORT_NUMBER = 8080;
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/apps/*', (req, res) => {
-  const markup = layout();
+app.get('/apps/*', async (req, res) => {
+  const renderedMarkup = await render(req.originalUrl);
+  const markup = layout(renderedMarkup);
   return res.send(markup);
 });
 

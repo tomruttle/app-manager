@@ -1,6 +1,6 @@
 // @flow
 
-export default function getLayout(): string {
+export default function getLayout(renderedMarkup: { [slotName: string]: string }): string {
   return /* @html */`
     <!DOCTYPE html>
     <html>
@@ -14,19 +14,19 @@ export default function getLayout(): string {
       <body>
         <div class="pure-g">
           <div class="pure-u-1-3"></div>
-          <div class="pure-u-1-3 header-slot"></div>
+          <div class="pure-u-1-3 header-slot">${renderedMarkup.HEADER}</div>
           <div class="pure-u-1-3"></div>
         </div>
 
         <div class="pure-g">
           <div class="pure-u-1-3"></div>
-          <div class="pure-u-1-3 app-slot"></div>
+          <div class="pure-u-1-3 app-slot">${renderedMarkup.MAIN}</div>
           <div class="pure-u-1-3"></div>
         </div>
 
         <div class="pure-g">
           <div class="pure-u-1-3"></div>
-          <div class="pure-u footer-slot"></div>
+          <div class="pure-u footer-slot">${renderedMarkup.FOOTER}</div>
           <div class="pure-u-1-3"></div>
         </div>
 

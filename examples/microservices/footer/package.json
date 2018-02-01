@@ -2,9 +2,9 @@
   "name": "app-manager-examples-microservices-footer",
   "version": "0.0.1",
   "description": "A simple react example for app-manager",
-  "main": "src/server/index.js",
+  "main": "src/server/index.jsx",
   "scripts": {
-    "start": "babel-node src/server/index.js",
+    "start": "babel-node src/server/index.jsx",
     "bundle": "webpack",
     "bundle:watch": "webpack --watch",
     "lint": "eslint --ext .js,.jsx .",

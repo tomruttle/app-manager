@@ -2,10 +2,12 @@
 
 import express from 'express';
 import path from 'path';
+import React from 'react';
+import ReactDOM from 'react-dom/server';
 
-import layout from './layout';
+import GuestReactApp from '../common/app';
 
-const PORT_NUMBER = 8082;
+const PORT_NUMBER = 8083;
 
 const app = express();
 
@@ -17,12 +19,13 @@ app.use((req, res, next) => {
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/apps/*', (req, res) => {
-  const markup = layout();
+app.get('/app/:colour?', (req, res) => {
+  const { colour } = req.params;
+  const markup = ReactDOM.renderToString(<GuestReactApp colour={colour} />);
   return res.send(markup);
 });
 
 app.listen(PORT_NUMBER, () => {
   /* eslint-disable no-console */
-  console.log(`app-manager-examples-microservices-footer listening on port ${PORT_NUMBER}`);
+  console.log(`app-manager-examples-microservices-guest-react listening on port ${PORT_NUMBER}`);
 });

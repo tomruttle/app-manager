@@ -1,5 +1,7 @@
 // @flow
 
+import superagent from 'superagent';
+
 export const slots = {
   HEADER: {
     name: 'HEADER',
@@ -23,20 +25,32 @@ export const fragments = {
     slots: [slots.HEADER.name],
     managed: true,
     load: async () => {},
+    getMarkup: async () => {
+      const res = await superagent('http://localhost:8081/app');
+      return res.text;
+    },
   },
 
-  FIRST_FRAGMENT: {
-    name: 'FIRST_FRAGMENT',
+  GUEST_TEMPLATE_STRING_FRAGMENT: {
+    name: 'GUEST_TEMPLATE_STRING_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
     load: async () => {},
+    getMarkup: async () => {
+      const res = await superagent('http://localhost:8084/app');
+      return res.text;
+    },
   },
 
-  SECOND_FRAGMENT: {
-    name: 'SECOND_FRAGMENT',
+  GUEST_REACT_FRAGMENT: {
+    name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
     load: async () => {},
+    getMarkup: async () => {
+      const res = await superagent('http://localhost:8083/app');
+      return res.text;
+    },
   },
 
   FOOTER_FRAGMENT: {
@@ -44,20 +58,24 @@ export const fragments = {
     slots: [slots.FOOTER.name],
     managed: true,
     load: async () => {},
+    getMarkup: async () => {
+      const res = await superagent('http://localhost:8082/app');
+      return res.text;
+    },
   },
 };
 
 export const apps = {
-  FIRST_APP: {
-    name: 'FIRST_APP',
-    appPath: '/first-app',
-    fragments: [fragments.FIRST_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
+  GUEST_TEMPLATE_STRING_APP: {
+    name: 'GUEST_TEMPLATE_STRING_APP',
+    appPath: '/apps/guest-template-string',
+    fragments: [fragments.GUEST_TEMPLATE_STRING_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 
-  SECOND_APP: {
-    name: 'SECOND_APP',
-    appPath: '/second-app/:colour?',
-    fragments: [fragments.SECOND_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
+  GUEST_REACT_APP: {
+    name: 'GUEST_REACT_APP',
+    appPath: '/apps/guest-react/:colour?',
+    fragments: [fragments.GUEST_REACT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
 
