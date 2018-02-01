@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import type { ScriptVersion5Type, StateType } from '../../../../../lib/index';
+import type { ScriptVersion5Type, StateType, StatusDetailsType } from '../../../../../lib/index';
 
 import HeaderApp from '../common/app';
 
@@ -32,7 +32,7 @@ class HeaderScript implements ScriptVersion5Type {
     }
   };
 
-  onUpdateStatus = async ({ status }: StateType) => {
+  onUpdateStatus = async ({ status }: StatusDetailsType) => {
     if (status && typeof this._statusCallback === 'function') {
       this._statusCallback(status);
     }

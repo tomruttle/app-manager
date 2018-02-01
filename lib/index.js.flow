@@ -31,14 +31,21 @@ export type EventsType = {
 
 export type ParamsType = { [paramName: string]: string };
 
+export type QueryType = { [paramName: string]: string };
+
 export type StateType = {|
   status: ?string,
   event: ?string,
   path: string,
   params: ParamsType,
+  query: QueryType,
   prevApp: ?AppType,
   app: AppType,
 |};
+
+export type StatusDetailsType = {|
+  status: StatusType,
+|}
 
 export type HistoryType = Object;
 
@@ -64,7 +71,7 @@ export interface ScriptVersion5Type {
   hydrate?: (container: Element, state: StateType) => mixed;
   render?: (container: Element, state: StateType) => mixed;
   unmount?: (container: Element, state: StateType) => mixed;
-  onUpdateStatus?: (state: StateType) => mixed;
+  onUpdateStatus?: (status: StatusDetailsType) => mixed;
   onStateChange?: (state: StateType) => mixed;
 }
 
