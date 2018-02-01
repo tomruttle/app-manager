@@ -10,10 +10,17 @@ import type { EventType } from '../common/app';
 import FooterApp from '../common/app';
 
 class FooterScript implements ScriptVersion5Type {
-  _currentAppName: ?string = null;
   _updateEventsCallback: ?(event: EventType) => void = null;
 
   version = 5;
+
+  _getApp = () => (
+    <FooterApp>
+      {(updateEventsCallback) => {
+        this._updateEventsCallback = updateEventsCallback;
+      }}
+    </FooterApp>
+  );
 
   onError = async (errorDetails: string) => {
     const eventId = shortId.generate();
@@ -26,27 +33,17 @@ class FooterScript implements ScriptVersion5Type {
     }
   };
 
-  render = async (container: Element, { app }: StateType) => {
-    this._currentAppName = app.name;
+  render = async (container: Element) => { ReactDOM.render(this._getApp(), container); }
 
-    const footerApp = (
-      <FooterApp>
-        {(updateEventsCallback) => {
-          this._updateEventsCallback = updateEventsCallback;
-        }}
-      </FooterApp>
-    );
+  hydrate = async (container: Element) => { ReactDOM.hydrate(this._getApp(), container); }
 
-    ReactDOM.render(footerApp, container);
-  }
-
-  onStateChange = async ({ app }: StateType) => {
+  onStateChange = async ({ app, prevApp }: StateType) => {
     const eventId = shortId.generate();
 
     if (typeof this._updateEventsCallback === 'function') {
       this._updateEventsCallback({
         id: eventId,
-        data: `${this._currentAppName ? `${this._currentAppName} UNMOUNTED AND ` : ''}${app.name} MOUNTED`,
+        data: `${prevApp ? `${prevApp.name} UNMOUNTED AND ` : ''}${app.name} MOUNTED`,
       });
     }
 

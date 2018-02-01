@@ -13,18 +13,18 @@ class HeaderScript implements ScriptVersion5Type {
 
   version = 5;
 
-  render = async (container: Element, { app }: StateType) => {
-    const headerApp = (
-      <HeaderApp {...app}>
-        {(activeAppCallback, statusCallback) => {
-          this._activeAppCallback = activeAppCallback;
-          this._statusCallback = statusCallback;
-        }}
-      </HeaderApp>
-    );
+  _getApp = (app) => (
+    <HeaderApp {...app}>
+      {(activeAppCallback, statusCallback) => {
+        this._activeAppCallback = activeAppCallback;
+        this._statusCallback = statusCallback;
+      }}
+    </HeaderApp>
+  );
 
-    ReactDOM.render(headerApp, container);
-  };
+  render = async (container: Element, { app }: StateType) => { ReactDOM.render(this._getApp(app), container); };
+
+  hydrate = async (container: Element, { app }: StateType) => { ReactDOM.hydrate(this._getApp(app), container); };
 
   onStateChange = async ({ app }: StateType) => {
     if (typeof this._activeAppCallback === 'function') {

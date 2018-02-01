@@ -12,6 +12,8 @@ const secondScript: ScriptVersion5Type = {
 
   render: async (container, { params }) => { ReactDOM.render(<GuestReact colour={params.colour} />, container); },
 
+  hydrate: async (container, { params }) => { ReactDOM.hydrate(<GuestReact colour={params.colour} />, container); },
+
   unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
 };
 

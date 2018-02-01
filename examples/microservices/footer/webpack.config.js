@@ -7,6 +7,8 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
+    library: 'footer',
+    libraryTarget: 'umd',
   },
   devtool: 'inline-source-map',
   resolve: {

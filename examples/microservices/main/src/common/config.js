@@ -24,7 +24,10 @@ const fragments = {
     name: 'HEADER_FRAGMENT',
     slots: [slots.HEADER.name],
     managed: true,
-    load: async () => {},
+    load: async () => {
+      const script = window.header;
+      return script && script.default ? script.default : script;
+    },
     getMarkup: async () => {
       const res = await superagent('http://localhost:8081/app');
       return res.text;
@@ -35,7 +38,10 @@ const fragments = {
     name: 'GUEST_TEMPLATE_STRING_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: async () => {},
+    load: async () => {
+      const script = window['guest-template-string'];
+      return script && script.default ? script.default : script;
+    },
     getMarkup: async () => {
       const res = await superagent('http://localhost:8084/app');
       return res.text;
@@ -46,7 +52,10 @@ const fragments = {
     name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
     managed: true,
-    load: async () => {},
+    load: async () => {
+      const script = window['guest-react'];
+      return script && script.default ? script.default : script;
+    },
     getMarkup: async () => {
       const res = await superagent('http://localhost:8083/app');
       return res.text;
@@ -57,7 +66,10 @@ const fragments = {
     name: 'FOOTER_FRAGMENT',
     slots: [slots.FOOTER.name],
     managed: true,
-    load: async () => {},
+    load: async () => {
+      const script = window.footer;
+      return script && script.default ? script.default : script;
+    },
     getMarkup: async () => {
       const res = await superagent('http://localhost:8082/app');
       return res.text;
