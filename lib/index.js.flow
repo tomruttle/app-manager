@@ -79,8 +79,8 @@ export type FragmentType = {|
   name: FragmentNameType,
   slots: Array<SlotNameType>,
   managed: boolean,
-  load?: () => Promise<ScriptType>,
-  getMarkup?: () => Promise<string>,
+  load?: (state: StateType) => Promise<ScriptType>,
+  getMarkup?: (state: StateType) => Promise<string>,
 |};
 
 export type ConfigType = {|

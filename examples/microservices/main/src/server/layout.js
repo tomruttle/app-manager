@@ -33,12 +33,12 @@ export default function getLayout(renderedMarkup: { [slotName: string]: string }
         <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
-        <script crossorigin src="http://localhost:8081/static/header.js"></script>
-        <script crossorigin src="http://localhost:8082/static/footer.js"></script>
-        <script crossorigin src="http://localhost:8083/static/guest-react.js"></script>
-        <script crossorigin src="http://localhost:8084/static/guest-template-string.js"></script>
+        <script crossorigin src="http://localhost:8081/static/header.js" async></script>
+        <script crossorigin src="http://localhost:8082/static/footer.js" async></script>
+        <script crossorigin src="http://localhost:8083/static/guest-react.js" async></script>
+        <script crossorigin src="http://localhost:8084/static/guest-template-string.js" async></script>
 
-        <script src="http://localhost:8080/static/main.js"></script>
+        <script src="/static/main.js"></script>
       </body>
     </html>
   `;
