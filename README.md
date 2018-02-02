@@ -144,7 +144,9 @@ import AppManager from 'app-manager';
 
 import config from './config';
 
-const appManager = new AppManager(config, new EventEmitter());
+// ...
+
+const appManager = new AppManager(config, eventEmitter);
 
 appManager.init();
 ```
@@ -157,6 +159,8 @@ import AppManagerServer from 'app-manager/es5/server';
 import config from './config';
 
 const appManagerServer = new AppManagerServer(config);
+
+// ...
 
 app.get('/apps/*', async (req, res, next) => {
   try {
