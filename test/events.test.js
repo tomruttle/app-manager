@@ -5,15 +5,11 @@ import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extra
 import sinon from 'sinon';
 
 import WindowStub from '../lib/utils/window-stub';
-
 import initAppManager from '../lib/app-manager';
+import { awaitEvent } from './utils';
 
 describe('events', () => {
-  function waitForIO() {
-    return new Promise((resolve) => setImmediate(resolve));
-  }
-
-  it.skip('Can bind and unbind event listeners', async () => {
+  it('Can bind and unbind event listeners', async () => {
     const apps = {
       APP_A: {
         name: 'APP_A',
@@ -35,42 +31,31 @@ describe('events', () => {
     const appManager = new AppManager(config, new EventEmitter());
 
     const onErrorSpy = sinon.spy();
+    const onExternalSpy = sinon.spy();
 
     appManager.on('am-error', onErrorSpy);
+    appManager.on('am-external-link', onExternalSpy);
 
     expect(appManager._status).to.equals('UNINITIALISED');
 
-    windowStub.history.pushState({}, null, '/app-b');
-
-    await waitForIO();
-
     await appManager.init();
-
-    expect(appManager._currentAppName).to.be.null;
-    expect(appManager._status).to.equals('ERROR');
-
-    expect(onErrorSpy.callCount).to.equals(1);
-    expect(onErrorSpy.args[0][0].title).to.equals('init.no_route');
 
     windowStub.history.pushState({}, null, '/app-a');
 
-    await waitForIO();
+    await awaitEvent(appManager, 'am-statechange-complete');
 
-    expect(appManager._currentAppName).to.be.null;
-    expect(appManager._status).to.equals('ERROR');
+    expect(appManager._currentAppName).to.equals('APP_A');
+    expect(appManager._status).to.equals('DEFAULT');
 
-    expect(onErrorSpy.callCount).to.equals(1);
-
-    appManager.removeListener('am-error', onErrorSpy);
+    expect(onErrorSpy.callCount).to.equals(0);
 
     windowStub.history.pushState(null, null, '/app-c');
 
-    await waitForIO();
+    expect(appManager._currentAppName).to.equals('APP_A');
+    expect(appManager._status).to.equals('DEFAULT');
 
-    expect(appManager._currentAppName).to.be.null;
-    expect(appManager._status).to.equals('ERROR');
-
-    expect(onErrorSpy.callCount).to.equals(1);
+    expect(onErrorSpy.callCount).to.equals(0);
+    expect(onExternalSpy.callCount).to.equals(1);
   });
 
   it('calling replaceState emits correct events', () => {

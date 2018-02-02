@@ -32,12 +32,6 @@ class HeaderScript implements ScriptVersion5Type {
     }
   };
 
-  onUpdateStatus = async ({ status }: StatusDetailsType) => {
-    if (status && typeof this._statusCallback === 'function') {
-      this._statusCallback(status);
-    }
-  };
-
   unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
 }
 
