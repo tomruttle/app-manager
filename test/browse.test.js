@@ -120,9 +120,7 @@ describe('multi-step browser test', () => {
   });
 
   it('correctly initialises app manager with first fragment', async () => {
-    const initSuccess = await appManager.init();
-
-    expect(initSuccess).to.be.true;
+    await appManager.init();
 
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 

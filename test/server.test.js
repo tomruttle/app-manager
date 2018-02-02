@@ -1,12 +1,9 @@
 // @flow
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import AppManagerServer from '../lib/server';
-
-chai.use(chaiAsPromised);
 
 describe('Server', () => {
   function getConfig() {
@@ -47,9 +44,17 @@ describe('Server', () => {
   }
 
   describe('getSlotsMarkup', () => {
-    it('rejects if path does not match any apps', () => {
+    it('rejects if path does not match any apps', async () => {
       const appManagerServer = new AppManagerServer(getConfig());
-      expect(appManagerServer.getSlotsMarkup('/app-c')).be.rejectedWith('server.invalid_appPath');
+
+      try {
+        await appManagerServer.getSlotsMarkup('/app-c');
+        throw new Error('Should not get here.');
+      } catch (err) {
+        expect(err.source).to.equal('get_slots_markup');
+        expect(err.type).to.equal('invalid_route');
+        expect(err.path).to.equal('/app-c');
+      }
     });
 
     it('returns the async return value of getMarkup for the correct app in the correct slot', async () => {
