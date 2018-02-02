@@ -8,9 +8,9 @@ import config from '../common/config';
 
 const appManager = new AppManager(config, new EventEmitter());
 
-appManager.on(AppManager.eventTitles.ERROR, ({ title, id, err }) => {
+appManager.on(AppManager.eventTitles.ERROR, (err) => {
   /* eslint-disable no-console */
-  console.error(title, id, err);
+  console.error(err.message, `${err.source}.${err.code}`);
 });
 
 appManager.on(AppManager.eventTitles.EXTERNAL_LINK, () => {

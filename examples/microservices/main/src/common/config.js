@@ -4,7 +4,9 @@ import superagent from 'superagent';
 
 import type { StateType } from '../../../../../lib/index';
 
-import { retry } from '../../../../../lib/utils/timers';
+import { retry, delay } from '../../../../../lib/utils/timers';
+
+const TIMEOUT_CONTENT = '<p>Oh no!</p>';
 
 function loadScriptFromWindow(scriptName: string) {
   return async () => {
@@ -86,6 +88,24 @@ const fragments = {
     },
   },
 
+  GUEST_TIMEOUT_FRAGMENT: {
+    name: 'GUEST_TIMEOUT_FRAGMENT',
+    slots: [slots.MAIN.name],
+    managed: true,
+    loadScript: async ({ query }: StateType) => {
+      const delayMs = query.delay ? Number(query.delay) : undefined;
+      await delay(delayMs);
+      return {
+        version: 5,
+        render: (container, _state) => {
+          /* eslint-disable no-param-reassign */
+          container.innerHTML = TIMEOUT_CONTENT;
+        },
+      };
+    },
+    getMarkup: async () => /* @html */`<div class="app-slot">${TIMEOUT_CONTENT}</div>`,
+  },
+
   FOOTER_FRAGMENT: {
     name: 'FOOTER_FRAGMENT',
     slots: [slots.FOOTER.name],
@@ -113,6 +133,12 @@ const apps = {
     name: 'GUEST_REACT_APP',
     appPath: '/apps/guest-react/:colour?',
     fragments: [fragments.GUEST_REACT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
+  },
+
+  GUEST_TIMEOUT_APP: {
+    name: 'GUEST_TIMEOUT_APP',
+    appPath: '/apps/guest-timeout',
+    fragments: [fragments.GUEST_TIMEOUT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
 

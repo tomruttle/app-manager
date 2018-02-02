@@ -57,6 +57,12 @@ export default class HeaderApp extends Component<HeaderAppProps, HeaderAppState>
               External Link
             </a>
           </li>
+
+          <li className="pure-menu-item">
+            <a href="/apps/guest-timeout?delay=5000" onClick={this.handleClick} className="pure-menu-link">
+              Timeout Link
+            </a>
+          </li>
         </ul>
       </div>
     </div>

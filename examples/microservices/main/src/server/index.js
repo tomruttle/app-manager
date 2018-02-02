@@ -16,10 +16,14 @@ const appManagerServer = new AppManagerServer(config);
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/apps/*', async (req, res) => {
-  const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl);
-  const markup = layout(renderedMarkup);
-  return res.send(markup);
+app.get('/apps/*', async (req, res, next) => {
+  try {
+    const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl.split('?')[0]);
+    const markup = layout(renderedMarkup);
+    return res.send(markup);
+  } catch (err) {
+    return next(err);
+  }
 });
 
 app.listen(PORT_NUMBER, () => {
