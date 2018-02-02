@@ -1,7 +1,7 @@
 {
   "name": "app-manager-examples-microservices-guest-react",
   "version": "0.0.1",
-  "description": "A simple react example for app-manager",
+  "description": "",
   "main": "src/server/index.jsx",
   "scripts": {
     "start": "babel-node src/server/index.jsx",

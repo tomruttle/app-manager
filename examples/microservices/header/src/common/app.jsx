@@ -36,7 +36,7 @@ export default class HeaderApp extends Component<HeaderAppProps, HeaderAppState>
 
   render = () => (
     <div>
-      <CenterHeading>Simple React Example</CenterHeading>
+      <CenterHeading>Microservices Example</CenterHeading>
 
       <div className="pure-menu pure-menu-horizontal">
         <ul className="pure-menu-list">
