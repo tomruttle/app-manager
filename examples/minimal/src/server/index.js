@@ -11,7 +11,7 @@ const appManagerServer = new AppManagerServer(config);
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/apps/*', async (req, res) => {
-  const renderedMarkup = await appManagerServer.init(req.originalUrl);
+  const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl);
 
   return res.send(/* @html */`
     <!DOCTYPE html>

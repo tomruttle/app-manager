@@ -46,16 +46,16 @@ describe('Server', () => {
     };
   }
 
-  describe('init', () => {
+  describe('getSlotsMarkup', () => {
     it('rejects if path does not match any apps', () => {
       const appManagerServer = new AppManagerServer(getConfig());
-      expect(appManagerServer.init('/app-c')).be.rejectedWith('server.invalid_appPath');
+      expect(appManagerServer.getSlotsMarkup('/app-c')).be.rejectedWith('server.invalid_appPath');
     });
 
     it('returns the async return value of getMarkup for the correct app in the correct slot', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
-      const appMarkup = await appManagerServer.init('/app-a');
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-a');
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_a', other: '' });
 
@@ -73,7 +73,7 @@ describe('Server', () => {
     it('can handle params, query params, and additional arguments', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
-      const appMarkup = await appManagerServer.init('/app-b/test', 'query=success', 'additional data');
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-b/test', 'query=success', 'additional data');
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_b', other: '' });
 
