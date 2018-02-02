@@ -72,10 +72,10 @@ export interface ScriptVersion4Type {
 
 export interface ScriptVersion5Type {
   version: 5;
-  hydrate?: (container: Element, state: StateType) => mixed;
-  render?: (container: Element, state: StateType) => mixed;
-  unmount?: (container: Element, state: StateType) => mixed;
-  onStateChange?: (state: StateType) => mixed;
+  hydrate?: (container: Element, state: StateType) => any;
+  render?: (container: Element, state: StateType) => any;
+  unmount?: (container: Element, state: StateType) => any;
+  onStateChange?: (state: StateType) => any;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
