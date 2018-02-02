@@ -9,6 +9,7 @@ export type EventType = {
 }
 
 type FooterAppProps = {
+  initialEvents?: ?Array<EventType>,
   children?: (updateEvents: (event: EventType) => void) => void,
 };
 
@@ -17,7 +18,7 @@ type FooterAppState = {
 };
 
 const Footer = styled.div`
-  margin-top: 4em;
+  margin: 4em;
 `;
 
 const ScrollableMenu = styled.div`
@@ -36,7 +37,7 @@ const ScrollableMenu = styled.div`
 
 export default class FooterApp extends Component<FooterAppProps, FooterAppState> {
   state = {
-    events: [],
+    events: this.props.initialEvents || [],
   };
 
   componentDidMount = () => {

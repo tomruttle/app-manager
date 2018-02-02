@@ -14,8 +14,8 @@ class FooterScript implements ScriptVersion5Type {
 
   version = 5;
 
-  _getApp = () => (
-    <FooterApp>
+  _getApp = (initialEvents?: Array<EventType>) => (
+    <FooterApp initialEvents={initialEvents}>
       {(updateEventsCallback) => {
         this._updateEventsCallback = updateEventsCallback;
       }}

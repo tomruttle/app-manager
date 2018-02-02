@@ -21,7 +21,7 @@ export default function getLayout(renderedMarkup: { [slotName: string]: string }
         </div>
 
         <div class="pure-g">
-          <div class="pure-u-2-5" style="margin: auto">${renderedMarkup.FOOTER}</div>
+          <div class="pure-u-1">${renderedMarkup.FOOTER}</div>
         </div>
 
         <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>

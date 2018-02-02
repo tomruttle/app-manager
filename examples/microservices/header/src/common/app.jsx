@@ -53,7 +53,7 @@ export default class HeaderApp extends Component<HeaderAppProps, HeaderAppState>
           </li>
 
           <li className="pure-menu-item">
-            <a href="http://example.com" onClick={this.handleClick} className="pure-menu-link">
+            <a href="/external" onClick={this.handleClick} className="pure-menu-link">
               External Link
             </a>
           </li>
