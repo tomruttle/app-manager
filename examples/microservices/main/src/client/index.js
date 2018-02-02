@@ -13,4 +13,8 @@ appManager.on(AppManager.eventTitles.ERROR, ({ title, id, err }) => {
   console.error(title, id, err);
 });
 
+appManager.on(AppManager.eventTitles.EXTERNAL_LINK, () => {
+  window.location.href = window.location.href;
+});
+
 appManager.init();
