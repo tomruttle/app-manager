@@ -7,10 +7,8 @@ Script for managing the lifecycles of multiple apps on a single page
 ## Use Case
 
   * Your app has been built with a microservices architecture.
-  * You are using a tool like [compoxure](https://github.com/tes/compoxure) to split the page into fragments, which are rendered on disparate servers and compiled
   * Your front-end code has become sufficiently complex that it warrants splitting up and/or is isomorphically rendered
   * You wish to keep your app 'feeling' like an SPA
-  * You are able to split your scripts and fetch them from disparate servers using a tool like [async-define](https://github.com/tes/async-define)
 
 ## Concepts
 
@@ -45,7 +43,7 @@ There are four events that `app-manager` handles. Your `script` must provide a h
   * `hydrate`: Called on first page load. If you are rendering your app isomorphically, you will likely need to grab the initial state of your `scripts` from the DOM.
   * `unmount`: Called when the user browses away from an app, and `scripts` are to be unloaded from the page. Useful to clear up any event listeners, and to reset any mutable state.
     * If you are using React, you will need to call `ReactDOM.unmountComponentAtNode` in order to free up the `slot`.
-  * `mount`: Called when you browse to the `appPath` of a new app. The page will not refresh when the new set of `fragments` load the required `scripts`, so any initial state much be fetched by xhr.
+  * `render`: Called when you browse to the `appPath` of a new app. The page will not refresh when the new set of `fragments` load the required `scripts`, so any initial state much be fetched by xhr.
   * `onStateChange`: Called when the HTML5 history api is used to change the browser state. This event will calculate if the `app` has changed, and if so, decide which `scripts` to unmount and which to mount in their place.
 
 ## Dependencies
@@ -62,79 +60,119 @@ A small script that provides the algorithm to decide which script goes in which 
 
 [https://github.com/tomruttle/slot-finder](https://github.com/tomruttle/slot-finder)
 
-## API
+### qs
+
+For query string parsing.
+
+[https://www.npmjs.com/package/qs](https://www.npmjs.com/package/qs)
+
+## Api
 
 `app-manager` exports a class `AppManager` whose constructor takes two parameters: `config`, an `events` module with the same API as the native node.js module, and (optionally) `options`:
 
-```typescript
-type AppNameType = string;
-type SlotNameType = string;
-type FragmentNameType = string;
-type EventTitleType = $Values<typeof eventTitles>;
-type StatusType = $Values<typeof statuses>;
+## Example
 
-type OptionsType = {
-  importTimeout?: number,
-};
+### config.js
 
-type AppType = {
-  name: AppNameType,
-  appPath: string,
-  fragments: Array<FragmentNameType>,
-};
+```js
+// Where handleClick = (e) => { window.history.pushState({}, null, e.currentTarget.href); };
 
-type EventCallbackType = (...data: Array<mixed>) => mixed;
-type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
-type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
-type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
+const example1Markup = /* @html */`<h3>This is Example 1. <a href="/apps/example2" onclick="handleClick(event)">Switch</a></h3>`;
 
-type EventsType = {
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
+const example2Markup = /* @html */`<h3>This is Example 2. <a href="/apps/example1" onclick="handleClick(event)">Switch</a></h3>`;
+
+export default {
+  slots: {
+    APP: {
+      name: 'APP',
+      querySelector: '.app',
+    },
+  },
+
+  fragments: {
+    EXAMPLE1_FRAGMENT: {
+      name: 'EXAMPLE1_FRAGMENT',
+      slots: ['APP'],
+      managed: true,
+      loadScript() {
+        return {
+          version: 5,
+          render(container) { container.innerHTML = example1Markup; },
+        };
+      },
+      getMarkup() {
+        return `<div class="app">${example1Markup}</div>`;
+      },
+    },
+
+    EXAMPLE2_FRAGMENT: {
+      name: 'EXAMPLE2_FRAGMENT',
+      slots: ['APP'],
+      managed: true,
+      loadScript() {
+        return {
+          version: 5,
+          render(container) { container.innerHTML = example2Markup; },
+        };
+      },
+      getMarkup() {
+        return `<div class="app">${example2Markup}</div>`;
+      },
+    }
+  },
+
+  apps: {
+    EXAMPLE1_APP: {
+      name: 'EXAMPLE1_APP',
+      appPath: '/apps/example1',
+      fragments: ['EXAMPLE1_FRAGMENT'],
+    },
+
+    EXAMPLE2_APP: {
+      name: 'EXAMPLE2_APP',
+      appPath: '/apps/example2',
+      fragments: ['EXAMPLE2_FRAGMENT'],
+    }
+  }
 }
-
-interface ScriptVersion4Type {
-  version: 4;
-  hydrate(container: Element, currentApp: AppType): Promise<?void>;
-  mount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-  onUpdateStatus(status: StatusType, currentApp: AppType): Promise<?void>;
-  onStateChange(eventTitle: EventTitleType, currentApp: AppType): Promise<?void>;
-}
-
-type ScriptType = ScriptVersion4Type;
-
-type SlotType = {
-  name: SlotNameType,
-  elementClass: string,
-};
-
-type FragmentType = {
-  name: FragmentNameType,
-  slots: Array<SlotNameType>,
-  managed: boolean,
-  load?: () => Promise<ScriptType>,
-};
-
-type ConfigType = {|
-  apps: { [appName: AppNameType]: AppType },
-  slots: { [slotName: SlotNameType]: SlotType },
-  fragments: { [fragmentName: FragmentNameType]: FragmentType },
-|};
-
-declare export default class AppManager {
-  static eventTitles: typeof eventTitles;
-  static statuses: typeof statuses;
-
-  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
-
-  init: () => Promise<boolean>,
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
-}
-
 ```
 
-When you have instantiated the `AppManager` class, call `init()` to initialise the page and `mount` all of the appropriate `scripts`.
+### client.js
+
+```js
+import AppManager from 'app-manager';
+
+import config from './config';
+
+const appManager = new AppManager(config, new EventEmitter());
+
+appManager.init();
+```
+
+### server.js
+
+```js
+import AppManagerServer from 'app-manager/es5/server';
+
+import config from './config';
+
+const appManagerServer = new AppManagerServer(config);
+
+app.get('/apps/*', async (req, res, next) => {
+  try {
+    const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl);
+
+    return res.send(/* @html */`
+      <!DOCTYPE html>
+      <html>
+        <body>
+          ${renderedMarkup.APP}
+          <script src="/static/main.js"></script>
+        </body>
+      </html>
+    `);
+  } catch (err) {
+    next(err);
+  }
+});
+```
