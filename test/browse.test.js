@@ -66,21 +66,18 @@ describe('multi-step browser test', () => {
     SCRIPT_A: {
       name: 'SCRIPT_A',
       slots: ['APP'],
-      managed: true,
       loadScript: async () => mockA,
     },
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
       slots: ['APP'],
-      managed: true,
       loadScript: async () => mockB,
     },
 
     SCRIPT_C: {
       name: 'SCRIPT_C',
       slots: ['APP'],
-      managed: true,
     },
   };
 
@@ -207,10 +204,10 @@ describe('multi-step browser test', () => {
     expect(mockB.unmount.callCount).to.equals(1);
   });
 
-  it('does not mount app scripts with missing import functions', async () => {
+  it('If an fragment does not have a loadScript function, treat the app as an external link', async () => {
     windowStub.history.pushState({}, null, '/app-c');
 
-    await awaitEvent(appManager, 'am-error');
+    await awaitEvent(appManager, 'am-external-link');
 
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 

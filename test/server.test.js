@@ -23,14 +23,12 @@ describe('Server', () => {
       fragments: {
         fragment_a: {
           name: 'fragment_a',
-          managed: true,
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_a')),
         },
         fragment_b: {
           name: 'fragment_b',
-          managed: true,
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),

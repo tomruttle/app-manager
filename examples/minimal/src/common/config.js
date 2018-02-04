@@ -14,7 +14,6 @@ module.exports = {
     EXAMPLE1_FRAGMENT: {
       name: 'EXAMPLE1_FRAGMENT',
       slots: ['APP'],
-      managed: true,
       loadScript() {
         return {
           version: 5,
@@ -29,7 +28,6 @@ module.exports = {
     EXAMPLE2_FRAGMENT: {
       name: 'EXAMPLE2_FRAGMENT',
       slots: ['APP'],
-      managed: true,
       loadScript() {
         return {
           version: 5,
