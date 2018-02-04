@@ -10,18 +10,27 @@ import { awaitEvent } from './utils';
 
 describe('events', () => {
   it('Can bind and unbind event listeners', async () => {
-    const apps = {
-      APP_A: {
-        name: 'APP_A',
-        appPath: '/app-a/:entityId?',
-        fragments: ['SCRIPT_A'],
-      },
-    };
-
     const config = {
-      apps,
-      slots: {},
-      fragments: {},
+      apps: {
+        APP_A: {
+          name: 'APP_A',
+          appPath: '/app-a/:entityId?',
+          fragments: ['SCRIPT_A'],
+        },
+      },
+      slots: {
+        MAIN: {
+          name: 'MAIN',
+          querySelector: null,
+        },
+      },
+      fragments: {
+        SCRIPT_A: {
+          name: 'SCRIPT_A',
+          slots: ['MAIN'],
+          loadScript: async () => ({ version: 5 }),
+        },
+      },
     };
 
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
@@ -105,5 +114,51 @@ describe('events', () => {
 
     expect(pushStateSpy.called).to.be.false;
     expect(stateChangeSpy.called).to.be.false;
+  });
+
+  describe('errors', () => {
+    it('emits an error event if app tries to load missing fragment', async () => {
+      const config = {
+        apps: {
+          APP_A: {
+            name: 'APP_A',
+            appPath: '/app-a',
+            fragments: ['SCRIPT_A'],
+          },
+          APP_B: {
+            name: 'APP_B',
+            appPath: '/app-b',
+            fragments: ['MISSING'],
+          },
+        },
+        fragments: {
+          SCRIPT_A: {
+            name: 'SCRIPT_A',
+            slots: ['MAIN'],
+          },
+        },
+        slots: {},
+      };
+
+      const onErrorSpy = sinon.spy();
+
+      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
+
+      const AppManager = initAppManager(windowStub);
+
+      const appManager = new AppManager(config, new EventEmitter());
+
+      appManager.on('am-error', onErrorSpy);
+
+      await appManager.init();
+
+      windowStub.history.pushState({}, null, '/app-b');
+
+      await awaitEvent(appManager, 'am-error');
+
+      const err = onErrorSpy.args[0][0];
+
+      expect(err.code).to.equals('missing_fragment');
+    });
   });
 });

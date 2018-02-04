@@ -60,6 +60,10 @@ describe('multi-step browser test', () => {
       name: 'APP',
       querySelector: '.fragment',
     },
+    OTHER: {
+      name: 'OTHER',
+      querySelector: '.other',
+    },
   };
 
   const fragments = {
@@ -71,7 +75,7 @@ describe('multi-step browser test', () => {
 
     SCRIPT_B: {
       name: 'SCRIPT_B',
-      slots: ['APP'],
+      slots: ['OTHER'],
       loadScript: async () => mockB,
     },
 
@@ -204,7 +208,7 @@ describe('multi-step browser test', () => {
     expect(mockB.unmount.callCount).to.equals(1);
   });
 
-  it('If an fragment does not have a loadScript function, treat the app as an external link', async () => {
+  it('If a fragment does not have a loadScript function, treat the app as an external link', async () => {
     windowStub.history.pushState({}, null, '/app-c');
 
     await awaitEvent(appManager, 'am-external-link');
