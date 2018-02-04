@@ -47,7 +47,6 @@ export type StatusDetailsType = {|
   status: StatusType,
   level: string,
   source: ?string,
-  path: ?string,
   message?: ?string,
 |}
 
