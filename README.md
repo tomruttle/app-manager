@@ -237,7 +237,6 @@ List of events emitted by app-manager:
 * am-pushstate,
 * am-statechange,
 * am-statuschange,
-* am-statechange-complete,
 * am-error,
 * am-external-link,
 
