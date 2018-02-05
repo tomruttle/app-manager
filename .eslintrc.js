@@ -20,5 +20,6 @@ module.exports = {
     'no-underscore-dangle': 0,
     'import/extensions': 0,
     'arrow-parens': ['error', 'always'],
+    'import/prefer-default-export': 0,
   },
 };

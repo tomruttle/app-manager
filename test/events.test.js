@@ -13,20 +13,17 @@ describe('events', () => {
     const config = {
       apps: {
         APP_A: {
-          name: 'APP_A',
           appPath: '/app-a/:entityId?',
           fragments: ['SCRIPT_A'],
         },
       },
       slots: {
         MAIN: {
-          name: 'MAIN',
           querySelector: null,
         },
       },
       fragments: {
         SCRIPT_A: {
-          name: 'SCRIPT_A',
           slots: ['MAIN'],
           loadScript: async () => ({ version: 5 }),
         },
@@ -123,19 +120,16 @@ describe('events', () => {
       const config = {
         apps: {
           APP_A: {
-            name: 'APP_A',
             appPath: '/app-a',
             fragments: ['SCRIPT_A'],
           },
           APP_B: {
-            name: 'APP_B',
             appPath: '/app-b',
             fragments: ['MISSING'],
           },
         },
         fragments: {
           SCRIPT_A: {
-            name: 'SCRIPT_A',
             slots: ['MAIN'],
           },
         },

@@ -36,64 +36,25 @@ describe('multi-step browser test', () => {
     unmount: sinon.spy(),
   };
 
-  const apps = {
-    APP_A: {
-      name: 'APP_A',
-      appPath: '/app-a/:entityId?',
-      fragments: ['SCRIPT_A'],
-    },
-
-    APP_B: {
-      name: 'APP_B',
-      appPath: '/app-b/:entityId?',
-      fragments: ['SCRIPT_B'],
-    },
-
-    APP_C: {
-      name: 'APP_C',
-      appPath: '/app-c/:entityId?',
-      fragments: ['SCRIPT_C'],
-    },
-  };
-
-  const slots = {
-    APP: {
-      name: 'APP',
-      querySelector: '.fragment',
-    },
-    OTHER: {
-      name: 'OTHER',
-      querySelector: '.other',
-    },
-  };
-
-  const fragments = {
-    SCRIPT_A: {
-      name: 'SCRIPT_A',
-      slots: ['APP'],
-      loadScript: async () => mockA,
-    },
-
-    SCRIPT_B: {
-      name: 'SCRIPT_B',
-      slots: ['OTHER'],
-      loadScript: async () => mockB,
-    },
-
-    SCRIPT_C: {
-      name: 'SCRIPT_C',
-      slots: ['APP'],
-    },
-  };
-
   let appManager;
   let windowStub;
 
   before(() => {
     const config = {
-      apps,
-      slots,
-      fragments,
+      apps: {
+        APP_A: { appPath: '/app-a/:entityId?', fragments: ['SCRIPT_A'] },
+        APP_B: { appPath: '/app-b/:entityId?', fragments: ['SCRIPT_B'] },
+        APP_C: { appPath: '/app-c/:entityId?', fragments: ['SCRIPT_C'] },
+      },
+      slots: {
+        APP: { querySelector: '.fragment' },
+        OTHER: { querySelector: '.other' },
+      },
+      fragments: {
+        SCRIPT_A: { slots: ['APP'], loadScript: async () => mockA },
+        SCRIPT_B: { slots: ['OTHER'], loadScript: async () => mockB },
+        SCRIPT_C: { slots: ['APP'] },
+      },
     };
 
     windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
@@ -108,7 +69,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_A.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -128,7 +89,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -148,7 +109,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -168,7 +129,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -188,7 +149,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_A.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_A.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -208,7 +169,7 @@ describe('multi-step browser test', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -228,7 +189,7 @@ describe('multi-step browser test', () => {
 
     await awaitEvent(appManager, 'am-external-link');
 
-    expect(appManager._currentAppName).to.equals(apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);

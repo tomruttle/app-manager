@@ -84,17 +84,21 @@ export type SlotType = {
   querySelector: ?string,
 };
 
+type LoadScriptType = (state: StateType) => Promise<ScriptType>;
+
+type GetMarkupType = (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>;
+
 export type FragmentType = {
   name: FragmentNameType,
   slots: Array<SlotNameType>,
-  loadScript?: (state: StateType) => Promise<ScriptType>,
-  getMarkup?: (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>,
+  loadScript?: LoadScriptType,
+  getMarkup?: GetMarkupType,
 };
 
 export type ConfigType = {|
-  apps: { [appName: AppNameType]: AppType },
-  slots: { [slotName: SlotNameType]: SlotType },
-  fragments: { [fragmentName: FragmentNameType]: FragmentType },
+  apps: { [appName: AppNameType]: { appPath: string, fragments: Array<FragmentNameType> } },
+  slots: { [slotName: SlotNameType]: { querySelector: ?string } },
+  fragments: { [fragmentName: FragmentNameType]: { slots: Array<SlotNameType>, loadScript?: LoadScriptType, getMarkup?: GetMarkupType } },
 |};
 
 declare export default class AppManager {

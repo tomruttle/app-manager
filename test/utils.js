@@ -1,7 +1,5 @@
 // @flow
 
-/* eslint-disable import/prefer-default-export */
-
 import type { EventTitleType } from '../lib/index';
 
 export function awaitEvent(appManager: Object, eventTitle: EventTitleType): Promise<void> {
