@@ -5,14 +5,12 @@ const example2Markup = /* @html */`<h3>This is Example 2. <a href="/apps/example
 module.exports = {
   slots: {
     APP: {
-      name: 'APP',
       querySelector: '.app',
     },
   },
 
   fragments: {
     EXAMPLE1_FRAGMENT: {
-      name: 'EXAMPLE1_FRAGMENT',
       slots: ['APP'],
       loadScript() {
         return {
@@ -26,7 +24,6 @@ module.exports = {
     },
 
     EXAMPLE2_FRAGMENT: {
-      name: 'EXAMPLE2_FRAGMENT',
       slots: ['APP'],
       loadScript() {
         return {
@@ -42,13 +39,11 @@ module.exports = {
 
   apps: {
     EXAMPLE1_APP: {
-      name: 'EXAMPLE1_APP',
       appPath: '/apps/example1',
       fragments: ['EXAMPLE1_FRAGMENT'],
     },
 
     EXAMPLE2_APP: {
-      name: 'EXAMPLE2_APP',
       appPath: '/apps/example2',
       fragments: ['EXAMPLE2_FRAGMENT'],
     }

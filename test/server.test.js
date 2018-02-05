@@ -10,33 +10,29 @@ describe('Server', () => {
     return {
       apps: {
         app_a: {
-          name: 'app_a',
           fragments: ['fragment_a'],
           appPath: '/app-a',
         },
         app_b: {
-          name: 'app_b',
           fragments: ['fragment_b'],
           appPath: '/app-b/:param1?',
         },
       },
       fragments: {
         fragment_a: {
-          name: 'fragment_a',
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_a')),
         },
         fragment_b: {
-          name: 'fragment_b',
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),
         },
       },
       slots: {
-        app: { name: 'app', querySelector: null },
-        other: { name: 'other', querySelector: null },
+        app: { querySelector: null },
+        other: { querySelector: null },
       },
     };
   }
