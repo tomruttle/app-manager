@@ -8,7 +8,7 @@ import { retry, delay } from '../../../../../lib/utils/timers';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';
 
-export function loadScriptFromWindow(scriptName: string) {
+function loadScriptFromWindow(scriptName: string) {
   return async () => {
     if (!window) {
       throw new Error('load_script.no_window');
