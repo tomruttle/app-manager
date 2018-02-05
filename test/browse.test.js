@@ -104,7 +104,9 @@ describe('multi-step browser test', () => {
   });
 
   it('correctly initialises app manager with first fragment', async () => {
-    await appManager.init();
+    appManager.init();
+
+    await appManager._runningStateChange;
 
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
@@ -124,7 +126,7 @@ describe('multi-step browser test', () => {
   it('browses to new app', async () => {
     windowStub.history.pushState({}, null, '/app-b');
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
@@ -144,7 +146,7 @@ describe('multi-step browser test', () => {
   it('moves within an app', async () => {
     windowStub.history.pushState({}, null, '/app-b/entity');
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
@@ -164,7 +166,7 @@ describe('multi-step browser test', () => {
   it('moves back within an app', async () => {
     windowStub.history.go(-1);
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 
@@ -184,7 +186,7 @@ describe('multi-step browser test', () => {
   it('moves back to the old app', async () => {
     windowStub.history.back();
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals(apps.APP_A.name);
 
@@ -204,7 +206,7 @@ describe('multi-step browser test', () => {
   it('moves forward again', async () => {
     windowStub.history.forward();
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals(apps.APP_B.name);
 

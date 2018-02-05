@@ -51,7 +51,7 @@ describe('events', () => {
 
     windowStub.history.pushState({}, null, '/app-a');
 
-    await awaitEvent(appManager, 'am-statechange-complete');
+    await awaitEvent(appManager, 'am-statechange-end');
 
     expect(appManager._currentAppName).to.equals('APP_A');
     expect(appManager._status).to.equals('DEFAULT');
