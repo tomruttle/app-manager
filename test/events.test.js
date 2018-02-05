@@ -47,7 +47,9 @@ describe('events', () => {
 
     expect(appManager._status).to.equals('UNINITIALISED');
 
-    await appManager.init();
+    appManager.init();
+
+    await appManager._runningStateChange;
 
     windowStub.history.pushState({}, null, '/app-a');
 
@@ -150,7 +152,7 @@ describe('events', () => {
 
       appManager.on('am-error', onErrorSpy);
 
-      await appManager.init();
+      appManager.init();
 
       windowStub.history.pushState({}, null, '/app-b');
 
