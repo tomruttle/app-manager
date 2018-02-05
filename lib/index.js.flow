@@ -11,6 +11,7 @@ export type StatusLevelType = $Values<typeof levels>;
 
 export type OptionsType = {
   importTimeout?: number,
+  haltOnError?: boolean,
 };
 
 export type AppType = {

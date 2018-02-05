@@ -42,25 +42,27 @@ describe('events', () => {
     appManager.on('am-error', onErrorSpy);
     appManager.on('am-external-link', onExternalSpy);
 
-    expect(appManager._status).to.equals('UNINITIALISED');
-
     appManager.init();
 
     await appManager._runningStateChange;
 
     windowStub.history.pushState({}, null, '/app-a');
 
-    await appManager._runningStateChange;
+    let runningStateChange = appManager._runningStateChange;
+
+    await runningStateChange;
 
     expect(appManager._currentAppName).to.equals('APP_A');
-    expect(appManager._status).to.equals('DEFAULT');
 
     expect(onErrorSpy.callCount).to.equals(0);
 
     windowStub.history.pushState(null, null, '/app-c');
 
+    runningStateChange = appManager._runningStateChange;
+
+    await runningStateChange;
+
     expect(appManager._currentAppName).to.equals('APP_A');
-    expect(appManager._status).to.equals('DEFAULT');
 
     expect(onErrorSpy.callCount).to.equals(0);
     expect(onExternalSpy.callCount).to.equals(1);
