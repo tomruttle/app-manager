@@ -102,15 +102,13 @@ export type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: { slots: Array<SlotNameType>, loadScript?: LoadScriptType, getMarkup?: GetMarkupType } },
 |};
 
-declare export default class AppManager {
-  static eventTitles: typeof eventTitles;
-  static statuses: typeof statuses;
-  static levels: typeof levels;
+export interface AppManagerInterface {
+  constructor(config: ConfigType, events: EventsType, options?: OptionsType): void,
 
-  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
-
-  init: () => Promise<void>,
+  init: () => void,
   emit: EmitterType,
   on: SubscriberType,
   removeListener: RemoveListenerType,
 }
+
+declare export default AppManagerInterface;

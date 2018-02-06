@@ -61,7 +61,7 @@ describe('Queueing state changes', () => {
 
     await appManager._runningStateChange;
 
-    expect(appManager._resolvedFragments).to.have.keys(['FRAGMENT_A']);
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A']);
 
     windowStub.history.pushState(null, null, '/app-b');
     windowStub.history.pushState(null, null, '/app-c');
@@ -81,14 +81,14 @@ describe('Queueing state changes', () => {
     expect(runningStateChange).to.be.a('promise');
     expect(queuedStateChange).to.be.null;
 
-    expect(appManager._resolvedFragments).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
 
     await runningStateChange;
 
     expect(appManager._queuedStateChange).to.be.null;
     expect(appManager._runningStateChange).to.be.null;
 
-    expect(appManager._resolvedFragments).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B', 'FRAGMENT_D']);
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B', 'FRAGMENT_D']);
 
     expect(appManager._currentAppName).to.equals('APP_D');
   });
@@ -129,7 +129,7 @@ describe('Queueing state changes', () => {
     await appManager._runningStateChange;
 
     expect(appManager._currentAppName).to.equals('APP_C');
-    expect(appManager._resolvedFragments).to.have.keys(['FRAGMENT_A', 'FRAGMENT_C']);
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_C']);
 
     expect(appManager._runningStateChange).to.be.null;
     expect(appManager._queuedStateChange).to.be.null;
