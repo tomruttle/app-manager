@@ -44,13 +44,13 @@ describe('events', () => {
 
     appManager.init();
 
-    await appManager._runningStateChange;
+    await appManager._runningStateChanger;
 
     windowStub.history.pushState({}, null, '/app-a');
 
-    let runningStateChange = appManager._runningStateChange;
+    let runningStateChanger = appManager._runningStateChanger;
 
-    await runningStateChange;
+    await runningStateChanger;
 
     expect(appManager._currentAppName).to.equals('APP_A');
 
@@ -58,9 +58,9 @@ describe('events', () => {
 
     windowStub.history.pushState(null, null, '/app-c');
 
-    runningStateChange = appManager._runningStateChange;
+    runningStateChanger = appManager._runningStateChanger;
 
-    await runningStateChange;
+    await runningStateChanger;
 
     expect(appManager._currentAppName).to.equals('APP_A');
 

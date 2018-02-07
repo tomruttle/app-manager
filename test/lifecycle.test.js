@@ -47,7 +47,7 @@ describe('Lifecycle', () => {
 
       appManager.init();
 
-      await appManager._runningStateChange;
+      await appManager._runningStateChanger;
 
       expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
 
@@ -82,7 +82,7 @@ describe('Lifecycle', () => {
 
       appManager.init();
 
-      await appManager._runningStateChange;
+      await appManager._runningStateChanger;
 
       expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
 
@@ -127,11 +127,11 @@ describe('Lifecycle', () => {
 
       appManager.init();
 
-      await appManager._runningStateChange;
+      await appManager._runningStateChanger;
 
       windowStub.history.pushState(null, null, '/app-a');
 
-      await appManager._runningStateChange;
+      await appManager._runningStateChanger;
 
       expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
 
