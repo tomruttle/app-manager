@@ -189,7 +189,7 @@ describe('multi-step browser test', () => {
 
     await awaitEvent(appManager, 'am-external-link');
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
+    expect(appManager._currentAppName).to.equals(appManager._apps.APP_C.name);
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);

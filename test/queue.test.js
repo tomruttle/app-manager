@@ -134,7 +134,7 @@ describe('Queueing state changes', () => {
 
     await runningStateChange;
 
-    expect(appManager._currentAppName).to.equals('APP_B');
+    expect(appManager._currentAppName).to.equals('APP_C');
     expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
 
     await appManager._runningStateChange;
