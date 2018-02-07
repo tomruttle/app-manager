@@ -105,4 +105,53 @@ describe('Lifecycle', () => {
       expect(footerScript.onUpdateStatus.callCount).to.equals(5);
     });
   });
+
+  describe('update page', () => {
+    it('handles errors on update', async () => {
+      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
+
+      const AppManager = initAppManager(windowStub);
+
+      const errorScript = {
+        version: 5,
+        onStateChange: sinon.stub().throws(),
+        onUpdateStatus: sinon.spy(),
+        hydrate: sinon.spy(),
+        render: sinon.spy(),
+        unmount: sinon.spy(),
+      };
+
+      const config = getConfig(async () => errorScript);
+
+      const appManager = new AppManager(config, new EventEmitter());
+
+      appManager.init();
+
+      await appManager._runningStateChange;
+
+      windowStub.history.pushState(null, null, '/app-a');
+
+      await appManager._runningStateChange;
+
+      expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
+
+      expect(appManager._cachedScripts).to.have.keys(['APP', 'FOOTER', 'HEADER']);
+
+      const appScript: any = appManager._cachedScripts.APP;
+
+      expect(appScript.onStateChange.callCount).to.equals(1);
+      expect(appScript.render.callCount).to.equals(0);
+      expect(appScript.hydrate.callCount).to.equals(1);
+      expect(appScript.unmount.callCount).to.equals(0);
+      expect(appScript.onUpdateStatus.callCount).to.equals(5);
+
+      const footerScript: any = appManager._cachedScripts.FOOTER;
+
+      expect(footerScript.onStateChange.callCount).to.equals(1);
+      expect(footerScript.render.callCount).to.equals(0);
+      expect(footerScript.hydrate.callCount).to.equals(1);
+      expect(footerScript.unmount.callCount).to.equals(0);
+      expect(footerScript.onUpdateStatus.callCount).to.equals(7);
+    });
+  });
 });
