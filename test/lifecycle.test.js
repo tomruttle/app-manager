@@ -76,10 +76,7 @@ describe('Lifecycle', () => {
         unmount: sinon.spy(),
       };
 
-      const config = getConfig(
-        async () => errorScript,
-        async () => { throw new Error('Nope.'); },
-      );
+      const config = getConfig(async () => errorScript);
 
       const appManager = new AppManager(config, new EventEmitter());
 
@@ -89,7 +86,7 @@ describe('Lifecycle', () => {
 
       expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
 
-      expect(appManager._cachedScripts).to.have.keys(['APP', 'FOOTER']);
+      expect(appManager._cachedScripts).to.have.keys(['APP', 'FOOTER', 'HEADER']);
 
       const appScript: any = appManager._cachedScripts.APP;
 
@@ -97,7 +94,7 @@ describe('Lifecycle', () => {
       expect(appScript.render.callCount).to.equals(0);
       expect(appScript.hydrate.callCount).to.equals(1);
       expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(4);
+      expect(appScript.onUpdateStatus.callCount).to.equals(3);
 
       const footerScript: any = appManager._cachedScripts.FOOTER;
 
@@ -105,7 +102,7 @@ describe('Lifecycle', () => {
       expect(footerScript.render.callCount).to.equals(0);
       expect(footerScript.hydrate.callCount).to.equals(1);
       expect(footerScript.unmount.callCount).to.equals(0);
-      expect(footerScript.onUpdateStatus.callCount).to.equals(6);
+      expect(footerScript.onUpdateStatus.callCount).to.equals(5);
     });
   });
 });

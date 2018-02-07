@@ -102,10 +102,10 @@ describe('Queueing state changes', () => {
       },
       fragments: {
         FRAGMENT_A: { loadScript: async () => ({ version: 5 }), slots: ['MAIN'] },
-        FRAGMENT_B: { loadScript: async () => { throw new Error('Failed to load'); }, slots: ['MAIN'] },
+        FRAGMENT_B: { loadScript: async () => ({ version: 5, render: (_container, _state) => { throw new Error('Nope'); } }), slots: ['MAIN'] },
         FRAGMENT_C: { loadScript: async () => ({ version: 5 }), slots: ['MAIN'] },
       },
-      slots: { MAIN: { querySelector: null } },
+      slots: { MAIN: { querySelector: '.blah' } },
     };
 
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
@@ -121,15 +121,26 @@ describe('Queueing state changes', () => {
     windowStub.history.pushState(null, null, '/app-b');
     windowStub.history.pushState(null, null, '/app-c');
 
+    const queuedStateChange = appManager._queuedStateChange;
+    const runningStateChange = appManager._runningStateChange;
+
+    expect(runningStateChange).to.be.a('promise');
+    expect(queuedStateChange).to.be.a('function');
+
     const [err]: any = await awaitEvent(appManager, 'am-error');
 
-    expect(err.code).to.equals('load_script');
-    expect(err.message).to.contain('Failed to load');
+    expect(err.code).to.equals('render');
+    expect(err.message).to.contain('Nope');
+
+    await runningStateChange;
+
+    expect(appManager._currentAppName).to.equals('APP_B');
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
 
     await appManager._runningStateChange;
 
     expect(appManager._currentAppName).to.equals('APP_C');
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_C']);
+    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B', 'FRAGMENT_C']);
 
     expect(appManager._runningStateChange).to.be.null;
     expect(appManager._queuedStateChange).to.be.null;

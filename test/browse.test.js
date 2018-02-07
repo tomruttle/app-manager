@@ -195,13 +195,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(2);
-    expect(mockA.onUpdateStatus.callCount).to.equals(10);
+    expect(mockA.onUpdateStatus.callCount).to.equals(12);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(2);
     expect(mockB.onStateChange.callCount).to.equals(2);
-    expect(mockB.unmount.callCount).to.equals(1);
-    expect(mockB.onUpdateStatus.callCount).to.equals(10);
+    expect(mockB.unmount.callCount).to.equals(2);
+    expect(mockB.onUpdateStatus.callCount).to.equals(16);
 
     expect(mockC.hydrate.callCount).to.equals(0);
     expect(mockC.mount.callCount).to.equals(0);
