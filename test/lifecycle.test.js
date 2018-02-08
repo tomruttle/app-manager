@@ -59,7 +59,7 @@ describe('Lifecycle', () => {
       expect(appScript.render.callCount).to.equals(0);
       expect(appScript.hydrate.callCount).to.equals(1);
       expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(4);
+      expect(appScript.onUpdateStatus.callCount).to.equals(2);
     });
 
     it('handles errors on hydrate', async () => {
@@ -94,7 +94,7 @@ describe('Lifecycle', () => {
       expect(appScript.render.callCount).to.equals(0);
       expect(appScript.hydrate.callCount).to.equals(1);
       expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(3);
+      expect(appScript.onUpdateStatus.callCount).to.equals(1);
 
       const footerScript: any = appManager._cachedScripts.FOOTER;
 
@@ -102,7 +102,7 @@ describe('Lifecycle', () => {
       expect(footerScript.render.callCount).to.equals(0);
       expect(footerScript.hydrate.callCount).to.equals(1);
       expect(footerScript.unmount.callCount).to.equals(0);
-      expect(footerScript.onUpdateStatus.callCount).to.equals(5);
+      expect(footerScript.onUpdateStatus.callCount).to.equals(3);
     });
   });
 
@@ -143,7 +143,7 @@ describe('Lifecycle', () => {
       expect(appScript.render.callCount).to.equals(0);
       expect(appScript.hydrate.callCount).to.equals(1);
       expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(5);
+      expect(appScript.onUpdateStatus.callCount).to.equals(3);
 
       const footerScript: any = appManager._cachedScripts.FOOTER;
 
@@ -151,7 +151,7 @@ describe('Lifecycle', () => {
       expect(footerScript.render.callCount).to.equals(0);
       expect(footerScript.hydrate.callCount).to.equals(1);
       expect(footerScript.unmount.callCount).to.equals(0);
-      expect(footerScript.onUpdateStatus.callCount).to.equals(7);
+      expect(footerScript.onUpdateStatus.callCount).to.equals(5);
     });
   });
 });

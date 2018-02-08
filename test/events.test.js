@@ -156,7 +156,7 @@ describe('events', () => {
 
       const err = onErrorSpy.args[0][0];
 
-      expect(err.code).to.equals('missing_fragment');
+      expect(err.code).to.equals('invalid_slots');
     });
   });
 });

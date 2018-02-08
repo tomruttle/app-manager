@@ -75,7 +75,7 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(0);
-    expect(mockA.onUpdateStatus.callCount).to.equals(4);
+    expect(mockA.onUpdateStatus.callCount).to.equals(2);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(0);
@@ -95,13 +95,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(1);
-    expect(mockA.onUpdateStatus.callCount).to.equals(6);
+    expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(1);
     expect(mockB.onStateChange.callCount).to.equals(0);
     expect(mockB.unmount.callCount).to.equals(0);
-    expect(mockB.onUpdateStatus.callCount).to.equals(4);
+    expect(mockB.onUpdateStatus.callCount).to.equals(2);
   });
 
   it('moves within an app', async () => {
@@ -115,13 +115,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(1);
-    expect(mockA.onUpdateStatus.callCount).to.equals(6);
+    expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(1);
     expect(mockB.onStateChange.callCount).to.equals(1);
     expect(mockB.unmount.callCount).to.equals(0);
-    expect(mockB.onUpdateStatus.callCount).to.equals(6);
+    expect(mockB.onUpdateStatus.callCount).to.equals(4);
   });
 
   it('moves back within an app', async () => {
@@ -135,13 +135,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(0);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(1);
-    expect(mockA.onUpdateStatus.callCount).to.equals(6);
+    expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(1);
     expect(mockB.onStateChange.callCount).to.equals(2);
     expect(mockB.unmount.callCount).to.equals(0);
-    expect(mockB.onUpdateStatus.callCount).to.equals(8);
+    expect(mockB.onUpdateStatus.callCount).to.equals(6);
   });
 
   it('moves back to the old app', async () => {
@@ -155,13 +155,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(1);
-    expect(mockA.onUpdateStatus.callCount).to.equals(10);
+    expect(mockA.onUpdateStatus.callCount).to.equals(6);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(1);
     expect(mockB.onStateChange.callCount).to.equals(2);
     expect(mockB.unmount.callCount).to.equals(1);
-    expect(mockB.onUpdateStatus.callCount).to.equals(10);
+    expect(mockB.onUpdateStatus.callCount).to.equals(8);
   });
 
   it('moves forward again', async () => {
@@ -175,13 +175,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(2);
-    expect(mockA.onUpdateStatus.callCount).to.equals(12);
+    expect(mockA.onUpdateStatus.callCount).to.equals(8);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(2);
     expect(mockB.onStateChange.callCount).to.equals(2);
     expect(mockB.unmount.callCount).to.equals(1);
-    expect(mockB.onUpdateStatus.callCount).to.equals(14);
+    expect(mockB.onUpdateStatus.callCount).to.equals(10);
   });
 
   it('If a fragment does not have a loadScript function, treat the app as an external link', async () => {
@@ -195,13 +195,13 @@ describe('multi-step browser test', () => {
     expect(mockA.render.callCount).to.equals(1);
     expect(mockA.onStateChange.callCount).to.equals(0);
     expect(mockA.unmount.callCount).to.equals(2);
-    expect(mockA.onUpdateStatus.callCount).to.equals(12);
+    expect(mockA.onUpdateStatus.callCount).to.equals(8);
 
     expect(mockB.hydrate.callCount).to.equals(0);
     expect(mockB.mount.callCount).to.equals(2);
     expect(mockB.onStateChange.callCount).to.equals(2);
     expect(mockB.unmount.callCount).to.equals(2);
-    expect(mockB.onUpdateStatus.callCount).to.equals(16);
+    expect(mockB.onUpdateStatus.callCount).to.equals(12);
 
     expect(mockC.hydrate.callCount).to.equals(0);
     expect(mockC.mount.callCount).to.equals(0);
