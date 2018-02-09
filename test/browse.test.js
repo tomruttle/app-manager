@@ -38,18 +38,18 @@ describe('multi-step browser test', () => {
 
   const config = {
     apps: {
-      APP_A: { appPath: '/app-a', fragments: ['SCRIPT_A'] },
-      APP_B: { appPath: '/app-b', fragments: ['SCRIPT_B'] },
-      APP_C: { appPath: '/app-c', fragments: ['SCRIPT_C'] },
+      APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
+      APP_B: { appPath: '/app-b', fragment: 'SCRIPT_B' },
+      APP_C: { appPath: '/app-c', fragment: 'SCRIPT_C' },
     },
     slots: {
       APP: { querySelector: '.fragment' },
       OTHER: { querySelector: '.other' },
     },
     fragments: {
-      SCRIPT_A: { slots: ['APP'], loadScript: async () => mockA },
-      SCRIPT_B: { slots: ['OTHER'], loadScript: async () => mockB },
-      SCRIPT_C: { slots: ['APP'] },
+      SCRIPT_A: { slot: 'APP', loadScript: async () => mockA },
+      SCRIPT_B: { slot: 'OTHER', loadScript: async () => mockB },
+      SCRIPT_C: { slot: 'APP' },
     },
   };
 

@@ -32,9 +32,9 @@ describe('Lifecycle', () => {
         FOOTER: { querySelector: '.footer' },
       },
       fragments: {
-        APP: { slots: ['APP'], loadScript: loadScriptApp || defaultLoadScript },
-        HEADER: { slots: ['HEADER'], loadScript: loadScriptHeader || defaultLoadScript },
-        FOOTER: { slots: ['FOOTER'], loadScript: loadScriptFooter || defaultLoadScript },
+        APP: { slot: 'APP', loadScript: loadScriptApp || defaultLoadScript },
+        HEADER: { slot: 'HEADER', loadScript: loadScriptHeader || defaultLoadScript },
+        FOOTER: { slot: 'FOOTER', loadScript: loadScriptFooter || defaultLoadScript },
       },
     };
   }

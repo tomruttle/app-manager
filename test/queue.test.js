@@ -37,16 +37,16 @@ describe('Queueing state changes', () => {
 
     const config = {
       apps: {
-        APP_A: { appPath: '/app-a', fragments: ['FRAGMENT_A'] },
-        APP_B: { appPath: '/app-b', fragments: ['FRAGMENT_B'] },
-        APP_C: { appPath: '/app-c', fragments: ['FRAGMENT_C'] },
-        APP_D: { appPath: '/app-d', fragments: ['FRAGMENT_D'] },
+        APP_A: { appPath: '/app-a', fragment: 'FRAGMENT_A' },
+        APP_B: { appPath: '/app-b', fragment: 'FRAGMENT_B' },
+        APP_C: { appPath: '/app-c', fragment: 'FRAGMENT_C' },
+        APP_D: { appPath: '/app-d', fragment: 'FRAGMENT_D' },
       },
       fragments: {
-        FRAGMENT_A: { loadScript, slots: ['MAIN'] },
-        FRAGMENT_B: { loadScript, slots: ['MAIN'] },
-        FRAGMENT_C: { loadScript, slots: ['MAIN'] },
-        FRAGMENT_D: { loadScript, slots: ['MAIN'] },
+        FRAGMENT_A: { loadScript, slot: 'MAIN' },
+        FRAGMENT_B: { loadScript, slot: 'MAIN' },
+        FRAGMENT_C: { loadScript, slot: 'MAIN' },
+        FRAGMENT_D: { loadScript, slot: 'MAIN' },
       },
       slots: { MAIN: { querySelector: null } },
     };
@@ -86,14 +86,14 @@ describe('Queueing state changes', () => {
   it('propagates errors and tries to continue if a state change fails', async () => {
     const config = {
       apps: {
-        APP_A: { appPath: '/app-a', fragments: ['FRAGMENT_A'] },
-        APP_B: { appPath: '/app-b', fragments: ['FRAGMENT_B'] },
-        APP_C: { appPath: '/app-c', fragments: ['FRAGMENT_C'] },
+        APP_A: { appPath: '/app-a', fragment: 'FRAGMENT_A' },
+        APP_B: { appPath: '/app-b', fragment: 'FRAGMENT_B' },
+        APP_C: { appPath: '/app-c', fragment: 'FRAGMENT_C' },
       },
       fragments: {
-        FRAGMENT_A: { loadScript: async () => ({ version: 5 }), slots: ['MAIN'] },
-        FRAGMENT_B: { loadScript: async () => ({ version: 5, render: (_container, _state) => { throw new Error('Nope'); } }), slots: ['MAIN'] },
-        FRAGMENT_C: { loadScript: async () => ({ version: 5 }), slots: ['MAIN'] },
+        FRAGMENT_A: { loadScript: async () => ({ version: 5 }), slot: 'MAIN' },
+        FRAGMENT_B: { loadScript: async () => ({ version: 5, render: (_container, _state) => { throw new Error('Nope'); } }), slot: 'MAIN' },
+        FRAGMENT_C: { loadScript: async () => ({ version: 5 }), slot: 'MAIN' },
       },
       slots: { MAIN: { querySelector: '.blah' } },
     };

@@ -14,11 +14,14 @@ export type OptionsType = {
   haltOnError?: boolean,
 };
 
-export type AppType = {
-  name: AppNameType,
-  appPath: string,
-  fragments: Array<FragmentNameType>,
-};
+type BaseAppType = {
+  appPath?: string,
+  appPaths?: Array<string>,
+  fragment?: FragmentNameType,
+  fragments?: Array<FragmentNameType>,
+}
+
+export type AppType = BaseAppType & { name: AppNameType };
 
 export type EventCallbackType = (...data: Array<mixed>) => mixed;
 export type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
@@ -73,26 +76,27 @@ export interface ScriptVersion5Type {
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
-export type SlotType = {
-  name: SlotNameType,
-  querySelector: ?string,
-};
+type BaseSlotType = { querySelector: ?string }
+
+export type SlotType = BaseSlotType & { name: SlotNameType };
 
 type LoadScriptType = (state: StateType) => Promise<ScriptType>;
 
 type GetMarkupType = (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>;
 
-export type FragmentType = {
-  name: FragmentNameType,
-  slots: Array<SlotNameType>,
+type BaseFragmentType = {
+  slot?: SlotNameType,
+  slots?: Array<SlotNameType>,
   loadScript?: LoadScriptType,
   getMarkup?: GetMarkupType,
 };
 
+export type FragmentType = BaseFragmentType & { name: FragmentNameType };
+
 export type ConfigType = {|
-  apps: { [appName: AppNameType]: { appPath: string, fragments: Array<FragmentNameType> } },
-  slots: { [slotName: SlotNameType]: { querySelector: ?string } },
-  fragments: { [fragmentName: FragmentNameType]: { slots: Array<SlotNameType>, loadScript?: LoadScriptType, getMarkup?: GetMarkupType } },
+  apps: { [appName: AppNameType]: BaseAppType },
+  slots: { [slotName: SlotNameType]: BaseSlotType },
+  fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
 export interface AppManagerInterface {

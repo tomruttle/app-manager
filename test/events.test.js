@@ -14,7 +14,7 @@ describe('events', () => {
       apps: {
         APP_A: {
           appPath: '/app-a',
-          fragments: ['SCRIPT_A'],
+          fragment: 'SCRIPT_A',
         },
       },
       slots: {
@@ -24,7 +24,7 @@ describe('events', () => {
       },
       fragments: {
         SCRIPT_A: {
-          slots: ['MAIN'],
+          slot: 'MAIN',
           loadScript: async () => ({ version: 5 }),
         },
       },
@@ -118,16 +118,16 @@ describe('events', () => {
         apps: {
           APP_A: {
             appPath: '/app-a',
-            fragments: ['SCRIPT_A'],
+            fragment: 'SCRIPT_A',
           },
           APP_B: {
             appPath: '/app-b',
-            fragments: ['MISSING'],
+            fragment: 'MISSING',
           },
         },
         fragments: {
           SCRIPT_A: {
-            slots: ['MAIN'],
+            slot: 'MAIN',
           },
         },
         slots: {},
