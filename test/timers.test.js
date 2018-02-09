@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import { retry } from '../lib/utils/timers';
+import { retry } from '../lib/utils/config';
 
 describe('Timers', () => {
   describe('retry', () => {

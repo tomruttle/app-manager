@@ -5,7 +5,7 @@ import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extra
 
 import WindowStub from '../lib/utils/window-stub';
 import initAppManager from '../lib/app-manager';
-import { delay } from '../lib/utils/timers';
+import { delay } from '../lib/utils/config';
 import { awaitEvent } from './utils';
 
 describe('Queueing state changes', () => {
