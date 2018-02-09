@@ -39,7 +39,7 @@ describe('multi-step browser test', () => {
   const config = {
     apps: {
       APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
-      APP_B: { appPath: '/app-b', fragment: 'SCRIPT_B' },
+      APP_B: { appPaths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
       APP_C: { appPath: '/app-c', fragment: 'SCRIPT_C' },
     },
     slots: {
@@ -99,7 +99,7 @@ describe('multi-step browser test', () => {
   });
 
   it('moves within an app', async () => {
-    windowStub.history.pushState({}, null, '/app-b');
+    windowStub.history.pushState({}, null, '/app-b/next');
 
     await getRunningStateChange();
 
