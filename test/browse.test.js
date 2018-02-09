@@ -36,40 +36,34 @@ describe('multi-step browser test', () => {
     unmount: sinon.spy(),
   };
 
-  let appManager;
-  let windowStub;
+  const config = {
+    apps: {
+      APP_A: { appPath: '/app-a', fragments: ['SCRIPT_A'] },
+      APP_B: { appPath: '/app-b', fragments: ['SCRIPT_B'] },
+      APP_C: { appPath: '/app-c', fragments: ['SCRIPT_C'] },
+    },
+    slots: {
+      APP: { querySelector: '.fragment' },
+      OTHER: { querySelector: '.other' },
+    },
+    fragments: {
+      SCRIPT_A: { slots: ['APP'], loadScript: async () => mockA },
+      SCRIPT_B: { slots: ['OTHER'], loadScript: async () => mockB },
+      SCRIPT_C: { slots: ['APP'] },
+    },
+  };
 
-  before(() => {
-    const config = {
-      apps: {
-        APP_A: { appPath: '/app-a/:entityId?', fragments: ['SCRIPT_A'] },
-        APP_B: { appPath: '/app-b/:entityId?', fragments: ['SCRIPT_B'] },
-        APP_C: { appPath: '/app-c/:entityId?', fragments: ['SCRIPT_C'] },
-      },
-      slots: {
-        APP: { querySelector: '.fragment' },
-        OTHER: { querySelector: '.other' },
-      },
-      fragments: {
-        SCRIPT_A: { slots: ['APP'], loadScript: async () => mockA },
-        SCRIPT_B: { slots: ['OTHER'], loadScript: async () => mockB },
-        SCRIPT_C: { slots: ['APP'] },
-      },
-    };
+  const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
-    windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
+  const appManager = initAppManager(windowStub);
+  const events = new EventEmitter();
 
-    const AppManager = initAppManager(windowStub);
-
-    appManager = new AppManager(config, new EventEmitter());
-  });
+  const { getState, getRunningStateChange } = appManager(config, events);
 
   it('correctly initialises app manager with first fragment', async () => {
-    appManager.init();
+    await getRunningStateChange();
 
-    await appManager._runningStateChanger;
-
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_A.name);
+    expect(getState().app.name).to.equals('APP_A');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -87,9 +81,9 @@ describe('multi-step browser test', () => {
   it('browses to new app', async () => {
     windowStub.history.pushState({}, null, '/app-b');
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
+    expect(getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -105,11 +99,11 @@ describe('multi-step browser test', () => {
   });
 
   it('moves within an app', async () => {
-    windowStub.history.pushState({}, null, '/app-b/entity');
+    windowStub.history.pushState({}, null, '/app-b');
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
+    expect(getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -127,9 +121,9 @@ describe('multi-step browser test', () => {
   it('moves back within an app', async () => {
     windowStub.history.go(-1);
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
+    expect(getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -147,9 +141,9 @@ describe('multi-step browser test', () => {
   it('moves back to the old app', async () => {
     windowStub.history.back();
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_A.name);
+    expect(getState().app.name).to.equals('APP_A');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -167,9 +161,9 @@ describe('multi-step browser test', () => {
   it('moves forward again', async () => {
     windowStub.history.forward();
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_B.name);
+    expect(getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -187,9 +181,9 @@ describe('multi-step browser test', () => {
   it('If a fragment does not have a loadScript function, treat the app as an external link', async () => {
     windowStub.history.pushState({}, null, '/app-c');
 
-    await awaitEvent(appManager, 'am-external-link');
+    await awaitEvent(events, 'am-external-link');
 
-    expect(appManager._currentAppName).to.equals(appManager._apps.APP_C.name);
+    expect(getState().app.name).to.equals('APP_C');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);

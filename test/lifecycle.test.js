@@ -19,7 +19,9 @@ describe('Lifecycle', () => {
     };
   }
 
-  function getConfig(loadScriptApp = async () => getSpyScript(), loadScriptHeader = async () => getSpyScript()) {
+  function getConfig(loadScriptApp, loadScriptHeader, loadScriptFooter) {
+    const defaultLoadScript = async () => getSpyScript();
+
     return {
       apps: {
         APP: { appPath: '/app-a', fragments: ['APP', 'HEADER', 'FOOTER'] },
@@ -30,9 +32,9 @@ describe('Lifecycle', () => {
         FOOTER: { querySelector: '.footer' },
       },
       fragments: {
-        APP: { slots: ['APP'], loadScript: loadScriptApp },
-        HEADER: { slots: ['HEADER'], loadScript: loadScriptHeader },
-        FOOTER: { slots: ['FOOTER'], loadScript: async () => getSpyScript() },
+        APP: { slots: ['APP'], loadScript: loadScriptApp || defaultLoadScript },
+        HEADER: { slots: ['HEADER'], loadScript: loadScriptHeader || defaultLoadScript },
+        FOOTER: { slots: ['FOOTER'], loadScript: loadScriptFooter || defaultLoadScript },
       },
     };
   }
@@ -41,19 +43,19 @@ describe('Lifecycle', () => {
     it('hydrates a script with no errors', async () => {
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
-      const AppManager = initAppManager(windowStub);
+      const appManager = initAppManager(windowStub);
 
-      const appManager = new AppManager(getConfig(), new EventEmitter());
+      const appScript = getSpyScript();
 
-      appManager.init();
+      const config = getConfig(async () => appScript);
 
-      await appManager._runningStateChanger;
+      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
 
-      expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
+      await getRunningStateChange();
 
-      expect(appManager._cachedScripts).to.have.keys(['APP', 'HEADER', 'FOOTER']);
+      const state = getState();
 
-      const appScript: any = appManager._cachedScripts.APP;
+      expect(state.app.name).to.equals('APP');
 
       expect(appScript.onStateChange.callCount).to.equals(0);
       expect(appScript.render.callCount).to.equals(0);
@@ -65,7 +67,7 @@ describe('Lifecycle', () => {
     it('handles errors on hydrate', async () => {
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
-      const AppManager = initAppManager(windowStub);
+      const appManager = initAppManager(windowStub);
 
       const errorScript = {
         version: 5,
@@ -76,41 +78,35 @@ describe('Lifecycle', () => {
         unmount: sinon.spy(),
       };
 
-      const config = getConfig(async () => errorScript);
+      const headerScript = getSpyScript();
 
-      const appManager = new AppManager(config, new EventEmitter());
+      const config = getConfig(async () => errorScript, async () => headerScript);
 
-      appManager.init();
+      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
 
-      await appManager._runningStateChanger;
+      await getRunningStateChange();
 
-      expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
+      const state = getState();
 
-      expect(appManager._cachedScripts).to.have.keys(['APP', 'FOOTER', 'HEADER']);
+      expect(state.app.name).to.equals('APP');
 
-      const appScript: any = appManager._cachedScripts.APP;
+      expect(errorScript.onStateChange.callCount).to.equals(0);
+      expect(errorScript.render.callCount).to.equals(0);
+      expect(errorScript.hydrate.callCount).to.equals(1);
+      expect(errorScript.unmount.callCount).to.equals(0);
+      expect(errorScript.onUpdateStatus.callCount).to.equals(1);
 
-      expect(appScript.onStateChange.callCount).to.equals(0);
-      expect(appScript.render.callCount).to.equals(0);
-      expect(appScript.hydrate.callCount).to.equals(1);
-      expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(1);
-
-      const footerScript: any = appManager._cachedScripts.FOOTER;
-
-      expect(footerScript.onStateChange.callCount).to.equals(0);
-      expect(footerScript.render.callCount).to.equals(0);
-      expect(footerScript.hydrate.callCount).to.equals(1);
-      expect(footerScript.unmount.callCount).to.equals(0);
-      expect(footerScript.onUpdateStatus.callCount).to.equals(3);
+      expect(headerScript.onStateChange.callCount).to.equals(0);
+      expect(headerScript.render.callCount).to.equals(0);
+      expect(headerScript.hydrate.callCount).to.equals(1);
+      expect(headerScript.unmount.callCount).to.equals(0);
+      expect(headerScript.onUpdateStatus.callCount).to.equals(3);
     });
   });
 
   describe('update page', () => {
     it('handles errors on update', async () => {
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-
-      const AppManager = initAppManager(windowStub);
 
       const errorScript = {
         version: 5,
@@ -121,37 +117,35 @@ describe('Lifecycle', () => {
         unmount: sinon.spy(),
       };
 
-      const config = getConfig(async () => errorScript);
+      const headerScript = getSpyScript();
 
-      const appManager = new AppManager(config, new EventEmitter());
+      const appManager = initAppManager(windowStub);
 
-      appManager.init();
+      const config = getConfig(async () => errorScript, headerScript);
 
-      await appManager._runningStateChanger;
+      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
+
+      await getRunningStateChange();
 
       windowStub.history.pushState(null, null, '/app-a');
 
-      await appManager._runningStateChanger;
+      await getRunningStateChange();
 
-      expect(appManager._currentAppName).to.equals(appManager._apps.APP.name);
+      const state = getState();
 
-      expect(appManager._cachedScripts).to.have.keys(['APP', 'FOOTER', 'HEADER']);
+      expect(state.app.name).to.equals('APP');
 
-      const appScript: any = appManager._cachedScripts.APP;
+      expect(errorScript.onStateChange.callCount).to.equals(1);
+      expect(errorScript.render.callCount).to.equals(0);
+      expect(errorScript.hydrate.callCount).to.equals(1);
+      expect(errorScript.unmount.callCount).to.equals(0);
+      expect(errorScript.onUpdateStatus.callCount).to.equals(3);
 
-      expect(appScript.onStateChange.callCount).to.equals(1);
-      expect(appScript.render.callCount).to.equals(0);
-      expect(appScript.hydrate.callCount).to.equals(1);
-      expect(appScript.unmount.callCount).to.equals(0);
-      expect(appScript.onUpdateStatus.callCount).to.equals(3);
-
-      const footerScript: any = appManager._cachedScripts.FOOTER;
-
-      expect(footerScript.onStateChange.callCount).to.equals(1);
-      expect(footerScript.render.callCount).to.equals(0);
-      expect(footerScript.hydrate.callCount).to.equals(1);
-      expect(footerScript.unmount.callCount).to.equals(0);
-      expect(footerScript.onUpdateStatus.callCount).to.equals(5);
+      expect(headerScript.onStateChange.callCount).to.equals(1);
+      expect(headerScript.render.callCount).to.equals(0);
+      expect(headerScript.hydrate.callCount).to.equals(1);
+      expect(headerScript.unmount.callCount).to.equals(0);
+      expect(headerScript.onUpdateStatus.callCount).to.equals(5);
     });
   });
 });

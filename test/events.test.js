@@ -13,7 +13,7 @@ describe('events', () => {
     const config = {
       apps: {
         APP_A: {
-          appPath: '/app-a/:entityId?',
+          appPath: '/app-a',
           fragments: ['SCRIPT_A'],
         },
       },
@@ -32,37 +32,32 @@ describe('events', () => {
 
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
-    const AppManager = initAppManager(windowStub);
-
-    const appManager = new AppManager(config, new EventEmitter());
+    const appManager = initAppManager(windowStub);
+    const events = new EventEmitter();
 
     const onErrorSpy = sinon.spy();
     const onExternalSpy = sinon.spy();
 
-    appManager.on('am-error', onErrorSpy);
-    appManager.on('am-external-link', onExternalSpy);
+    events.on('am-error', onErrorSpy);
+    events.on('am-external-link', onExternalSpy);
 
-    appManager.init();
+    const { getRunningStateChange, getState } = appManager(config, events);
 
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
     windowStub.history.pushState({}, null, '/app-a');
 
-    let runningStateChanger = appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    await runningStateChanger;
-
-    expect(appManager._currentAppName).to.equals('APP_A');
+    expect(getState().app.name).to.equals('APP_A');
 
     expect(onErrorSpy.callCount).to.equals(0);
 
     windowStub.history.pushState(null, null, '/app-c');
 
-    runningStateChanger = appManager._runningStateChanger;
+    await getRunningStateChange();
 
-    await runningStateChanger;
-
-    expect(appManager._currentAppName).to.equals('APP_A');
+    expect(getState().app.name).to.equals('APP_A');
 
     expect(onErrorSpy.callCount).to.equals(0);
     expect(onExternalSpy.callCount).to.equals(1);
@@ -70,18 +65,18 @@ describe('events', () => {
 
   it('calling replaceState emits correct events', () => {
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-    const AppManager = initAppManager(windowStub);
+    const appManager = initAppManager(windowStub);
 
     const config = { apps: {}, slots: {}, fragments: {} };
-    const appManager = new AppManager(config, new EventEmitter());
-
-    appManager.init();
+    const events = new EventEmitter();
 
     const replaceStateSpy = sinon.spy();
     const stateChangeSpy = sinon.spy();
 
-    appManager.on(AppManager.eventTitles.HISTORY_REPLACE_STATE, replaceStateSpy);
-    appManager.on(AppManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
+    events.on(appManager.eventTitles.HISTORY_REPLACE_STATE, replaceStateSpy);
+    events.on(appManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
+
+    appManager(config, events);
 
     windowStub.history.replaceState(null, null, '/app-c');
 
@@ -98,17 +93,17 @@ describe('events', () => {
 
     windowStub.onbeforeunload = beforeunloadSpy;
 
-    const AppManager = initAppManager(windowStub);
+    const appManager = initAppManager(windowStub);
 
     const config = { apps: {}, slots: {}, fragments: {} };
-    const appManager = new AppManager(config, new EventEmitter());
+    const events = new EventEmitter();
 
-    appManager.on(AppManager.eventTitles.HISTORY_PUSH_STATE, pushStateSpy);
-    appManager.on(AppManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
+    events.on(appManager.eventTitles.HISTORY_PUSH_STATE, pushStateSpy);
+    events.on(appManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
 
-    appManager.init();
+    appManager(config, events);
 
-    windowStub._events.emit(AppManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+    windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     expect(beforeunloadSpy.calledOnce).to.be.true;
 
     windowStub.history.pushState(null, null, '/app-c');
@@ -142,17 +137,17 @@ describe('events', () => {
 
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
 
-      const AppManager = initAppManager(windowStub);
+      const appManager = initAppManager(windowStub);
 
-      const appManager = new AppManager(config, new EventEmitter());
+      const events = new EventEmitter();
 
-      appManager.on('am-error', onErrorSpy);
+      events.on('am-error', onErrorSpy);
 
-      appManager.init();
+      appManager(config, events);
 
       windowStub.history.pushState({}, null, '/app-b');
 
-      await awaitEvent(appManager, 'am-error');
+      await awaitEvent(events, 'am-error');
 
       const err = onErrorSpy.args[0][0];
 

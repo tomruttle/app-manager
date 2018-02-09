@@ -13,20 +13,20 @@ describe('Queueing state changes', () => {
     const config = { apps: {}, fragments: {}, slots: {} };
 
     const windowStub = new WindowStub();
-    const AppManager = initAppManager(windowStub);
-    const appManager = new AppManager(config, new EventEmitter());
+    const appManager = initAppManager(windowStub);
 
-    expect(appManager._runningStateChanger).to.be.null;
+    const { getRunningStateChange } = appManager(config, new EventEmitter());
 
-    appManager.init();
+    const runningStateChange = getRunningStateChange();
 
-    expect(appManager._runningStateChanger).to.be.a('promise');
+    expect(runningStateChange).to.be.a('promise');
 
-    const result = await appManager._runningStateChanger;
+    const result = await runningStateChange;
 
-    expect(appManager._runningStateChanger).to.be.null;
-    expect(appManager._queuedStateChanger).to.be.null;
+    expect(runningStateChange).to.be.null;
     expect(result).to.be.undefined;
+
+    expect(getRunningStateChange()).to.be.null;
   });
 
   it('skips over queued state changes if the state changes again while a state change is already in progress', async () => {
@@ -52,45 +52,35 @@ describe('Queueing state changes', () => {
     };
 
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-    const AppManager = initAppManager(windowStub);
-    const appManager = new AppManager(config, new EventEmitter());
+    const appManager = initAppManager(windowStub);
 
-    expect(appManager._runningStateChanger).to.be.null;
+    const { getRunningStateChange, getState } = appManager(config, new EventEmitter());
 
-    appManager.init();
+    await getRunningStateChange();
 
-    await appManager._runningStateChanger;
-
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A']);
+    expect(getState().app.name).to.equals('APP_A');
 
     windowStub.history.pushState(null, null, '/app-b');
     windowStub.history.pushState(null, null, '/app-c');
     windowStub.history.pushState(null, null, '/app-d');
 
-    let queuedStateChange = appManager._queuedStateChanger;
-    let runningStateChanger = appManager._runningStateChanger;
+    const firstRunningStateChange = getRunningStateChange();
 
-    expect(runningStateChanger).to.be.a('promise');
-    expect(queuedStateChange).to.be.a('function');
+    expect(firstRunningStateChange).to.be.a('promise');
 
-    await runningStateChanger;
+    await firstRunningStateChange;
 
-    queuedStateChange = appManager._queuedStateChanger;
-    runningStateChanger = appManager._runningStateChanger;
+    expect(getState().app.name).to.equals('APP_B');
 
-    expect(runningStateChanger).to.be.a('promise');
-    expect(queuedStateChange).to.be.null;
+    const secondRunningStateChange = getRunningStateChange();
 
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
+    expect(secondRunningStateChange).to.be.a('promise');
 
-    await runningStateChanger;
+    await secondRunningStateChange;
 
-    expect(appManager._queuedStateChanger).to.be.null;
-    expect(appManager._runningStateChanger).to.be.null;
+    expect(getRunningStateChange()).to.be.null;
 
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B', 'FRAGMENT_D']);
-
-    expect(appManager._currentAppName).to.equals('APP_D');
+    expect(getState().app.name).to.equals('APP_D');
   });
 
   it('propagates errors and tries to continue if a state change fails', async () => {
@@ -109,40 +99,35 @@ describe('Queueing state changes', () => {
     };
 
     const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-    const AppManager = initAppManager(windowStub);
-    const appManager = new AppManager(config, new EventEmitter());
+    const appManager = initAppManager(windowStub);
+    const events = new EventEmitter();
+    const { getState, getRunningStateChange } = appManager(config, events);
 
-    expect(appManager._runningStateChanger).to.be.null;
-
-    appManager.init();
-
-    await appManager._runningStateChanger;
+    await getRunningStateChange();
 
     windowStub.history.pushState(null, null, '/app-b');
     windowStub.history.pushState(null, null, '/app-c');
 
-    const queuedStateChange = appManager._queuedStateChanger;
-    const runningStateChanger = appManager._runningStateChanger;
+    const firstRunningStateChange = getRunningStateChange();
 
-    expect(runningStateChanger).to.be.a('promise');
-    expect(queuedStateChange).to.be.a('function');
+    expect(firstRunningStateChange).to.be.a('promise');
 
-    const [err]: any = await awaitEvent(appManager, 'am-error');
+    const [err]: any = await awaitEvent(events, 'am-error');
 
     expect(err.code).to.equals('render');
     expect(err.message).to.contain('Nope');
 
-    await runningStateChanger;
+    await firstRunningStateChange;
 
-    expect(appManager._currentAppName).to.equals('APP_C');
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B']);
+    expect(getState().app.name).to.equals('APP_C');
 
-    await appManager._runningStateChanger;
+    const secondRunningStateChange = getRunningStateChange();
 
-    expect(appManager._currentAppName).to.equals('APP_C');
-    expect(appManager._cachedScripts).to.have.keys(['FRAGMENT_A', 'FRAGMENT_B', 'FRAGMENT_C']);
+    expect(secondRunningStateChange).to.be.a('promise');
 
-    expect(appManager._runningStateChanger).to.be.null;
-    expect(appManager._queuedStateChanger).to.be.null;
+    await secondRunningStateChange;
+
+    expect(getState().app.name).to.equals('APP_C');
+    expect(getRunningStateChange()).to.be.null;
   });
 });

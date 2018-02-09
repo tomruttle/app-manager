@@ -31,23 +31,16 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
-export type ParamsType = { [paramName: string]: string };
-
-export type QueryType = { [paramName: string]: string };
-
-export type StateType = {|
+export type StateType = {
   event: ?string,
   path: string,
-  params: ParamsType,
-  query: QueryType,
   prevApp: ?AppType,
   app: AppType,
-|};
+};
 
 export type StatusDetailsType = {|
   status: StatusType,
   level: string,
-  source: ?string,
   message?: ?string,
 |}
 
@@ -105,7 +98,6 @@ export type ConfigType = {|
 export interface AppManagerInterface {
   constructor(config: ConfigType, events: EventsType, options?: OptionsType): void,
 
-  init: () => void,
   emit: EmitterType,
   on: SubscriberType,
   removeListener: RemoveListenerType,

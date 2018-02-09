@@ -15,7 +15,7 @@ describe('Server', () => {
         },
         app_b: {
           fragments: ['fragment_b'],
-          appPath: '/app-b/:param1?',
+          appPath: '/app-b',
         },
       },
       fragments: {
@@ -69,10 +69,10 @@ describe('Server', () => {
       expect(args[0].app.name).to.equals('app_a');
     });
 
-    it('can handle params, query params, and additional arguments', async () => {
+    it('can handle additional arguments', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
-      const appMarkup = await appManagerServer.getSlotsMarkup('/app-b/test', 'query=success', 'additional data');
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-b', 'query=success', 'additional data');
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_b', other: '' });
 
@@ -85,8 +85,6 @@ describe('Server', () => {
       const args = getMarkupStubB.args[0];
       expect(args).to.be.an('array').with.length(2);
       expect(args[0].app.name).to.equals('app_b');
-      expect(args[0].params).to.deep.equals({ param1: 'test' });
-      expect(args[0].query).to.deep.equals({ query: 'success' });
       expect(args[1]).to.equals('additional data');
     });
   });
