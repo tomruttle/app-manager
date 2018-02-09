@@ -72,7 +72,7 @@ describe('Server', () => {
     it('can handle additional arguments', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
-      const appMarkup = await appManagerServer.getSlotsMarkup('/app-b', 'query=success', 'additional data');
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-b?query=success', 'additional data');
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_b', other: '' });
 

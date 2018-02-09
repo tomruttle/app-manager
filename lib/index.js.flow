@@ -12,6 +12,8 @@ export type StatusLevelType = $Values<typeof levels>;
 export type OptionsType = {
   importTimeout?: number,
   haltOnError?: boolean,
+  getAppNameFromUrl?: (url: string) => ?AppNameType,
+  getAdditionalState?: (appName: AppNameType, url: string) => { [stateName: string]: mixed },
 };
 
 type BaseAppType = {
