@@ -93,6 +93,8 @@ type BaseFragmentType = {
   getMarkup?: GetMarkupType,
 };
 
+export type StateChangeType = Promise<void>;
+
 export type FragmentType = BaseFragmentType & { name: FragmentNameType };
 
 export type ConfigType = {|
@@ -101,12 +103,7 @@ export type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-export interface AppManagerInterface {
-  constructor(config: ConfigType, events: EventsType, options?: OptionsType): void,
-
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
+declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
+  getState(): StateType,
+  getRunningStateChange(): ?StateChangeType,
 }
-
-declare export default AppManagerInterface;
