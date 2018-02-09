@@ -2,12 +2,23 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extraneous-dependencies
+
+import type { ScriptType } from '../lib/index';
 
 import WindowStub from '../lib/utils/window-stub';
-import initAppManager from '../lib/app-manager';
+import initLifecycle from '../lib/utils/lifecycle';
 
 describe('Lifecycle', () => {
+  const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
+  const options = { importTimeout: 50 };
+
+  const state = {
+    event: null,
+    path: '/',
+    prevApp: { name: 'PrevApp' },
+    app: { name: 'App' },
+  };
+
   function getSpyScript() {
     return {
       version: 5,
@@ -19,43 +30,29 @@ describe('Lifecycle', () => {
     };
   }
 
-  function getConfig(loadScriptApp, loadScriptHeader, loadScriptFooter) {
-    const defaultLoadScript = async () => getSpyScript();
-
+  function getConfig(appScript: ScriptType, headerScript: ScriptType, footerScript: ScriptType) {
     return {
-      apps: {
-        APP: { appPath: '/app-a', fragments: ['APP', 'HEADER', 'FOOTER'] },
-      },
       slots: {
         APP: { querySelector: '.fragment' },
         HEADER: { querySelector: '.header' },
         FOOTER: { querySelector: '.footer' },
       },
       fragments: {
-        APP: { slot: 'APP', loadScript: loadScriptApp || defaultLoadScript },
-        HEADER: { slot: 'HEADER', loadScript: loadScriptHeader || defaultLoadScript },
-        FOOTER: { slot: 'FOOTER', loadScript: loadScriptFooter || defaultLoadScript },
+        APP: { slot: 'APP', loadScript: async () => appScript },
+        HEADER: { slot: 'HEADER', loadScript: async () => headerScript },
+        FOOTER: { slot: 'FOOTER', loadScript: async () => footerScript },
       },
+      apps: {},
     };
   }
 
   describe('setup page', () => {
     it('hydrates a script with no errors', async () => {
-      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-
-      const appManager = initAppManager(windowStub);
-
       const appScript = getSpyScript();
+      const config = getConfig(appScript, getSpyScript(), getSpyScript());
+      const lifecycle = initLifecycle(windowStub, config, options);
 
-      const config = getConfig(async () => appScript);
-
-      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
-
-      await getRunningStateChange();
-
-      const state = getState();
-
-      expect(state.app.name).to.equals('APP');
+      await lifecycle.mountSlot(state, 'APP', 'APP', true);
 
       expect(appScript.onStateChange.callCount).to.equals(0);
       expect(appScript.render.callCount).to.equals(0);
@@ -65,10 +62,6 @@ describe('Lifecycle', () => {
     });
 
     it('handles errors on hydrate', async () => {
-      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-
-      const appManager = initAppManager(windowStub);
-
       const errorScript = {
         version: 5,
         onStateChange: sinon.spy(),
@@ -79,16 +72,12 @@ describe('Lifecycle', () => {
       };
 
       const headerScript = getSpyScript();
+      const appScript = getSpyScript();
 
-      const config = getConfig(async () => errorScript, async () => headerScript);
+      const config = getConfig(appScript, headerScript, getSpyScript());
+      const lifecycle = initLifecycle(windowStub, config, options);
 
-      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
-
-      await getRunningStateChange();
-
-      const state = getState();
-
-      expect(state.app.name).to.equals('APP');
+      await lifecycle.mountSlot(state, 'APP', 'APP', true);
 
       expect(errorScript.onStateChange.callCount).to.equals(0);
       expect(errorScript.render.callCount).to.equals(0);
@@ -106,8 +95,6 @@ describe('Lifecycle', () => {
 
   describe('update page', () => {
     it('handles errors on update', async () => {
-      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
-
       const errorScript = {
         version: 5,
         onStateChange: sinon.stub().throws(),
@@ -118,20 +105,12 @@ describe('Lifecycle', () => {
       };
 
       const headerScript = getSpyScript();
+      const appScript = getSpyScript();
 
-      const appManager = initAppManager(windowStub);
+      const config = getConfig(appScript, headerScript, getSpyScript());
+      const lifecycle = initLifecycle(windowStub, config, options);
 
-      const config = getConfig(async () => errorScript, headerScript);
-
-      const { getState, getRunningStateChange } = appManager(config, new EventEmitter());
-
-      await getRunningStateChange();
-
-      windowStub.history.pushState(null, null, '/app-a');
-
-      await getRunningStateChange();
-
-      const state = getState();
+      await lifecycle.updateSlot(state, 'APP');
 
       expect(state.app.name).to.equals('APP');
 

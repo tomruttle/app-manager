@@ -23,7 +23,7 @@ export type OverrideOptionsType = {
   getAdditionalState?: (appName: AppNameType, url: string) => { [stateName: string]: mixed },
 };
 
-type BaseAppType = {
+export type BaseAppType = {
   appPath?: string,
   appPaths?: Array<string>,
   fragment?: FragmentNameType,
