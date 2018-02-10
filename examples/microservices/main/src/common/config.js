@@ -2,13 +2,14 @@
 
 import superagent from 'superagent';
 
-import type { StateType } from '../../../../../lib/index';
+import type { ParamsType } from '../../../../../lib/utils/path';
 
-import { retry, delay } from '../../../../../lib/utils/timers';
+import getPathHelpers from '../../../../../lib/utils/path';
+import { retry, delay } from '../../../../../lib/utils/config';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';
 
-export function loadScriptFromWindow(scriptName: string) {
+function loadScriptFromWindow(scriptName: string) {
   return async () => {
     if (!window) {
       throw new Error('load_script.no_window');
@@ -17,7 +18,7 @@ export function loadScriptFromWindow(scriptName: string) {
     const script = await retry(() => {
       const file = window[scriptName];
       return file && file.default ? file.default : file;
-    }, 20);
+    }, 20, 4000);
 
     if (!script) {
       throw new Error('load_script.no_script');
@@ -48,7 +49,6 @@ const fragments = {
   HEADER_FRAGMENT: {
     name: 'HEADER_FRAGMENT',
     slots: [slots.HEADER.name],
-    managed: true,
     loadScript: loadScriptFromWindow('header'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8081/app');
@@ -63,7 +63,6 @@ const fragments = {
   GUEST_TEMPLATE_STRING_FRAGMENT: {
     name: 'GUEST_TEMPLATE_STRING_FRAGMENT',
     slots: [slots.MAIN.name],
-    managed: true,
     loadScript: loadScriptFromWindow('guest-template-string'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8084/app');
@@ -76,9 +75,8 @@ const fragments = {
   GUEST_REACT_FRAGMENT: {
     name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
-    managed: true,
     loadScript: loadScriptFromWindow('guest-react'),
-    getMarkup: async ({ params }: StateType) => {
+    getMarkup: async ({ params }: { params: ParamsType }) => {
       const res = await superagent(`http://localhost:8083/app${params.colour ? `/${params.colour}` : ''}`);
       const { markup, styles } = res.body;
       return /* @html */`
@@ -91,10 +89,13 @@ const fragments = {
   GUEST_TIMEOUT_FRAGMENT: {
     name: 'GUEST_TIMEOUT_FRAGMENT',
     slots: [slots.MAIN.name],
-    managed: true,
-    loadScript: async ({ query }: StateType) => {
+    loadScript: async ({ query }: { query: ParamsType }) => {
       const delayMs = query.delay ? Number(query.delay) : undefined;
-      await delay(delayMs);
+
+      if (delayMs) {
+        await delay(delayMs);
+      }
+
       return {
         version: 5,
         render: (container, _state) => {
@@ -109,7 +110,6 @@ const fragments = {
   FOOTER_FRAGMENT: {
     name: 'FOOTER_FRAGMENT',
     slots: [slots.FOOTER.name],
-    managed: true,
     loadScript: loadScriptFromWindow('footer'),
     getMarkup: async () => {
       const res = await superagent('http://localhost:8082/app');
@@ -141,5 +141,12 @@ const apps = {
     fragments: [fragments.GUEST_TIMEOUT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
+
+const appPathsMap = Object.keys(apps).reduce((paths, appName) => {
+  const { appPath } = apps[appName];
+  return Object.assign({}, paths, { [appName]: { appPath } });
+}, {});
+
+export const options = getPathHelpers(appPathsMap);
 
 export default { apps, slots, fragments };

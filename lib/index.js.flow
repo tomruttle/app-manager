@@ -1,5 +1,6 @@
 // @flow
 
+import type AppManagerError from './utils/app-manager-error';
 import { eventTitles, statuses, levels } from './constants';
 
 export type AppNameType = string;
@@ -9,15 +10,37 @@ export type EventTitleType = $Values<typeof eventTitles>;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
+type StateAdditionsType = { [stateName: string]: any };
+type GetAppNameFromUrlType = (url: string) => ?AppNameType;
+type GetAdditionalStateType = (appName: AppNameType, url: string) => StateAdditionsType;
+type OnErrorType = (err: AppManagerError) => void;
+
 export type OptionsType = {
-  importTimeout?: number,
+  importTimeout: number,
+  haltOnError: boolean,
+  getAppNameFromUrl: GetAppNameFromUrlType,
+  getAdditionalState?: GetAdditionalStateType,
+  onError: OnErrorType,
 };
 
-export type AppType = {
-  name: AppNameType,
-  appPath: string,
-  fragments: Array<FragmentNameType>,
+export type OverrideOptionsType = {
+  importTimeout?: number,
+  haltOnError?: boolean,
+  getAppNameFromUrl?: GetAppNameFromUrlType,
+  getAdditionalState?: GetAdditionalStateType,
+  onError?: OnErrorType,
 };
+
+export type BaseAppType = {
+  appPath?: string,
+  appPaths?: Array<string>,
+  fragment?: FragmentNameType,
+  fragments?: Array<FragmentNameType>,
+}
+
+export type AppType = BaseAppType & { name: AppNameType };
+
+export type AppsMapType = { [appName: AppNameType]: AppType };
 
 export type EventCallbackType = (...data: Array<mixed>) => mixed;
 export type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
@@ -30,24 +53,18 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
-export type ParamsType = { [paramName: string]: string };
-
-export type QueryType = { [paramName: string]: string };
-
-export type StateType = {|
+export type StateType = {
   event: ?string,
   path: string,
-  params: ParamsType,
-  query: QueryType,
   prevApp: ?AppType,
   app: AppType,
-|};
+};
+
+type StateWithAdditionsType = StateType & StateAdditionsType;
 
 export type StatusDetailsType = {|
   status: StatusType,
   level: string,
-  source: ?string,
-  path: ?string,
   message?: ?string,
 |}
 
@@ -72,42 +89,48 @@ export interface ScriptVersion4Type {
 
 export interface ScriptVersion5Type {
   version: 5;
-  hydrate?: (container: Element, state: StateType) => any;
-  render?: (container: Element, state: StateType) => any;
-  unmount?: (container: Element, state: StateType) => any;
-  onStateChange?: (state: StateType) => any;
+  hydrate?: (container: Element, state: StateWithAdditionsType) => any;
+  render?: (container: Element, state: StateWithAdditionsType) => any;
+  unmount?: (container: Element, state: StateWithAdditionsType) => any;
+  onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
-export type SlotType = {
-  name: SlotNameType,
-  querySelector: ?string,
+type BaseSlotType = { querySelector: ?string }
+
+export type SlotType = BaseSlotType & { name: SlotNameType };
+
+export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
+
+export type LoadScriptType = (state: StateWithAdditionsType) => Promise<ScriptType>;
+
+type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<mixed>) => Promise<string>;
+
+type BaseFragmentType = {
+  slot?: SlotNameType,
+  slots?: Array<SlotNameType>,
+  loadScript?: LoadScriptType,
+  getMarkup?: GetMarkupType,
 };
 
-export type FragmentType = {
-  name: FragmentNameType,
-  slots: Array<SlotNameType>,
-  managed: boolean,
-  loadScript: (state: StateType) => Promise<ScriptType>,
-  getMarkup?: (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>,
-};
+export type StateChangeType = Promise<void>;
+
+export type FragmentType = BaseFragmentType & { name: FragmentNameType };
+
+export type FragmentsMapType = { [fragmentName: FragmentNameType]: FragmentType };
+
+export type PageMapType = { [slotName: SlotNameType]: FragmentNameType };
+
+export type PageDiffType = { unmount: PageMapType, mount: PageMapType, update: PageMapType };
 
 export type ConfigType = {|
-  apps: { [appName: AppNameType]: AppType },
-  slots: { [slotName: SlotNameType]: SlotType },
-  fragments: { [fragmentName: FragmentNameType]: FragmentType },
+  apps: { [appName: AppNameType]: BaseAppType },
+  slots: { [slotName: SlotNameType]: BaseSlotType },
+  fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-declare export default class AppManager {
-  static eventTitles: typeof eventTitles;
-  static statuses: typeof statuses;
-  static levels: typeof levels;
-
-  constructor(config: ConfigType, events: EventsType, options?: OptionsType): AppManager,
-
-  init: () => Promise<void>,
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
+declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
+  getState(): StateWithAdditionsType,
+  getRunningStateChange(): ?StateChangeType,
 }

@@ -27,7 +27,6 @@ export default {
     EXAMPLE1_FRAGMENT: {
       name: 'EXAMPLE1_FRAGMENT',
       slots: ['APP'],
-      managed: true,
       loadScript: async (state) => fetchScriptForExample1(state),
       getMarkup: async (state) => fetchMarkupForExample1(state),
     },
@@ -35,7 +34,6 @@ export default {
     EXAMPLE2_FRAGMENT: {
       name: 'EXAMPLE2_FRAGMENT',
       slots: ['APP'],
-      managed: true,
       loadScript: async (state) => fetchScriptForExample2(state),
       getMarkup: async (state) => fetchMarkupForExample2(state),
     }
@@ -127,12 +125,11 @@ A `fragment` is the container for your `script`.
 {
   name: 'FRAGMENT_NAME', // Uniquely identifies the fragment. Must match the fragment's key on the config map.
   slots: ['SLOT_NAME'], // Ordered array of slot names. Fragment will be loaded in the first empty slot possible.
-  managed: true, // app-manager will only try to call lifecycle methods on managed fragments, but it will render non-managed scripts on the server.
   loadScript, // As below.
   getMarkup, // Optional. As below.
 }
 
-// * Fetches the script (as below) for your fragment.
+// * Optional function (only needed if using app-manager to manage client-side lifecycle) that fetches the script (as below) for your fragment.
 
 async function loadScript(state) {
   // ...
@@ -240,7 +237,6 @@ List of events emitted by app-manager:
 * am-pushstate,
 * am-statechange,
 * am-statuschange,
-* am-statechange-complete,
 * am-error,
 * am-external-link,
 

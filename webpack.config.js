@@ -28,7 +28,7 @@ module.exports = (env) => ({
               ['env', { loose: true, modules: false, targets: { browsers: SUPPORTED_BROWSERS } }],
               'flow',
             ],
-            plugins: ['transform-class-properties', ['transform-builtin-extend', { globals: ['Error'] }]],
+            plugins: ['transform-async-generator-functions', 'transform-class-properties', ['transform-builtin-extend', { globals: ['Error'] }]],
           },
         },
       },

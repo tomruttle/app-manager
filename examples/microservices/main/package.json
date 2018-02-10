@@ -25,13 +25,15 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-flowtype": "^2.42.0",
     "eslint-plugin-import": "^2.8.0",
-    "flow-bin": "^0.64.0",
+    "flow-bin": "^0.65.0",
     "webpack": "^3.10.0"
   },
   "dependencies": {
     "app-manager": "^0.16.5",
     "eventemitter3": "^3.0.0",
     "express": "^4.16.2",
+    "path-to-regexp": "^2.1.0",
+    "qs": "^6.5.1",
     "superagent": "^3.8.2"
   }
 }

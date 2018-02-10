@@ -1,16 +1,14 @@
 // @flow
 
-/* eslint-disable import/prefer-default-export */
-
 import type { EventTitleType } from '../lib/index';
 
-export function awaitEvent(appManager: Object, eventTitle: EventTitleType): Promise<void> {
+export function awaitEvent(eventEmitter: Object, eventTitle: EventTitleType): Promise<Array<mixed>> {
   return new Promise((resolve) => {
-    const listener = () => {
-      setImmediate(resolve);
-      appManager.removeListener(eventTitle, listener);
+    const listener = (...args) => {
+      resolve(args);
+      eventEmitter.removeListener(eventTitle, listener);
     };
 
-    appManager.on(eventTitle, listener);
+    eventEmitter.on(eventTitle, listener);
   });
 }

@@ -50,6 +50,12 @@ class FooterScript implements ScriptVersion5Type {
     }
   };
 
+  onUpdateStatus = async ({ status, message, source }) => {
+    if (status === 'ERROR') {
+      this.onError(`ERROR: ${message}${source ? `(${source})` : ''}`);
+    }
+  }
+
   unmount = async (container: Element) => ReactDOM.unmountComponentAtNode(container);
 }
 
