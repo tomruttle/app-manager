@@ -58,12 +58,23 @@ describe('multi-step browser test', () => {
   const appManager = initAppManager(windowStub);
   const events = new EventEmitter();
 
-  const { getState, getRunningStateChange } = appManager(config, events);
+  let _getState;
+  let _getRunningStateChange;
+
+  before(() => {
+    const { getState, getRunningStateChange } = appManager(config, events);
+    _getState = getState;
+    _getRunningStateChange = getRunningStateChange;
+  });
+
+  after(() => {
+    windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+  });
 
   it('correctly initialises app manager with first fragment', async () => {
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_A');
+    expect(_getState().app.name).to.equals('APP_A');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -81,9 +92,9 @@ describe('multi-step browser test', () => {
   it('browses to new app', async () => {
     windowStub.history.pushState({}, null, '/app-b');
 
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_B');
+    expect(_getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -101,9 +112,9 @@ describe('multi-step browser test', () => {
   it('moves within an app', async () => {
     windowStub.history.pushState({}, null, '/app-b/next');
 
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_B');
+    expect(_getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -121,9 +132,9 @@ describe('multi-step browser test', () => {
   it('moves back within an app', async () => {
     windowStub.history.go(-1);
 
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_B');
+    expect(_getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(0);
@@ -141,9 +152,9 @@ describe('multi-step browser test', () => {
   it('moves back to the old app', async () => {
     windowStub.history.back();
 
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_A');
+    expect(_getState().app.name).to.equals('APP_A');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -161,9 +172,9 @@ describe('multi-step browser test', () => {
   it('moves forward again', async () => {
     windowStub.history.forward();
 
-    await getRunningStateChange();
+    await _getRunningStateChange();
 
-    expect(getState().app.name).to.equals('APP_B');
+    expect(_getState().app.name).to.equals('APP_B');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);
@@ -183,7 +194,7 @@ describe('multi-step browser test', () => {
 
     await awaitEvent(events, 'am-external-link');
 
-    expect(getState().app.name).to.equals('APP_C');
+    expect(_getState().app.name).to.equals('APP_C');
 
     expect(mockA.hydrate.callCount).to.equals(1);
     expect(mockA.render.callCount).to.equals(1);

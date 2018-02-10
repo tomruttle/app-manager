@@ -93,7 +93,7 @@ export type SlotType = BaseSlotType & { name: SlotNameType };
 
 export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
-type LoadScriptType = (state: StateType) => Promise<ScriptType>;
+export type LoadScriptType = (state: StateType) => Promise<ScriptType>;
 
 type GetMarkupType = (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>;
 
@@ -110,13 +110,15 @@ export type FragmentType = BaseFragmentType & { name: FragmentNameType };
 
 export type FragmentsMapType = { [fragmentName: FragmentNameType]: FragmentType };
 
+export type PageMapType = { [slotName: SlotNameType]: FragmentNameType };
+
+export type PageDiffType = { unmount: PageMapType, mount: PageMapType, update: PageMapType };
+
 export type ConfigType = {|
   apps: { [appName: AppNameType]: BaseAppType },
   slots: { [slotName: SlotNameType]: BaseSlotType },
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
-
-export type LifecycleType = AsyncGenerator<boolean, boolean, StateType>;
 
 declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
   getState(): StateType,

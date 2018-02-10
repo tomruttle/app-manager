@@ -56,7 +56,7 @@ describe('Server', () => {
       const appManagerServer = new AppManagerServer(config);
       const appMarkup = await appManagerServer.getSlotsMarkup('/app-a');
 
-      expect(appMarkup).to.deep.equals({ app: 'fragment_a', other: '' });
+      expect(appMarkup).to.deep.equals({ app: 'fragment_a' });
 
       const getMarkupStubB = config.fragments.fragment_b.getMarkup;
       expect(getMarkupStubB.called).to.be.false;
@@ -74,7 +74,7 @@ describe('Server', () => {
       const appManagerServer = new AppManagerServer(config);
       const appMarkup = await appManagerServer.getSlotsMarkup('/app-b?query=success', 'additional data');
 
-      expect(appMarkup).to.deep.equals({ app: 'fragment_b', other: '' });
+      expect(appMarkup).to.deep.equals({ app: 'fragment_b' });
 
       const getMarkupStubA = config.fragments.fragment_a.getMarkup;
       expect(getMarkupStubA.called).to.be.false;
