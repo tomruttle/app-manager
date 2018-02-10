@@ -10,8 +10,9 @@ export type EventTitleType = $Values<typeof eventTitles>;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
+type StateAdditionsType = { [stateName: string]: any };
 type GetAppNameFromUrlType = (url: string) => ?AppNameType;
-type GetAdditionalStateType = (appName: AppNameType, url: string) => { [stateName: string]: mixed };
+type GetAdditionalStateType = (appName: AppNameType, url: string) => StateAdditionsType;
 type OnErrorType = (err: AppManagerError) => void;
 
 export type OptionsType = {
@@ -59,6 +60,8 @@ export type StateType = {
   app: AppType,
 };
 
+type StateWithAdditionsType = StateType & StateAdditionsType;
+
 export type StatusDetailsType = {|
   status: StatusType,
   level: string,
@@ -86,10 +89,10 @@ export interface ScriptVersion4Type {
 
 export interface ScriptVersion5Type {
   version: 5;
-  hydrate?: (container: Element, state: StateType) => any;
-  render?: (container: Element, state: StateType) => any;
-  unmount?: (container: Element, state: StateType) => any;
-  onStateChange?: (state: StateType) => any;
+  hydrate?: (container: Element, state: StateWithAdditionsType) => any;
+  render?: (container: Element, state: StateWithAdditionsType) => any;
+  unmount?: (container: Element, state: StateWithAdditionsType) => any;
+  onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
 export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
@@ -100,9 +103,9 @@ export type SlotType = BaseSlotType & { name: SlotNameType };
 
 export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
-export type LoadScriptType = (state: StateType) => Promise<ScriptType>;
+export type LoadScriptType = (state: StateWithAdditionsType) => Promise<ScriptType>;
 
-type GetMarkupType = (state: StateType, ...otherArgs: Array<mixed>) => Promise<string>;
+type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<mixed>) => Promise<string>;
 
 type BaseFragmentType = {
   slot?: SlotNameType,
@@ -128,6 +131,6 @@ export type ConfigType = {|
 |};
 
 declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
-  getState(): StateType,
+  getState(): StateWithAdditionsType,
   getRunningStateChange(): ?StateChangeType,
 }

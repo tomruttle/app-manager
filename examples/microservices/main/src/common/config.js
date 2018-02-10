@@ -2,8 +2,9 @@
 
 import superagent from 'superagent';
 
-import type { StateType } from '../../../../../lib/index';
+import type { ParamsType } from '../../../../../lib/utils/path';
 
+import getPathHelpers from '../../../../../lib/utils/path';
 import { retry, delay } from '../../../../../lib/utils/config';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';
@@ -75,7 +76,7 @@ const fragments = {
     name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
     loadScript: loadScriptFromWindow('guest-react'),
-    getMarkup: async ({ params }: StateType) => {
+    getMarkup: async ({ params }: { params: ParamsType }) => {
       const res = await superagent(`http://localhost:8083/app${params.colour ? `/${params.colour}` : ''}`);
       const { markup, styles } = res.body;
       return /* @html */`
@@ -88,9 +89,13 @@ const fragments = {
   GUEST_TIMEOUT_FRAGMENT: {
     name: 'GUEST_TIMEOUT_FRAGMENT',
     slots: [slots.MAIN.name],
-    loadScript: async ({ query }: StateType) => {
+    loadScript: async ({ query }: { query: ParamsType }) => {
       const delayMs = query.delay ? Number(query.delay) : undefined;
-      await delay(delayMs);
+
+      if (delayMs) {
+        await delay(delayMs);
+      }
+
       return {
         version: 5,
         render: (container, _state) => {
@@ -136,5 +141,12 @@ const apps = {
     fragments: [fragments.GUEST_TIMEOUT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
+
+const appPathsMap = Object.keys(apps).reduce((paths, appName) => {
+  const { appPath } = apps[appName];
+  return Object.assign({}, paths, { [appName]: { appPath } });
+}, {});
+
+export const options = getPathHelpers(appPathsMap);
 
 export default { apps, slots, fragments };

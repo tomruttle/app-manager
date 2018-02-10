@@ -4,16 +4,15 @@ import express from 'express';
 import path from 'path';
 
 import appManagerServer from '../../../../../lib/server';
-import getPathHelpers from '../../../../../lib/utils/path';
 
-import config from '../common/config';
+import config, { options } from '../common/config';
 import layout from './layout';
 
 const PORT_NUMBER = 8080;
 
 const app = express();
 
-const { getSlotsMarkup } = appManagerServer(config, getPathHelpers(config.apps));
+const { getSlotsMarkup } = appManagerServer(config, options);
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
