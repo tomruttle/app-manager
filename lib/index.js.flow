@@ -60,7 +60,7 @@ export type StateType = {
   app: AppType,
 };
 
-type StateWithAdditionsType = StateType & StateAdditionsType;
+export type StateWithAdditionsType = StateType & StateAdditionsType;
 
 export type StatusDetailsType = {|
   status: StatusType,
