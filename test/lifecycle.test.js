@@ -80,7 +80,7 @@ describe('Lifecycle', () => {
       expect(errorScript.onStateChange.callCount).to.equals(0);
       expect(errorScript.render.callCount).to.equals(0);
       expect(errorScript.hydrate.callCount).to.equals(1);
-      expect(errorScript.unmount.callCount).to.equals(0);
+      expect(errorScript.unmount.callCount).to.equals(1);
       expect(errorScript.onUpdateStatus.callCount).to.equals(2);
 
       const [errorLoadingCall, errorErrorCall] = errorScript.onUpdateStatus.args;
@@ -151,7 +151,7 @@ describe('Lifecycle', () => {
       expect(headerScript.unmount.callCount).to.equals(0);
       expect(headerScript.onUpdateStatus.callCount).to.equals(5);
 
-      const [loadingCall1, defaultCall1, loadingCall2, errorCall, defaultCall2] = errorScript.onUpdateStatus.args;
+      const [loadingCall1, defaultCall1, loadingCall2, errorCall, defaultCall2] = headerScript.onUpdateStatus.args;
       expect(loadingCall1[0].status).to.equals('LOADING');
       expect(defaultCall1[0].status).to.equals('DEFAULT');
       expect(loadingCall2[0].status).to.equals('LOADING');
