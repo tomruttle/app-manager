@@ -9,18 +9,24 @@ export type EventTitleType = $Values<typeof eventTitles>;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
+type GetAppNameFromUrlType = (url: string) => ?AppNameType;
+type GetAdditionalStateType = (appName: AppNameType, url: string) => { [stateName: string]: mixed };
+type OnErrorType = (err: Error) => void;
+
 export type OptionsType = {
   importTimeout: number,
   haltOnError: boolean,
-  getAppNameFromUrl: (url: string) => ?AppNameType,
-  getAdditionalState?: (appName: AppNameType, url: string) => { [stateName: string]: mixed },
+  getAppNameFromUrl: GetAppNameFromUrlType,
+  getAdditionalState?: GetAdditionalStateType,
+  onError: OnErrorType,
 };
 
 export type OverrideOptionsType = {
   importTimeout?: number,
   haltOnError?: boolean,
-  getAppNameFromUrl?: (url: string) => ?AppNameType,
-  getAdditionalState?: (appName: AppNameType, url: string) => { [stateName: string]: mixed },
+  getAppNameFromUrl?: GetAppNameFromUrlType,
+  getAdditionalState?: GetAdditionalStateType,
+  onError?: OnErrorType,
 };
 
 export type BaseAppType = {

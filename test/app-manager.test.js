@@ -234,21 +234,11 @@ describe('app-manager', () => {
     it('Can bind and unbind event listeners', async () => {
       const config = {
         apps: {
-          APP_A: {
-            appPath: '/app-a',
-            fragment: 'SCRIPT_A',
-          },
+          APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
         },
-        slots: {
-          MAIN: {
-            querySelector: null,
-          },
-        },
+        slots: { MAIN: { querySelector: null } },
         fragments: {
-          SCRIPT_A: {
-            slot: 'MAIN',
-            loadScript: async () => ({ version: 5 }),
-          },
+          SCRIPT_A: { slot: 'MAIN', loadScript: async () => ({ version: 5 }) },
         },
       };
 
@@ -283,6 +273,8 @@ describe('app-manager', () => {
 
       expect(onErrorSpy.callCount).to.equals(0);
       expect(onExternalSpy.callCount).to.equals(1);
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
 
     it('calling replaceState emits correct events', () => {
@@ -304,6 +296,8 @@ describe('app-manager', () => {
 
       expect(replaceStateSpy.calledOnce).to.be.true;
       expect(stateChangeSpy.calledOnce).to.be.true;
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
 
     it('resets the history functions before unloading', () => {
@@ -332,25 +326,19 @@ describe('app-manager', () => {
 
       expect(pushStateSpy.called).to.be.false;
       expect(stateChangeSpy.called).to.be.false;
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
 
     describe('errors', () => {
       it('emits an error event if app tries to load missing fragment', async () => {
         const config = {
           apps: {
-            APP_A: {
-              appPath: '/app-a',
-              fragment: 'SCRIPT_A',
-            },
-            APP_B: {
-              appPath: '/app-b',
-              fragment: 'MISSING',
-            },
+            APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
+            APP_B: { appPath: '/app-b', fragment: 'MISSING' },
           },
           fragments: {
-            SCRIPT_A: {
-              slot: 'MAIN',
-            },
+            SCRIPT_A: { slot: 'MAIN' },
           },
           slots: {},
         };
@@ -374,18 +362,31 @@ describe('app-manager', () => {
         const err = onErrorSpy.args[0][0];
 
         expect(err.code).to.equals('invalid_slots');
+
+        windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
       });
     });
   });
 
   describe('Queueing state changes', () => {
     it('runs the init state changer and resets afterwards', async () => {
-      const config = { apps: {}, fragments: {}, slots: {} };
+      const config = {
+        apps: {
+          APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
+        },
+        fragments: {
+          SCRIPT_A: { slot: 'MAIN' },
+        },
+        slots: {
+          SLOT_A: { querySelector: null },
+        },
+      };
 
-      const windowStub = new WindowStub();
+      const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
       const appManager = initAppManager(windowStub);
+      const events = new EventEmitter();
 
-      const { getRunningStateChange } = appManager(config, new EventEmitter());
+      const { getRunningStateChange } = appManager(config, events);
 
       const runningStateChange = getRunningStateChange();
 
@@ -393,10 +394,10 @@ describe('app-manager', () => {
 
       const result = await runningStateChange;
 
-      expect(runningStateChange).to.be.null;
       expect(result).to.be.undefined;
-
       expect(getRunningStateChange()).to.be.null;
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
 
     it('skips over queued state changes if the state changes again while a state change is already in progress', async () => {
@@ -423,8 +424,9 @@ describe('app-manager', () => {
 
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
       const appManager = initAppManager(windowStub);
+      const events = new EventEmitter();
 
-      const { getRunningStateChange, getState } = appManager(config, new EventEmitter());
+      const { getRunningStateChange, getState } = appManager(config, events);
 
       await getRunningStateChange();
 
@@ -451,6 +453,8 @@ describe('app-manager', () => {
       expect(getRunningStateChange()).to.be.null;
 
       expect(getState().app.name).to.equals('APP_D');
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
 
     it('propagates errors and tries to continue if a state change fails', async () => {
@@ -471,12 +475,12 @@ describe('app-manager', () => {
       const windowStub = new WindowStub([{ data: {}, title: null, url: '/app-a' }]);
       const appManager = initAppManager(windowStub);
       const events = new EventEmitter();
+
       const { getState, getRunningStateChange } = appManager(config, events);
 
       await getRunningStateChange();
 
       windowStub.history.pushState(null, null, '/app-b');
-      windowStub.history.pushState(null, null, '/app-c');
 
       const firstRunningStateChange = getRunningStateChange();
 
@@ -489,7 +493,7 @@ describe('app-manager', () => {
 
       await firstRunningStateChange;
 
-      expect(getState().app.name).to.equals('APP_C');
+      windowStub.history.pushState(null, null, '/app-c');
 
       const secondRunningStateChange = getRunningStateChange();
 
@@ -499,6 +503,8 @@ describe('app-manager', () => {
 
       expect(getState().app.name).to.equals('APP_C');
       expect(getRunningStateChange()).to.be.null;
+
+      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
   });
 });
