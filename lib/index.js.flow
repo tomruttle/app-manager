@@ -1,5 +1,6 @@
 // @flow
 
+import type AppManagerError from './utils/app-manager-error';
 import { eventTitles, statuses, levels } from './constants';
 
 export type AppNameType = string;
@@ -11,7 +12,7 @@ export type StatusLevelType = $Values<typeof levels>;
 
 type GetAppNameFromUrlType = (url: string) => ?AppNameType;
 type GetAdditionalStateType = (appName: AppNameType, url: string) => { [stateName: string]: mixed };
-type OnErrorType = (err: Error) => void;
+type OnErrorType = (err: AppManagerError) => void;
 
 export type OptionsType = {
   importTimeout: number,

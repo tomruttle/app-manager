@@ -32,6 +32,8 @@
     "app-manager": "^0.16.5",
     "eventemitter3": "^3.0.0",
     "express": "^4.16.2",
+    "path-to-regexp": "^2.1.0",
+    "qs": "^6.5.1",
     "superagent": "^3.8.2"
   }
 }

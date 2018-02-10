@@ -4,7 +4,7 @@ import superagent from 'superagent';
 
 import type { StateType } from '../../../../../lib/index';
 
-import { retry, delay } from '../../../../../lib/utils/timers';
+import { retry, delay } from '../../../../../lib/utils/config';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';
 
@@ -17,7 +17,7 @@ function loadScriptFromWindow(scriptName: string) {
     const script = await retry(() => {
       const file = window[scriptName];
       return file && file.default ? file.default : file;
-    }, 20);
+    }, 20, 4000);
 
     if (!script) {
       throw new Error('load_script.no_script');

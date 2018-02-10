@@ -3,7 +3,8 @@
 import express from 'express';
 import path from 'path';
 
-import AppManagerServer from '../../../../../lib/server';
+import appManagerServer from '../../../../../lib/server';
+import getPathHelpers from '../../../../../lib/utils/path';
 
 import config from '../common/config';
 import layout from './layout';
@@ -12,13 +13,13 @@ const PORT_NUMBER = 8080;
 
 const app = express();
 
-const appManagerServer = new AppManagerServer(config);
+const { getSlotsMarkup } = appManagerServer(config, getPathHelpers(config.apps));
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/apps/*', async (req, res, next) => {
   try {
-    const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl.split('?')[0]);
+    const renderedMarkup = await getSlotsMarkup(req.originalUrl);
     const markup = layout(renderedMarkup);
     return res.send(markup);
   } catch (err) {
