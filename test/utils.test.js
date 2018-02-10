@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 import { retry } from '../lib/utils/config';
 
-describe('Timers', () => {
+describe('Utils', () => {
   describe('retry', () => {
     it('retries until result returns true', async () => {
       let eventuallyTrue = false;
