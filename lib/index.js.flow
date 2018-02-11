@@ -17,6 +17,7 @@ type OnErrorType = (err: AppManagerError) => void;
 
 export type OptionsType = {
   importTimeout: number,
+  domCheckInterval: number,
   haltOnError: boolean,
   getAppNameFromUrl: GetAppNameFromUrlType,
   getAdditionalState?: GetAdditionalStateType,
@@ -25,6 +26,7 @@ export type OptionsType = {
 
 export type OverrideOptionsType = {
   importTimeout?: number,
+  domCheckInterval?: number,
   haltOnError?: boolean,
   getAppNameFromUrl?: GetAppNameFromUrlType,
   getAdditionalState?: GetAdditionalStateType,
