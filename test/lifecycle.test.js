@@ -6,15 +6,7 @@ import sinon from 'sinon';
 import initLifecycle from '../lib/utils/lifecycle';
 
 describe('Lifecycle', () => {
-  const windowStub = { history: {} };
   const options = { importTimeout: 50 };
-
-  const state = {
-    event: null,
-    path: '/',
-    prevApp: { name: 'PrevApp' },
-    app: { name: 'App' },
-  };
 
   function getSpyScript() {
     return {
@@ -32,9 +24,9 @@ describe('Lifecycle', () => {
       const getSlotElement = async (): Promise<Element> => (true: any);
       const appScript = getSpyScript();
       const fragments = { APP_FRAGMENT: { slot: 'APP_SLOT', loadScript: async () => appScript } };
-      const lifecycle = initLifecycle(windowStub, fragments, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, (script: any) => script, getSlotElement, options);
 
-      await lifecycle(state, {
+      await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT' },
         unmount: {},
         update: {},
@@ -69,9 +61,9 @@ describe('Lifecycle', () => {
         HEADER_FRAGMENT: { slot: 'HEADER_SLOT', loadScript: async () => headerScript },
       };
 
-      const lifecycle = initLifecycle(windowStub, fragments, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, (script: any) => script, getSlotElement, options);
 
-      await lifecycle(state, {
+      await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },
         unmount: {},
         update: {},
@@ -119,15 +111,15 @@ describe('Lifecycle', () => {
         HEADER_FRAGMENT: { slot: 'HEADER_FRAGMENT', loadScript: async () => headerScript },
       };
 
-      const lifecycle = initLifecycle(windowStub, fragments, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, (script: any) => script, getSlotElement, options);
 
-      await lifecycle(state, {
+      await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },
         update: {},
         unmount: {},
       }, true);
 
-      await lifecycle(state, {
+      await lifecycle({
         mount: {},
         unmount: {},
         update: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },

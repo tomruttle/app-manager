@@ -57,12 +57,14 @@ export type EventsType = {
 
 export type StateType = {
   event: ?string,
-  path: string,
   prevApp: ?AppType,
   app: AppType,
+  resource: string,
 };
 
 export type StateWithAdditionsType = StateType & StateAdditionsType;
+
+export type GetStateType = () => ?StateWithAdditionsType;
 
 export type StatusDetailsType = {|
   status: StatusType,
@@ -72,7 +74,7 @@ export type StatusDetailsType = {|
 
 export type HistoryType = Object;
 
-export interface ScriptVersion3Type {
+interface ScriptVersion3Type {
   version: 3;
   hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
   mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
@@ -80,7 +82,7 @@ export interface ScriptVersion3Type {
   onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
 }
 
-export interface ScriptVersion4Type {
+interface ScriptVersion4Type {
   version: 4;
   hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
   mount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
@@ -89,15 +91,33 @@ export interface ScriptVersion4Type {
   onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
 }
 
-export interface ScriptVersion5Type {
+interface ScriptVersion5Type {
   version: 5;
   hydrate?: (container: Element, state: StateWithAdditionsType) => any;
   render?: (container: Element, state: StateWithAdditionsType) => any;
   unmount?: (container: Element, state: StateWithAdditionsType) => any;
+  onUpdateStatus?: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => any;
   onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
-export type ScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
+interface ScriptVersion6Type {
+  version: 6;
+  hydrate?: (container: Element) => any;
+  render?: (container: Element) => any;
+  unmount?: (container: Element) => any;
+  onUpdateStatus?: (statusDetails: StatusDetailsType) => any;
+  onStateChange?: () => any;
+}
+
+export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type | ScriptVersion6Type);
+
+export interface ScriptType {
+  hydrate: (container: Element) => Promise<void>;
+  render: (container: Element) => Promise<void>;
+  unmount: (container: Element) => Promise<void>;
+  onUpdateStatus: (statusDetails: StatusDetailsType) => Promise<void>;
+  onStateChange: () => Promise<void>;
+}
 
 type BaseSlotType = { querySelector: ?string }
 
@@ -105,7 +125,7 @@ export type SlotType = BaseSlotType & { name: SlotNameType };
 
 export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
-export type LoadScriptType = (state: StateWithAdditionsType) => Promise<ScriptType>;
+export type LoadScriptType = () => Promise<LoadedScriptType>;
 
 type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<mixed>) => Promise<string>;
 
