@@ -430,7 +430,7 @@ describe('app-manager', () => {
       windowStub.history.pushState(null, null, '/app-c');
       windowStub.history.pushState(null, null, '/app-d');
 
-      expect((getState(): any).app.name).to.equals('APP_D');
+      expect((getState(): any).app.name).to.equals('APP_B');
 
       const firstRunningStateChange = getRunningStateChange();
 
