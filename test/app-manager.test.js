@@ -218,7 +218,7 @@ describe('app-manager', () => {
     });
 
     it('should keep the history state in sync', () => {
-      const { state } = windowStub.history;
+      const state = (windowStub.history.state: any).appManagerState;
 
       expect((state: any).app.name).to.equals('APP_C');
       expect((state: any).prevApp.name).to.equals('APP_B');
