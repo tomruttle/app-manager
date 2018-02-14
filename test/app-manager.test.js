@@ -12,7 +12,7 @@ import { awaitEvent } from './utils';
 describe('app-manager', () => {
   describe('multi-step browser test', () => {
     const mockA = {
-      version: 6,
+      version: 5,
       hydrate: sinon.spy(),
       render: sinon.spy(),
       onStateChange: sinon.spy(),

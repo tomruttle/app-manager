@@ -100,16 +100,7 @@ interface ScriptVersion5Type {
   onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
-interface ScriptVersion6Type {
-  version: 6;
-  hydrate?: (container: Element) => any;
-  render?: (container: Element) => any;
-  unmount?: (container: Element) => any;
-  onUpdateStatus?: (statusDetails: StatusDetailsType) => any;
-  onStateChange?: () => any;
-}
-
-export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type | ScriptVersion6Type);
+export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
 export interface ScriptType {
   hydrate: (container: Element) => Promise<void>;
