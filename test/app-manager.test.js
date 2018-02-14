@@ -191,10 +191,10 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(10);
     });
 
-    it('If a fragment does not have a loadScript function, treat the app as an external link', async () => {
+    it('If a fragment does not have a loadScript function, emit a missing-scripts event', async () => {
       windowStub.history.pushState(null, null, '/app-c');
 
-      await awaitEvent(events, 'am-external-link');
+      await awaitEvent(events, 'am-missing-scripts');
 
       expect((_getState(): any).app.name).to.equals('APP_C');
 
