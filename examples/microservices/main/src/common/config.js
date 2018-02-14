@@ -37,6 +37,8 @@ const slots = {
   MAIN: {
     name: 'MAIN',
     querySelector: '.app-slot',
+    errorMarkup: '<div>THERE WAS AN ERROR!</div>',
+    loadingMarkup: '<div>WAIT HERE!</div>',
   },
 
   FOOTER: {

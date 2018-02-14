@@ -18,7 +18,6 @@ type OnErrorType = (err: AppManagerError) => void;
 export type OptionsType = {
   importTimeout: number,
   domCheckInterval: number,
-  haltOnError: boolean,
   getAppNameFromUrl: GetAppNameFromUrlType,
   getAdditionalState?: GetAdditionalStateType,
   onError: OnErrorType,
@@ -27,7 +26,6 @@ export type OptionsType = {
 export type OverrideOptionsType = {
   importTimeout?: number,
   domCheckInterval?: number,
-  haltOnError?: boolean,
   getAppNameFromUrl?: GetAppNameFromUrlType,
   getAdditionalState?: GetAdditionalStateType,
   onError?: OnErrorType,
@@ -110,7 +108,11 @@ export interface ScriptType {
   onStateChange: () => Promise<void>;
 }
 
-type BaseSlotType = { querySelector: ?string }
+type BaseSlotType = {
+  querySelector: ?string,
+  errorMarkup?: string,
+  loadingMarkup?: string,
+};
 
 export type SlotType = BaseSlotType & { name: SlotNameType };
 
