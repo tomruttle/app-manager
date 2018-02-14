@@ -47,7 +47,6 @@ describe('Server', () => {
       } catch (err) {
         expect(err.source).to.equal('get_slots_markup');
         expect(err.code).to.equal('invalid_route');
-        expect(err.path).to.equal('/app-c');
       }
     });
 

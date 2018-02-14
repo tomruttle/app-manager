@@ -90,7 +90,7 @@ const fragments = {
     name: 'GUEST_TIMEOUT_FRAGMENT',
     slots: [slots.MAIN.name],
     loadScript: async ({ query }: { query: ParamsType }) => {
-      const delayMs = query.delay ? Number(query.delay) : undefined;
+      const delayMs = query.delay ? Number(query.delay) : null;
 
       if (delayMs) {
         await delay(delayMs);

@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import type { ScriptVersion5Type, StateType, StatusDetailsType } from '../../../../../lib/index';
+import type { ScriptVersion5Type, StateType } from '../../../../../lib/index';
 
 import HeaderApp from '../common/app';
 
