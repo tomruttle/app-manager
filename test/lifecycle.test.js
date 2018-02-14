@@ -24,12 +24,13 @@ describe('Lifecycle', () => {
       const getSlotElement = async (): Promise<Element> => (true: any);
       const appScript = getSpyScript();
       const fragments = { APP_FRAGMENT: { slot: 'APP_SLOT' } };
+      const slots = {};
 
       async function loadScript(slotName) {
         return slotName === 'APP_SLOT' ? appScript : getSpyScript();
       }
 
-      const lifecycle = initLifecycle(fragments, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT' },
@@ -66,11 +67,13 @@ describe('Lifecycle', () => {
         HEADER_FRAGMENT: { slot: 'HEADER_SLOT' },
       };
 
+      const slots = {};
+
       async function loadScript(slotName) {
         return slotName === 'APP_SLOT' ? errorScript : headerScript;
       }
 
-      const lifecycle = initLifecycle(fragments, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },
@@ -120,11 +123,13 @@ describe('Lifecycle', () => {
         HEADER_FRAGMENT: { slot: 'HEADER_FRAGMENT' },
       };
 
+      const slots = {};
+
       async function loadScript(slotName) {
         return slotName === 'APP_SLOT' ? errorScript : headerScript;
       }
 
-      const lifecycle = initLifecycle(fragments, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },

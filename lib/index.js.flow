@@ -110,7 +110,11 @@ export interface ScriptType {
   onStateChange: () => Promise<void>;
 }
 
-type BaseSlotType = { querySelector: ?string }
+type BaseSlotType = {
+  querySelector: ?string,
+  errorMarkup?: string,
+  loadingMarkup?: string,
+};
 
 export type SlotType = BaseSlotType & { name: SlotNameType };
 
