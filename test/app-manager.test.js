@@ -217,11 +217,7 @@ describe('app-manager', () => {
       expect(mockC.onUpdateStatus.callCount).to.equals(0);
     });
 
-    it('should keep the history state in sync', () => {
-      const state = (windowStub.history.state: any).appManagerState;
-
-      expect((state: any).app.name).to.equals('APP_C');
-      expect((state: any).prevApp.name).to.equals('APP_B');
+    it('should keep the browser in sync', () => {
       expect(windowStub.location.pathname).to.equals('/app-c');
     });
   });
