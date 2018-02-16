@@ -11,14 +11,14 @@ export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
 type StateAdditionsType = { [stateName: string]: any };
-type GetAppNameFromUrlType = (url: string) => ?AppNameType;
-type GetAdditionalStateType = (appName: AppNameType, url: string) => StateAdditionsType;
+type GetAppNameFromResourceType = (resource: string) => ?AppNameType;
+type GetAdditionalStateType = (appName: AppNameType, resource: string) => StateAdditionsType;
 type OnErrorType = (err: AppManagerError) => void;
 
 export type OptionsType = {
   importTimeout: number,
   domCheckInterval: number,
-  getAppNameFromUrl: GetAppNameFromUrlType,
+  getAppNameFromResource: GetAppNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
   onError: OnErrorType,
 };
@@ -26,7 +26,7 @@ export type OptionsType = {
 export type OverrideOptionsType = {
   importTimeout?: number,
   domCheckInterval?: number,
-  getAppNameFromUrl?: GetAppNameFromUrlType,
+  getAppNameFromResource?: GetAppNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
   onError?: OnErrorType,
 };

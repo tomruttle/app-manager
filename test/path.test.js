@@ -5,21 +5,21 @@ import { expect } from 'chai';
 import getPathHelpers from '../lib/utils/path';
 
 describe('Path Helpers', () => {
-  describe('getAppNameFromUrl', () => {
+  describe('getAppNameFromResource', () => {
     const apps = {
       APP: { appPaths: ['/path/:id/:otherParam(valid|options)/:optional?', '/path/:otherParam(valid|options)/:optional?'] },
       OTHER: { appPath: '/not-path/:id/:optional?' },
     };
 
-    const { getAppNameFromUrl } = getPathHelpers(apps);
+    const { getAppNameFromResource } = getPathHelpers(apps);
 
     it('Finds an app from its path', () => {
-      const appName = getAppNameFromUrl('/path/1058690/valid/optional');
+      const appName = getAppNameFromResource('/path/1058690/valid/optional');
       expect(appName).to.equals('APP');
     });
 
     it('Returns undefined if no urls match', () => {
-      const appName = getAppNameFromUrl('/path/1058690/invalid/optional');
+      const appName = getAppNameFromResource('/path/1058690/invalid/optional');
       expect(appName).to.be.undefined;
     });
   });
