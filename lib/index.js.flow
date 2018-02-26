@@ -42,8 +42,8 @@ export type AppType = BaseAppType & { name: AppNameType };
 
 export type AppsMapType = { [appName: AppNameType]: AppType };
 
-export type EventCallbackType = (...data: Array<mixed>) => mixed;
-export type EmitterType = (eventTitle: EventTitleType, ...data: Array<mixed>) => void;
+export type EventCallbackType = (...data: Array<any>) => any;
+export type EmitterType = (eventTitle: EventTitleType, ...data: Array<any>) => void;
 export type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
 export type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
 
@@ -120,7 +120,7 @@ export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
 export type LoadScriptType = (state: StateType) => Promise<LoadedScriptType>;
 
-type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<mixed>) => Promise<string>;
+type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<any>) => string | Promise<string>;
 
 type BaseFragmentType = {
   slot?: SlotNameType,
