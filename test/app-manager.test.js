@@ -363,7 +363,7 @@ describe('app-manager', () => {
           APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
         },
         fragments: {
-          SCRIPT_A: { slot: 'MAIN' },
+          SCRIPT_A: { slot: 'SLOT_A' },
         },
         slots: {
           SLOT_A: { querySelector: null },
@@ -384,8 +384,7 @@ describe('app-manager', () => {
 
       expect(result).to.be.undefined;
 
-      // @TODO Why is this not null?
-      // expect(getRunningStateChange()).to.be.null;
+      expect(getRunningStateChange()).to.be.null;
 
       windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
     });
