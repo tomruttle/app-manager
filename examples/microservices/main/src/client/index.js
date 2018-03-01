@@ -8,7 +8,7 @@ import config, { options } from '../common/config';
 
 const events = new EventEmitter();
 
-events.on(appManager.eventTitles.EXTERNAL_LINK, () => {
+events.on(appManager.eventTitles.MISSING_SCRIPTS, () => {
   window.location.reload();
 });
 

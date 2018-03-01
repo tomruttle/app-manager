@@ -6,7 +6,13 @@ import sinon from 'sinon';
 import initLifecycle from '../lib/utils/lifecycle';
 
 describe('Lifecycle', () => {
-  const options = { importTimeout: 50 };
+  const options = { importTimeout: 50, domCheckInterval: 1 };
+
+  const windowStub = {
+    document: {
+      querySelector() { return (true: any); },
+    },
+  };
 
   function getSpyScript() {
     return {
@@ -21,7 +27,6 @@ describe('Lifecycle', () => {
 
   describe('setup page', () => {
     it('hydrates a script with no errors', async () => {
-      const getSlotElement = async (): Promise<Element> => (true: any);
       const appScript = getSpyScript();
       const fragments = { APP_FRAGMENT: { slot: 'APP_SLOT' } };
       const slots = {};
@@ -30,7 +35,7 @@ describe('Lifecycle', () => {
         return slotName === 'APP_SLOT' ? appScript : getSpyScript();
       }
 
-      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(windowStub, fragments, slots, loadScript, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT' },
@@ -50,7 +55,6 @@ describe('Lifecycle', () => {
     });
 
     it('handles errors on hydrate', async () => {
-      const getSlotElement = async (): Promise<Element> => (true: any);
       const headerScript = getSpyScript();
 
       const errorScript = {
@@ -73,7 +77,7 @@ describe('Lifecycle', () => {
         return slotName === 'APP_SLOT' ? errorScript : headerScript;
       }
 
-      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(windowStub, fragments, slots, loadScript, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },
@@ -106,7 +110,6 @@ describe('Lifecycle', () => {
 
   describe('update page', () => {
     it('handles errors on update', async () => {
-      const getSlotElement = async (): Promise<Element> => (true: any);
       const headerScript = getSpyScript();
 
       const errorScript = {
@@ -129,7 +132,7 @@ describe('Lifecycle', () => {
         return slotName === 'APP_SLOT' ? errorScript : headerScript;
       }
 
-      const lifecycle = initLifecycle(fragments, slots, loadScript, getSlotElement, options);
+      const lifecycle = initLifecycle(windowStub, fragments, slots, loadScript, options);
 
       await lifecycle({
         mount: { APP_SLOT: 'APP_FRAGMENT', HEADER_SLOT: 'HEADER_FRAGMENT' },

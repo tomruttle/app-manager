@@ -53,6 +53,13 @@ export type EventsType = {
   removeListener: RemoveListenerType,
 }
 
+export type BrowserStateType = {
+  resource: string,
+  title?: ?string,
+  state?: ?Object,
+  eventTitle?: ?mixed,
+};
+
 export type StateType = {
   event: ?string,
   prevApp: ?AppType,
@@ -101,11 +108,11 @@ export interface ScriptVersion5Type {
 export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
 
 export interface ScriptType {
-  hydrate: (container: Element) => Promise<void>;
-  render: (container: Element) => Promise<void>;
-  unmount: (container: Element) => Promise<void>;
-  onUpdateStatus: (statusDetails: StatusDetailsType) => Promise<void>;
-  onStateChange: () => Promise<void>;
+  hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  render: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  unmount: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  onUpdateStatus: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => Promise<void>;
+  onStateChange: (state: StateWithAdditionsType) => Promise<void>;
 }
 
 type BaseSlotType = {
