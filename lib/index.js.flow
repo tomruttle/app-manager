@@ -90,10 +90,10 @@ export interface ScriptVersion3Type {
 export interface ScriptVersion4Type {
   version: 4;
   hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
-  mount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
-  unmount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
+  mount: (container: Element, eventTitle: ?EventTitleType, currentApp: AppType) => Promise<?void>;
+  unmount: (container: Element, eventTitle: ?EventTitleType, currentApp: ?AppType) => Promise<?void>;
   onUpdateStatus?: (status: StatusType, currentApp: AppType) => Promise<?void>;
-  onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
+  onStateChange?: (eventTitle: ?EventTitleType, currentApp: AppType) => Promise<?void>;
 }
 
 export interface ScriptVersion5Type {
@@ -125,7 +125,7 @@ export type SlotType = BaseSlotType & { name: SlotNameType };
 
 export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
-export type LoadScriptType = (state: StateType) => Promise<LoadedScriptType>;
+export type LoadScriptType = (state: StateType) => LoadedScriptType | Promise<LoadedScriptType>;
 
 type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<any>) => string | Promise<string>;
 
