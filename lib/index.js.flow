@@ -79,14 +79,6 @@ export type StatusDetailsType = {|
 
 export type HistoryType = Object;
 
-export interface ScriptVersion3Type {
-  version: 3;
-  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
-}
-
 export interface ScriptVersion4Type {
   version: 4;
   hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
@@ -105,7 +97,7 @@ export interface ScriptVersion5Type {
   onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
-export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
+export type LoadedScriptType = (ScriptVersion4Type | ScriptVersion5Type);
 
 export interface ScriptType {
   hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;

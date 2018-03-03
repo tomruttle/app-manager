@@ -35,9 +35,9 @@
   "homepage": "https://github.com/tomruttle/app-manager#readme",
   "nyc": {
     "check-coverage": true,
-    "lines": 80,
-    "statements": 80,
-    "functions": 99,
+    "lines": 90,
+    "statements": 90,
+    "functions": 100,
     "branches": 70,
     "include": [
       "lib/**"
