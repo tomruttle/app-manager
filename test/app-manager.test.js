@@ -254,7 +254,7 @@ describe('app-manager', () => {
             SCRIPT_A: { slot: 'MAIN', loadScript() { return appScript; } },
           },
           slots: {
-            MAIN: { querySelector: null },
+            MAIN: { querySelector: '.app' },
           },
         };
 
@@ -294,8 +294,8 @@ describe('app-manager', () => {
             HEADER_FRAGMENT: { slot: 'HEADER_SLOT', loadScript() { return headerScript; } },
           },
           slots: {
-            APP_SLOT: { querySelector: null },
-            HEADER_SLOT: { querySelector: null },
+            APP_SLOT: { querySelector: '.app' },
+            HEADER_SLOT: { querySelector: '.header' },
           },
         };
 
@@ -341,17 +341,15 @@ describe('app-manager', () => {
 
         const config = {
           apps: {
-            APP_A: { appPath: '/app-a', fragments: ['APP_FRAGMENT', 'HEADER_FRAGMENT'] },
-            APP_B: { appPath: '/app-b', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+            APP_A: { appPaths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
           },
           fragments: {
-            APP_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
-            ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return getSpyScript(); } },
+            ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
             HEADER_FRAGMENT: { slot: 'HEADER_SLOT', loadScript() { return headerScript; } },
           },
           slots: {
-            APP_SLOT: { querySelector: null },
-            HEADER_SLOT: { querySelector: null },
+            APP_SLOT: { querySelector: '.app' },
+            HEADER_SLOT: { querySelector: '.header' },
           },
         };
 
@@ -361,9 +359,9 @@ describe('app-manager', () => {
 
         await stateChanger({ resource: '/app-b' });
 
-        expect(errorScript.onStateChange.callCount).to.equals(1);
         expect(errorScript.render.callCount).to.equals(0);
         expect(errorScript.hydrate.callCount).to.equals(1);
+        expect(errorScript.onStateChange.callCount).to.equals(1);
         expect(errorScript.unmount.callCount).to.equals(1);
         expect(errorScript.onUpdateStatus.callCount).to.equals(4);
 
