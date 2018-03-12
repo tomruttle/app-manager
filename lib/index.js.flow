@@ -1,12 +1,14 @@
 // @flow
 
 import type AppManagerError from './utils/app-manager-error';
-import { eventTitles, statuses, levels } from './constants';
+import { statuses, levels } from './constants';
+import type { EventsType, EventTitleType, StateChangeType } from './utils/history-callback';
+
+export type { BrowserStateType, StateChangeType } from './utils/history-callback';
 
 export type AppNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
-export type EventTitleType = $Values<typeof eventTitles>;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
@@ -41,24 +43,6 @@ export type BaseAppType = {
 export type AppType = BaseAppType & { name: AppNameType };
 
 export type AppsMapType = { [appName: AppNameType]: AppType };
-
-export type EventCallbackType = (...data: Array<any>) => any;
-export type EmitterType = (eventTitle: EventTitleType, ...data: Array<any>) => void;
-export type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
-export type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
-
-export type EventsType = {
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
-}
-
-export type BrowserStateType = {
-  resource: string,
-  title?: ?string,
-  state?: ?Object,
-  eventTitle?: ?mixed,
-};
 
 export type StateType = {
   event: ?string,
@@ -128,8 +112,6 @@ type BaseFragmentType = {
   getMarkup?: GetMarkupType,
 };
 
-export type StateChangeType = Promise<void>;
-
 export type FragmentType = BaseFragmentType & { name: FragmentNameType };
 
 export type FragmentsMapType = { [fragmentName: FragmentNameType]: FragmentType };
@@ -144,7 +126,7 @@ export type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
+declare export default (config: ConfigType, events: EventsType, options?: OverrideOptionsType) => {
   getState(): StateWithAdditionsType,
   getRunningStateChange(): ?StateChangeType,
 }

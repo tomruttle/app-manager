@@ -6,7 +6,7 @@ import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extra
 
 import WindowStub, { windowEventTitles } from '../lib/utils/window-stub';
 import { delay } from '../lib/utils/config';
-import initHistoryCallback from '../lib/utils/history-callback';
+import initHistoryCallback, { eventTitles } from '../lib/utils/history-callback';
 import { awaitEvent } from './utils';
 
 describe('history-callback', () => {
@@ -48,7 +48,7 @@ describe('history-callback', () => {
       expect(callback.args[1][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/b',
       });
     });
@@ -62,7 +62,7 @@ describe('history-callback', () => {
       expect(callback.args[2][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_POP_STATE,
+        eventTitle: eventTitles.HISTORY_POP_STATE,
         resource: '/a',
       });
     });
@@ -76,7 +76,7 @@ describe('history-callback', () => {
       expect(callback.args[3][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_POP_STATE,
+        eventTitle: eventTitles.HISTORY_POP_STATE,
         resource: '/b',
       });
     });
@@ -90,7 +90,7 @@ describe('history-callback', () => {
       expect(callback.args[4][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_REPLACE_STATE,
+        eventTitle: eventTitles.HISTORY_REPLACE_STATE,
         resource: '/c',
       });
     });
@@ -104,7 +104,7 @@ describe('history-callback', () => {
       expect(callback.args[5][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_POP_STATE,
+        eventTitle: eventTitles.HISTORY_POP_STATE,
         resource: '/a',
       });
     });
@@ -121,8 +121,8 @@ describe('history-callback', () => {
       const onHaltedSpy = sinon.spy();
       const callback = sinon.stub().returns(true).onThirdCall().returns(false);
 
-      events.on(historyCallback.eventTitles.ERROR, onErrorSpy);
-      events.on(historyCallback.eventTitles.HALTED, onHaltedSpy);
+      events.on(eventTitles.ERROR, onErrorSpy);
+      events.on(eventTitles.HALTED, onHaltedSpy);
 
       const stateChanger = historyCallback(callback, events);
 
@@ -136,7 +136,7 @@ describe('history-callback', () => {
       expect(callback.args[1][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/a',
       });
 
@@ -150,7 +150,7 @@ describe('history-callback', () => {
       expect(callback.args[2][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/c',
       });
 
@@ -170,8 +170,8 @@ describe('history-callback', () => {
       const replaceStateSpy = sinon.spy();
       const stateChangeSpy = sinon.spy();
 
-      events.on(historyCallback.eventTitles.HISTORY_REPLACE_STATE, replaceStateSpy);
-      events.on(historyCallback.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
+      events.on(eventTitles.HISTORY_REPLACE_STATE, replaceStateSpy);
+      events.on(eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
 
       historyCallback(callback, events);
 
@@ -197,8 +197,8 @@ describe('history-callback', () => {
 
       const events = new EventEmitter();
 
-      events.on(historyCallback.eventTitles.HISTORY_PUSH_STATE, pushStateSpy);
-      events.on(historyCallback.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
+      events.on(eventTitles.HISTORY_PUSH_STATE, pushStateSpy);
+      events.on(eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
 
       historyCallback(callback, events);
 
@@ -267,7 +267,7 @@ describe('history-callback', () => {
       expect(callback.args[1][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/b',
       });
 
@@ -281,7 +281,7 @@ describe('history-callback', () => {
       expect(callback.args[2][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/d',
       });
 
@@ -314,7 +314,7 @@ describe('history-callback', () => {
 
       expect(firstRunningStateChange).to.be.a('promise');
 
-      const [err]: any = await awaitEvent(events, historyCallback.eventTitles.ERROR);
+      const [err]: any = await awaitEvent(events, eventTitles.ERROR);
 
       expect(err.message).to.contain('Nope');
 
@@ -332,7 +332,7 @@ describe('history-callback', () => {
       expect(callback.args[2][0]).to.deep.equals({
         title: null,
         state: null,
-        eventTitle: historyCallback.eventTitles.HISTORY_PUSH_STATE,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
         resource: '/c',
       });
 
