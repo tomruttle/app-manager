@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import appManagerCallback from '../lib/app-manager';
-import { defaultGetAppNameFromResource } from '../lib/utils/config';
+import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {
   const options = {
@@ -41,10 +41,10 @@ describe('app-manager', () => {
     };
 
     const config = {
-      apps: {
-        APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
-        APP_B: { appPaths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
-        APP_C: { appPath: '/app-c', fragment: 'SCRIPT_C' },
+      routes: {
+        APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
+        APP_B: { paths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
+        APP_C: { path: '/app-c', fragment: 'SCRIPT_C' },
       },
       slots: {
         APP: { querySelector: '.fragment' },
@@ -62,14 +62,14 @@ describe('app-manager', () => {
     let stateChanger;
 
     before(() => {
-      stateChanger = appManagerCallback(config, Object.assign({}, options, { getAppNameFromResource: defaultGetAppNameFromResource(config.apps) }));
+      stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
     });
 
     it('correctly initialises app manager with first fragment', async () => {
       const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_A');
+      expect(stateChanger.getState().route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -84,11 +84,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(0);
     });
 
-    it('browses to new app', async () => {
+    it('browses to new route', async () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_B');
+      expect(stateChanger.getState().route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -103,11 +103,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(2);
     });
 
-    it('moves within an app', async () => {
+    it('moves within a route', async () => {
       const proceed = await stateChanger({ resource: '/app-b/next' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_B');
+      expect(stateChanger.getState().route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -122,11 +122,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(4);
     });
 
-    it('moves back within an app', async () => {
+    it('moves back within a route', async () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_B');
+      expect(stateChanger.getState().route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -141,11 +141,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(6);
     });
 
-    it('moves back to the old app', async () => {
+    it('moves back to the old route', async () => {
       const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_A');
+      expect(stateChanger.getState().route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -164,7 +164,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().app.name).to.equals('APP_B');
+      expect(stateChanger.getState().route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -183,7 +183,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-c' }, onError);
 
       expect(proceed).to.be.false;
-      expect(stateChanger.getState().app.name).to.equals('APP_C');
+      expect(stateChanger.getState().route.name).to.equals('APP_C');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -210,16 +210,16 @@ describe('app-manager', () => {
   });
 
   describe('errors', () => {
-    it('emits an error event if app tries to load missing fragment', async () => {
+    it('emits an error event if route tries to load missing fragment', async () => {
       const config = {
-        apps: {
-          APP_A: { appPath: '/app-a', fragment: 'MISSING' },
+        routes: {
+          APP_A: { path: '/app-a', fragment: 'MISSING' },
         },
         fragments: {},
         slots: {},
       };
 
-      const stateChanger = appManagerCallback(config, Object.assign({}, options, { getAppNameFromResource: defaultGetAppNameFromResource(config.apps) }));
+      const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
       try {
         await stateChanger({ resource: '/app-a' });
@@ -247,8 +247,8 @@ describe('app-manager', () => {
         const appScript = getSpyScript();
 
         const config = {
-          apps: {
-            APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
+          routes: {
+            APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
           },
           fragments: {
             SCRIPT_A: { slot: 'MAIN', loadScript() { return appScript; } },
@@ -258,7 +258,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getAppNameFromResource: defaultGetAppNameFromResource(config.apps) }));
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 
@@ -286,8 +286,8 @@ describe('app-manager', () => {
         };
 
         const config = {
-          apps: {
-            APP_A: { appPath: '/app-a', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+          routes: {
+            APP_A: { path: '/app-a', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
           },
           fragments: {
             ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
@@ -299,7 +299,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getAppNameFromResource: defaultGetAppNameFromResource(config.apps) }));
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 
@@ -340,8 +340,8 @@ describe('app-manager', () => {
         };
 
         const config = {
-          apps: {
-            APP_A: { appPaths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+          routes: {
+            APP_A: { paths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
           },
           fragments: {
             ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
@@ -353,7 +353,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getAppNameFromResource: defaultGetAppNameFromResource(config.apps) }));
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 

@@ -39,16 +39,16 @@ export default {
     }
   },
 
-  apps: {
+  routes: {
     EXAMPLE1_APP: {
       name: 'EXAMPLE1_APP',
-      appPath: '/apps/example1',
+      path: '/apps/example1',
       fragments: ['EXAMPLE1_FRAGMENT'],
     },
 
     EXAMPLE2_APP: {
       name: 'EXAMPLE2_APP',
-      appPath: '/apps/example2',
+      path: '/apps/example2',
       fragments: ['EXAMPLE2_FRAGMENT'],
     }
   }
@@ -107,12 +107,12 @@ app.get('/apps/*', async (req, res, next) => {
 
 ### App
 
-An `app` determines which fragments are displayed on which `appPaths`.
+An `app` determines which fragments are displayed on which `paths`.
 
 ```js
 {
   name: 'APP_NAME', // Uniquely identifies the app. Must match the app's key on the config map.
-  appPath: '/app/:path', // Path that uniquely identifies this app. Analogous to a route in express.
+  path: '/app/:path', // Path that uniquely identifies this app. Analogous to a route in express.
   fragments: ['FRAGMENT_NAME'], // Ordered array of fragment names. If two fragments occupy the same slot, the first will take precedence.
 }
 ```
@@ -174,7 +174,7 @@ async function hydrate(container, state) {
   // ReactDOM.hydrate(container, <YourApp {...appState} />);
 }
 
-// * Optional function that will be called if the user browses onto an appPath for which the parent fragment is to be mounted.
+// * Optional function that will be called if the user browses onto an path for which the parent fragment is to be mounted.
 // * If your app relies on initial state, you should fetch it here
 // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
@@ -184,7 +184,7 @@ async function render(container, state) {
   // ReactDOM.render(container, <YourApp {...props} />);
 }
 
-// * Optional function that will be called when the user browses away from an appPath on which the parent fragment is mounted.
+// * Optional function that will be called when the user browses away from an path on which the parent fragment is mounted.
 // * Useful to clear up any event listeners, and to reset any mutable state.
 // * Function is called with the element into which the fragment is to be mounted and state (as below)
 

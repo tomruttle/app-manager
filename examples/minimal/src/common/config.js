@@ -37,14 +37,14 @@ module.exports = {
     }
   },
 
-  apps: {
+  routes: {
     EXAMPLE1_APP: {
-      appPath: '/apps/example1',
+      path: '/apps/example1',
       fragments: ['EXAMPLE1_FRAGMENT'],
     },
 
     EXAMPLE2_APP: {
-      appPath: '/apps/example2',
+      path: '/apps/example2',
       fragments: ['EXAMPLE2_FRAGMENT'],
     }
   }

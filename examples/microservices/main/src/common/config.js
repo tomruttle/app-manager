@@ -124,31 +124,31 @@ const fragments = {
   },
 };
 
-const apps = {
+const routes = {
   GUEST_TEMPLATE_STRING_APP: {
     name: 'GUEST_TEMPLATE_STRING_APP',
-    appPath: '/apps/guest-template-string',
+    path: '/apps/guest-template-string',
     fragments: [fragments.GUEST_TEMPLATE_STRING_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 
   GUEST_REACT_APP: {
     name: 'GUEST_REACT_APP',
-    appPath: '/apps/guest-react/:colour?',
+    path: '/apps/guest-react/:colour?',
     fragments: [fragments.GUEST_REACT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 
   GUEST_TIMEOUT_APP: {
     name: 'GUEST_TIMEOUT_APP',
-    appPath: '/apps/guest-timeout',
+    path: '/apps/guest-timeout',
     fragments: [fragments.GUEST_TIMEOUT_FRAGMENT.name, fragments.HEADER_FRAGMENT.name, fragments.FOOTER_FRAGMENT.name],
   },
 };
 
-const appPathsMap = Object.keys(apps).reduce((paths, appName) => {
-  const { appPath } = apps[appName];
-  return Object.assign({}, paths, { [appName]: { appPath } });
+const pathsMap = Object.keys(routes).reduce((paths, routeName) => {
+  const { path } = routes[routeName];
+  return Object.assign({}, paths, { [routeName]: { path } });
 }, {});
 
-export const options = getPathHelpers(appPathsMap);
+export const options = getPathHelpers(pathsMap);
 
-export default { apps, slots, fragments };
+export default { routes, slots, fragments };

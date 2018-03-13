@@ -2,4 +2,4 @@
 
 var appManagerServer = require('./es5/server');
 
-module.exports = appManagerServer;
+module.exports = appManagerServer.default;

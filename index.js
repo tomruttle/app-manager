@@ -2,4 +2,4 @@
 
 var appManager = require('./es5/index');
 
-module.exports = appManager;
+module.exports = appManager.default;

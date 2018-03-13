@@ -5,31 +5,31 @@ import { expect } from 'chai';
 import getPathHelpers from '../lib/utils/path';
 
 describe('Path Helpers', () => {
-  describe('getAppNameFromResource', () => {
-    const apps = {
-      APP: { appPaths: ['/path/:id/:otherParam(valid|options)/:optional?', '/path/:otherParam(valid|options)/:optional?'] },
-      OTHER: { appPath: '/not-path/:id/:optional?' },
+  describe('getRouteNameFromResource', () => {
+    const routes = {
+      APP: { paths: ['/path/:id/:otherParam(valid|options)/:optional?', '/path/:otherParam(valid|options)/:optional?'] },
+      OTHER: { path: '/not-path/:id/:optional?' },
     };
 
-    const { getAppNameFromResource } = getPathHelpers(apps);
+    const { getRouteNameFromResource } = getPathHelpers(routes);
 
-    it('Finds an app from its path', () => {
-      const appName = getAppNameFromResource('/path/1058690/valid/optional');
-      expect(appName).to.equals('APP');
+    it('Finds a route from its path', () => {
+      const routeName = getRouteNameFromResource('/path/1058690/valid/optional');
+      expect(routeName).to.equals('APP');
     });
 
     it('Returns undefined if no urls match', () => {
-      const appName = getAppNameFromResource('/path/1058690/invalid/optional');
-      expect(appName).to.be.undefined;
+      const routeName = getRouteNameFromResource('/path/1058690/invalid/optional');
+      expect(routeName).to.be.undefined;
     });
   });
 
   describe('getAdditionalState', () => {
-    const apps = { APP: { appPaths: ['/path/:id/:otherParam(valid|options)/:optional?'] } };
+    const routes = { APP: { paths: ['/path/:id/:otherParam(valid|options)/:optional?'] } };
 
-    const { getAdditionalState } = getPathHelpers(apps);
+    const { getAdditionalState } = getPathHelpers(routes);
 
-    it('finds params from appRoute', () => {
+    it('finds params from route', () => {
       const { params } = getAdditionalState('APP', '/path/1058690/valid/optional');
       expect(params).to.deep.equals({
         id: '1058690',
@@ -38,7 +38,7 @@ describe('Path Helpers', () => {
       });
     });
 
-    it('handles optional params from appRoute', () => {
+    it('handles optional params from route', () => {
       const { params, query } = getAdditionalState('APP', '/path/1058690/valid');
       expect(params).to.deep.equals({
         id: '1058690',

@@ -5,46 +5,46 @@ import type { EventsType, EventTitleType, StateChangeType } from './utils/histor
 
 export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './utils/history-callback';
 
-export type AppNameType = string;
+export type RouteNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
 type StateAdditionsType = { [stateName: string]: any };
-type GetAppNameFromResourceType = (resource: string) => ?AppNameType;
-type GetAdditionalStateType = (appName: AppNameType, resource: string) => StateAdditionsType;
+type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType;
+type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
 type GetElementType = (querySelector: string) => Promise<?Element>;
 
 export type OptionsType = {
   importTimeout: number,
-  getAppNameFromResource: GetAppNameFromResourceType,
+  getRouteNameFromResource: GetRouteNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
   getElement: GetElementType,
 };
 
 export type OverrideOptionsType = {
   importTimeout?: number,
-  getAppNameFromResource?: GetAppNameFromResourceType,
+  getRouteNameFromResource?: GetRouteNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
   getElement?: GetElementType,
 };
 
-export type BaseAppType = {
-  appPath?: string,
-  appPaths?: Array<string>,
+export type BaseRouteType = {
+  path?: string,
+  paths?: Array<string>,
   fragment?: FragmentNameType,
   fragments?: Array<FragmentNameType>,
 }
 
-export type AppType = BaseAppType & { name: AppNameType };
+export type RouteType = BaseRouteType & { name: RouteNameType };
 
-export type AppsMapType = { [appName: AppNameType]: AppType };
+export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
 
 export type StateType = {
   event: ?string,
-  prevApp: ?AppType,
-  app: AppType,
+  prevRoute: ?RouteType,
+  route: RouteType,
   resource: string,
 };
 
@@ -62,11 +62,11 @@ export type HistoryType = Object;
 
 export interface ScriptVersion4Type {
   version: 4;
-  hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
-  mount: (container: Element, eventTitle: ?EventTitleType, currentApp: AppType) => Promise<?void>;
-  unmount: (container: Element, eventTitle: ?EventTitleType, currentApp: ?AppType) => Promise<?void>;
-  onUpdateStatus?: (status: StatusType, currentApp: AppType) => Promise<?void>;
-  onStateChange?: (eventTitle: ?EventTitleType, currentApp: AppType) => Promise<?void>;
+  hydrate?: (container: Element, currentRoute: RouteType) => Promise<?void>;
+  mount: (container: Element, eventTitle: ?EventTitleType, currentRoute: RouteType) => Promise<?void>;
+  unmount: (container: Element, eventTitle: ?EventTitleType, currentRoute: ?RouteType) => Promise<?void>;
+  onUpdateStatus?: (status: StatusType, currentRoute: RouteType) => Promise<?void>;
+  onStateChange?: (eventTitle: ?EventTitleType, currentRoute: RouteType) => Promise<?void>;
 }
 
 export interface ScriptVersion5Type {
@@ -118,7 +118,7 @@ export type PageMapType = { [slotName: SlotNameType]: FragmentNameType };
 export type PageDiffType = { unmount: PageMapType, mount: PageMapType, update: PageMapType };
 
 export type ConfigType = {|
-  apps: { [appName: AppNameType]: BaseAppType },
+  routes: { [routeName: RouteNameType]: BaseRouteType },
   slots: { [slotName: SlotNameType]: BaseSlotType },
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
