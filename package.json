@@ -2,7 +2,7 @@
   "name": "app-manager",
   "version": "0.23.0",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
-  "main": "es5/index.js",
+  "main": "index.js",
   "scripts": {
     "coverage": "nyc mocha ./test/*.test.js",
     "clean": "rimraf ./es5 ./dist",

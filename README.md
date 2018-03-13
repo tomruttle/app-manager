@@ -72,7 +72,7 @@ appManager.init();
 ### server.js
 
 ```js
-import AppManagerServer from 'app-manager/es5/server';
+import AppManagerServer from 'app-manager/server';
 
 import config from './config';
 
