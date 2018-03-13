@@ -1,10 +1,9 @@
 // @flow
 
-import type AppManagerError from './utils/app-manager-error';
 import { statuses, levels } from './constants';
 import type { EventsType, EventTitleType, StateChangeType } from './utils/history-callback';
 
-export type { BrowserStateType, StateChangeType } from './utils/history-callback';
+export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './utils/history-callback';
 
 export type AppNameType = string;
 export type SlotNameType = string;
@@ -15,22 +14,20 @@ export type StatusLevelType = $Values<typeof levels>;
 type StateAdditionsType = { [stateName: string]: any };
 type GetAppNameFromResourceType = (resource: string) => ?AppNameType;
 type GetAdditionalStateType = (appName: AppNameType, resource: string) => StateAdditionsType;
-type OnErrorType = (err: AppManagerError) => void;
+type GetElementType = (querySelector: string) => Promise<?Element>;
 
 export type OptionsType = {
   importTimeout: number,
-  domCheckInterval: number,
   getAppNameFromResource: GetAppNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
-  onError: OnErrorType,
+  getElement: GetElementType,
 };
 
 export type OverrideOptionsType = {
   importTimeout?: number,
-  domCheckInterval?: number,
   getAppNameFromResource?: GetAppNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
-  onError?: OnErrorType,
+  getElement?: GetElementType,
 };
 
 export type BaseAppType = {

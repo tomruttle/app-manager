@@ -9,7 +9,9 @@ import config, { options } from '../common/config';
 const events = new EventEmitter();
 
 events.on(appManager.eventTitles.HALTED, () => {
-  window.location.reload();
+  const location = window.location.href;
+  window.history.back();
+  window.location.href = location;
 });
 
 appManager(config, events, options);
