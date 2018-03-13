@@ -90,8 +90,8 @@ export interface ScriptType {
 
 type BaseSlotType = {
   querySelector: ?string,
-  errorMarkup?: string,
-  loadingMarkup?: string,
+  errorMarkup?: (state: StateWithAdditionsType) => string | Promise<string>,
+  loadingMarkup?: (state: StateWithAdditionsType) => string | Promise<string>,
 };
 
 export type SlotType = BaseSlotType & { name: SlotNameType };
