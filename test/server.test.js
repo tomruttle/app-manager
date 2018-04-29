@@ -17,6 +17,10 @@ describe('Server', () => {
           fragments: ['fragment_b'],
           path: '/app-b',
         },
+        app_c: {
+          fragments: ['fragment_c'],
+          path: '/app-c',
+        },
       },
       fragments: {
         fragment_a: {
@@ -28,6 +32,10 @@ describe('Server', () => {
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),
+        },
+        fragment_c: {
+          slots: ['app'],
+          loadScript: () => { throw new Error('Should not be called.'); },
         },
       },
       slots: {
@@ -42,7 +50,7 @@ describe('Server', () => {
       const appManagerServer = new AppManagerServer(getConfig());
 
       try {
-        await appManagerServer.getSlotsMarkup('/app-c');
+        await appManagerServer.getSlotsMarkup('/app-d');
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.source).to.equal('get_slots_markup');
@@ -85,6 +93,14 @@ describe('Server', () => {
       expect(args).to.be.an('array').with.length(2);
       expect(args[0].route.name).to.equals('app_b');
       expect(args[1]).to.equals('additional data');
+    });
+
+    it('can handle fragments without getMarkup', async () => {
+      const config = getConfig();
+      const appManagerServer = new AppManagerServer(config);
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-c');
+
+      expect(appMarkup).to.deep.equals({ app: '' });
     });
   });
 });
