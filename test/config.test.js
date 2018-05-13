@@ -105,7 +105,7 @@ describe('config', () => {
 
   describe('defaultGetElement', () => {
     it('tries to get an element in the window', async () => {
-      const getElement = defaultGetElement({ document: { querySelector() { return true; } } });
+      const getElement = defaultGetElement({ document: { querySelector() { return (true: any); } } });
 
       const element = await getElement('.test');
 
@@ -113,7 +113,7 @@ describe('config', () => {
     });
 
     it('tries to get an element in the window', async () => {
-      const getElement = defaultGetElement({ document: { querySelector() { return true; } } });
+      const getElement = defaultGetElement({ document: { querySelector() { return (true: any); } } });
 
       try {
         // $ExpectError

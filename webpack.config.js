@@ -1,6 +1,6 @@
 const path = require('path');
 
-const SUPPORTED_BROWSERS = ['last 2 versions', 'ie 9', 'ie 10'];
+const SUPPORTED_BROWSERS = ['>0.25%', 'not ie 11', 'not op_mini all'];
 
 module.exports = (env) => ({
   entry: {
