@@ -69,7 +69,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_A');
+      expect(stateChanger.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -88,7 +88,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_B');
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -107,7 +107,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-b/next' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_B');
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -126,7 +126,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_B');
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -145,7 +145,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_A');
+      expect(stateChanger.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -164,7 +164,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
       expect(proceed).to.be.true;
-      expect(stateChanger.getState().route.name).to.equals('APP_B');
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -183,7 +183,7 @@ describe('app-manager', () => {
       const proceed = await stateChanger({ resource: '/app-c' }, onError);
 
       expect(proceed).to.be.false;
-      expect(stateChanger.getState().route.name).to.equals('APP_C');
+      expect(stateChanger.state.route.name).to.equals('APP_C');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);

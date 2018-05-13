@@ -124,6 +124,6 @@ export type ConfigType = {|
 |};
 
 declare export default (config: ConfigType, events: EventsType, options?: OverrideOptionsType) => {
-  getState(): StateWithAdditionsType,
-  getRunningStateChange(): ?StateChangeType,
+  runningStateChange: ?StateChangeType,
+  queuedStateChange: mixed,
 }
