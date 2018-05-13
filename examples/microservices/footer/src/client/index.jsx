@@ -12,7 +12,7 @@ import FooterApp from '../common/app';
 class FooterScript implements ScriptVersion5Type {
   _updateEventsCallback: ?(event: EventType) => void = null;
 
-  version = 5;
+  version = 6;
 
   _getApp = (initialEvents?: Array<EventType>) => (
     <FooterApp initialEvents={initialEvents}>
@@ -37,15 +37,15 @@ class FooterScript implements ScriptVersion5Type {
 
   hydrate = async (container: Element) => { ReactDOM.hydrate(this._getApp(), container); }
 
-  onStateChange = async ({ app, prevApp }: StateType) => {
+  onStateChange = async ({ route, prevRoute }: StateType) => {
     const eventId = shortId.generate();
     const callback = this._updateEventsCallback;
 
     if (typeof callback === 'function') {
-      if (prevApp && prevApp.name !== app.name) {
-        callback({ id: eventId, data: `${prevApp.name} UNMOUNTED AND ${app.name} MOUNTED` });
+      if (prevRoute && prevRoute.name !== route.name) {
+        callback({ id: eventId, data: `${prevRoute.name} UNMOUNTED AND ${route.name} MOUNTED` });
       } else {
-        callback({ id: eventId, data: `${app.name} UPDATED` });
+        callback({ id: eventId, data: `${route.name} UPDATED` });
       }
     }
   };

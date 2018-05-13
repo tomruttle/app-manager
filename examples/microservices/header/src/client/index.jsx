@@ -11,10 +11,10 @@ class HeaderScript implements ScriptVersion5Type {
   _activeAppCallback: ?(appName: string) => void = null;
   _statusCallback: ?(status: string) => void = null;
 
-  version = 5;
+  version = 6;
 
-  _getApp = (app) => (
-    <HeaderApp {...app}>
+  _getApp = (route) => (
+    <HeaderApp {...route}>
       {(activeAppCallback, statusCallback) => {
         this._activeAppCallback = activeAppCallback;
         this._statusCallback = statusCallback;
@@ -22,13 +22,13 @@ class HeaderScript implements ScriptVersion5Type {
     </HeaderApp>
   );
 
-  render = async (container: Element, { app }: StateType) => { ReactDOM.render(this._getApp(app), container); };
+  render = async (container: Element, { route }: StateType) => { ReactDOM.render(this._getApp(route), container); };
 
-  hydrate = async (container: Element, { app }: StateType) => { ReactDOM.hydrate(this._getApp(app), container); };
+  hydrate = async (container: Element, { route }: StateType) => { ReactDOM.hydrate(this._getApp(route), container); };
 
-  onStateChange = async ({ app }: StateType) => {
+  onStateChange = async ({ route }: StateType) => {
     if (typeof this._activeAppCallback === 'function') {
-      this._activeAppCallback(app.name);
+      this._activeAppCallback(route.name);
     }
   };
 

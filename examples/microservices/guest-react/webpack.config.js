@@ -28,7 +28,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['env', { targets: { browsers: ['last 2 versions'] } }],
+              ['env', { targets: { browsers: ['>0.25%', 'not ie 11', 'not op_mini all'] } }],
               'react',
             ],
             plugins: ['transform-class-properties', 'transform-runtime'],

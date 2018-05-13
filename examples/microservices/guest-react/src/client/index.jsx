@@ -10,7 +10,7 @@ import GuestReact from '../common/app';
 let updateColour;
 
 const secondScript: ScriptVersion5Type = {
-  version: 5,
+  version: 6,
 
   _getApp(params) {
     return (

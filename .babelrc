@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["env", { "targets": { "browsers": ["last 2 versions", "ie 11"] } }],
+    ["env", { "targets": { "browsers": [">0.25%", "not ie 11", "not op_mini all"] } }],
     "flow",
   ],
   "plugins": ["transform-async-generator-functions", "transform-class-properties", "transform-runtime", ["transform-builtin-extend", { "globals": ["Error"] }]]
