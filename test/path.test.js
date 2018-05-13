@@ -5,6 +5,27 @@ import { expect } from 'chai';
 import getPathHelpers from '../lib/utils/path';
 
 describe('Path Helpers', () => {
+  describe('getPathHelpers', () => {
+    it('fails if no routes are specified.', () => {
+      try {
+        // $ExpectError
+        getPathHelpers();
+        throw new Error('Should not get here.');
+      } catch (err) {
+        expect(err.message).to.not.include('Should not get here.');
+      }
+    });
+
+    it('fails if no routes with paths are specified.', () => {
+      try {
+        getPathHelpers({ APP: {}, OTHER: {} });
+        throw new Error('Should not get here.');
+      } catch (err) {
+        expect(err.message).to.not.include('Should not get here.');
+      }
+    });
+  });
+
   describe('getRouteNameFromResource', () => {
     const routes = {
       APP: { paths: ['/path/:id/:otherParam(valid|options)/:optional?', '/path/:otherParam(valid|options)/:optional?'] },
@@ -25,7 +46,7 @@ describe('Path Helpers', () => {
   });
 
   describe('getAdditionalState', () => {
-    const routes = { APP: { paths: ['/path/:id/:otherParam(valid|options)/:optional?'] } };
+    const routes = { APP: { paths: ['/path/:id/:otherParam(valid|options)/:optional?', '/not-path/:id/:optional?'] } };
 
     const { getAdditionalState } = getPathHelpers(routes);
 
