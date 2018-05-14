@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-const { default: AppManagerServer } = require('../../../../es5/server');
+const AppManagerServer = require('../../../../server');
 const config = require('../common/config');
 
 const app = express();

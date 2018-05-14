@@ -8,14 +8,18 @@ import AppManagerServer from '../lib/server';
 describe('Server', () => {
   function getConfig() {
     return {
-      apps: {
+      routes: {
         app_a: {
           fragments: ['fragment_a'],
-          appPath: '/app-a',
+          path: '/app-a',
         },
         app_b: {
           fragments: ['fragment_b'],
-          appPath: '/app-b',
+          path: '/app-b',
+        },
+        app_c: {
+          fragments: ['fragment_c'],
+          path: '/app-c',
         },
       },
       fragments: {
@@ -29,6 +33,10 @@ describe('Server', () => {
           loadScript: () => { throw new Error('Should not be called.'); },
           getMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),
         },
+        fragment_c: {
+          slots: ['app'],
+          loadScript: () => { throw new Error('Should not be called.'); },
+        },
       },
       slots: {
         app: { querySelector: null },
@@ -38,11 +46,11 @@ describe('Server', () => {
   }
 
   describe('getSlotsMarkup', () => {
-    it('rejects if path does not match any apps', async () => {
+    it('rejects if path does not match any routes', async () => {
       const appManagerServer = new AppManagerServer(getConfig());
 
       try {
-        await appManagerServer.getSlotsMarkup('/app-c');
+        await appManagerServer.getSlotsMarkup('/app-d');
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.source).to.equal('get_slots_markup');
@@ -50,7 +58,7 @@ describe('Server', () => {
       }
     });
 
-    it('returns the async return value of getMarkup for the correct app in the correct slot', async () => {
+    it('returns the async return value of getMarkup for the correct fragment in the correct slot', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
       const appMarkup = await appManagerServer.getSlotsMarkup('/app-a');
@@ -65,7 +73,7 @@ describe('Server', () => {
 
       const args = getMarkupStubA.args[0];
       expect(args).to.be.an('array').with.length(1);
-      expect(args[0].app.name).to.equals('app_a');
+      expect(args[0].route.name).to.equals('app_a');
     });
 
     it('can handle additional arguments', async () => {
@@ -83,8 +91,16 @@ describe('Server', () => {
 
       const args = getMarkupStubB.args[0];
       expect(args).to.be.an('array').with.length(2);
-      expect(args[0].app.name).to.equals('app_b');
+      expect(args[0].route.name).to.equals('app_b');
       expect(args[1]).to.equals('additional data');
+    });
+
+    it('can handle fragments without getMarkup', async () => {
+      const config = getConfig();
+      const appManagerServer = new AppManagerServer(config);
+      const appMarkup = await appManagerServer.getSlotsMarkup('/app-c');
+
+      expect(appMarkup).to.deep.equals({ app: '' });
     });
   });
 });

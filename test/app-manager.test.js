@@ -2,14 +2,16 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extraneous-dependencies
 
-import WindowStub from '../lib/utils/window-stub';
-import { delay } from '../lib/utils/config';
-import initAppManager from '../lib/app-manager';
-import { awaitEvent } from './utils';
+import appManagerCallback from '../lib/app-manager';
+import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {
+  const options = {
+    importTimeout: 20,
+    async getElement(): Promise<?Element> { return (true: any); },
+  };
+
   describe('multi-step browser test', () => {
     const mockA = {
       version: 5,
@@ -39,10 +41,10 @@ describe('app-manager', () => {
     };
 
     const config = {
-      apps: {
-        APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
-        APP_B: { appPaths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
-        APP_C: { appPath: '/app-c', fragment: 'SCRIPT_C' },
+      routes: {
+        APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
+        APP_B: { paths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
+        APP_C: { path: '/app-c', fragment: 'SCRIPT_C' },
       },
       slots: {
         APP: { querySelector: '.fragment' },
@@ -55,28 +57,19 @@ describe('app-manager', () => {
       },
     };
 
-    const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
+    const onError = sinon.spy();
 
-    const appManager = initAppManager(windowStub);
-    const events = new EventEmitter();
-
-    let _getState;
-    let _getRunningStateChange;
+    let stateChanger;
 
     before(() => {
-      const { getState, getRunningStateChange } = appManager(config, events);
-      _getState = getState;
-      _getRunningStateChange = getRunningStateChange;
-    });
-
-    after(() => {
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+      stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
     });
 
     it('correctly initialises app manager with first fragment', async () => {
-      await _getRunningStateChange();
+      const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
-      expect((_getState(): any).app.name).to.equals('APP_A');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -91,12 +84,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(0);
     });
 
-    it('browses to new app', async () => {
-      windowStub.history.pushState(null, null, '/app-b');
+    it('browses to new route', async () => {
+      const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
-      await _getRunningStateChange();
-
-      expect((_getState(): any).app.name).to.equals('APP_B');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -111,12 +103,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(2);
     });
 
-    it('moves within an app', async () => {
-      windowStub.history.pushState(null, null, '/app-b/next');
+    it('moves within a route', async () => {
+      const proceed = await stateChanger({ resource: '/app-b/next' }, onError);
 
-      await _getRunningStateChange();
-
-      expect((_getState(): any).app.name).to.equals('APP_B');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -131,12 +122,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(4);
     });
 
-    it('moves back within an app', async () => {
-      windowStub.history.go(-1);
+    it('moves back within a route', async () => {
+      const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
-      await _getRunningStateChange();
-
-      expect((_getState(): any).app.name).to.equals('APP_B');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(0);
@@ -151,12 +141,11 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(6);
     });
 
-    it('moves back to the old app', async () => {
-      windowStub.history.back();
+    it('moves back to the old route', async () => {
+      const proceed = await stateChanger({ resource: '/app-a' }, onError);
 
-      await _getRunningStateChange();
-
-      expect((_getState(): any).app.name).to.equals('APP_A');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -172,11 +161,10 @@ describe('app-manager', () => {
     });
 
     it('moves forward again', async () => {
-      windowStub.history.forward();
+      const proceed = await stateChanger({ resource: '/app-b' }, onError);
 
-      await _getRunningStateChange();
-
-      expect((_getState(): any).app.name).to.equals('APP_B');
+      expect(proceed).to.be.true;
+      expect(stateChanger.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -192,11 +180,10 @@ describe('app-manager', () => {
     });
 
     it('If a fragment does not have a loadScript function, emit a missing-scripts event', async () => {
-      windowStub.history.pushState(null, null, '/app-c');
+      const proceed = await stateChanger({ resource: '/app-c' }, onError);
 
-      await awaitEvent(events, 'am-missing-scripts');
-
-      expect((_getState(): any).app.name).to.equals('APP_C');
+      expect(proceed).to.be.false;
+      expect(stateChanger.state.route.name).to.equals('APP_C');
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.render.callCount).to.equals(1);
@@ -217,283 +204,186 @@ describe('app-manager', () => {
       expect(mockC.onUpdateStatus.callCount).to.equals(0);
     });
 
-    it('should keep the browser in sync', () => {
-      expect(windowStub.location.pathname).to.equals('/app-c');
+    it('Expect there to have been no errors', () => {
+      expect(onError.called).to.be.false;
     });
   });
 
-  describe('events', () => {
-    it('Can bind and unbind event listeners', async () => {
+  describe('errors', () => {
+    it('emits an error event if route tries to load missing fragment', async () => {
       const config = {
-        apps: {
-          APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
+        routes: {
+          APP_A: { path: '/app-a', fragment: 'MISSING' },
         },
-        slots: { MAIN: { querySelector: null } },
-        fragments: {
-          SCRIPT_A: { slot: 'MAIN', loadScript: async () => ({ version: 5 }) },
-        },
+        fragments: {},
+        slots: {},
       };
 
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
+      const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-      const appManager = initAppManager(windowStub);
-      const events = new EventEmitter();
-
-      const onErrorSpy = sinon.spy();
-      const onExternalSpy = sinon.spy();
-
-      events.on('am-error', onErrorSpy);
-      events.on('am-external-link', onExternalSpy);
-
-      const { getRunningStateChange, getState } = appManager(config, events);
-
-      await getRunningStateChange();
-
-      windowStub.history.pushState(null, null, '/app-a');
-
-      await getRunningStateChange();
-
-      expect((getState(): any).app.name).to.equals('APP_A');
-
-      expect(onErrorSpy.callCount).to.equals(0);
-
-      windowStub.history.pushState(null, null, '/app-c');
-
-      await getRunningStateChange();
-
-      expect((getState(): any).app.name).to.equals('APP_A');
-
-      expect(onErrorSpy.callCount).to.equals(0);
-      expect(onExternalSpy.callCount).to.equals(1);
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+      try {
+        await stateChanger({ resource: '/app-a' });
+        throw new Error('Should not get here.');
+      } catch (err) {
+        expect(err.code).to.equals('missing_fragment');
+      }
     });
+  });
 
-    it('calling replaceState emits correct events', () => {
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
-      const appManager = initAppManager(windowStub);
+  describe('Lifecycle', () => {
+    function getSpyScript() {
+      return {
+        version: 5,
+        onStateChange: sinon.spy(),
+        onUpdateStatus: sinon.spy(),
+        hydrate: sinon.spy(),
+        render: sinon.spy(),
+        unmount: sinon.spy(),
+      };
+    }
 
-      const config = { apps: {}, slots: {}, fragments: {} };
-      const events = new EventEmitter();
+    describe('setup page', () => {
+      it('hydrates a script with no errors', async () => {
+        const appScript = getSpyScript();
 
-      const replaceStateSpy = sinon.spy();
-      const stateChangeSpy = sinon.spy();
-
-      events.on(appManager.eventTitles.HISTORY_REPLACE_STATE, replaceStateSpy);
-      events.on(appManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
-
-      appManager(config, events);
-
-      windowStub.history.replaceState(null, null, '/app-c');
-
-      expect(replaceStateSpy.calledOnce).to.be.true;
-      expect(stateChangeSpy.calledOnce).to.be.true;
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-    });
-
-    it('resets the history functions before unloading', () => {
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
-
-      const beforeunloadSpy = sinon.spy();
-      const pushStateSpy = sinon.spy();
-      const stateChangeSpy = sinon.spy();
-
-      windowStub.onbeforeunload = beforeunloadSpy;
-
-      const appManager = initAppManager(windowStub);
-
-      const config = { apps: {}, slots: {}, fragments: {} };
-      const events = new EventEmitter();
-
-      events.on(appManager.eventTitles.HISTORY_PUSH_STATE, pushStateSpy);
-      events.on(appManager.eventTitles.HISTORY_STATE_CHANGE, stateChangeSpy);
-
-      appManager(config, events);
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-      expect(beforeunloadSpy.calledOnce).to.be.true;
-
-      windowStub.history.pushState(null, null, '/app-c');
-
-      expect(pushStateSpy.called).to.be.false;
-      expect(stateChangeSpy.called).to.be.false;
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-    });
-
-    describe('errors', () => {
-      it('emits an error event if app tries to load missing fragment', async () => {
         const config = {
-          apps: {
-            APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
-            APP_B: { appPath: '/app-b', fragment: 'MISSING' },
+          routes: {
+            APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
           },
           fragments: {
-            SCRIPT_A: { slot: 'MAIN' },
+            SCRIPT_A: { slot: 'MAIN', loadScript() { return appScript; } },
           },
-          slots: {},
+          slots: {
+            MAIN: { querySelector: '.app' },
+          },
         };
 
-        const onErrorSpy = sinon.spy();
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-        const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
+        await stateChanger({ resource: '/app-a' });
 
-        const appManager = initAppManager(windowStub);
+        expect(appScript.onStateChange.callCount).to.equals(0);
+        expect(appScript.render.callCount).to.equals(0);
+        expect(appScript.hydrate.callCount).to.equals(1);
+        expect(appScript.unmount.callCount).to.equals(0);
+        expect(appScript.onUpdateStatus.callCount).to.equals(2);
 
-        const events = new EventEmitter();
+        const [loadingCall, defaultCall] = appScript.onUpdateStatus.args;
+        expect(loadingCall[0].status).to.equals('LOADING');
+        expect(defaultCall[0].status).to.equals('DEFAULT');
+      });
 
-        events.on('am-error', onErrorSpy);
+      it('handles errors on hydrate', async () => {
+        const headerScript = getSpyScript();
 
-        appManager(config, events);
+        const errorScript = {
+          version: 5,
+          onStateChange: sinon.spy(),
+          onUpdateStatus: sinon.spy(),
+          hydrate: sinon.stub().throws(),
+          render: sinon.spy(),
+          unmount: sinon.spy(),
+        };
 
-        const err = onErrorSpy.args[0][0];
+        const config = {
+          routes: {
+            APP_A: { path: '/app-a', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+          },
+          fragments: {
+            ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
+            HEADER_FRAGMENT: { slot: 'HEADER_SLOT', loadScript() { return headerScript; } },
+          },
+          slots: {
+            APP_SLOT: { querySelector: '.app' },
+            HEADER_SLOT: { querySelector: '.header' },
+          },
+        };
 
-        expect(err.code).to.equals('invalid_slots');
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-        windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+        await stateChanger({ resource: '/app-a' });
+
+        expect(errorScript.onStateChange.callCount).to.equals(0);
+        expect(errorScript.render.callCount).to.equals(0);
+        expect(errorScript.hydrate.callCount).to.equals(1);
+        expect(errorScript.unmount.callCount).to.equals(1);
+        expect(errorScript.onUpdateStatus.callCount).to.equals(2);
+
+        const [errorLoadingCall, errorErrorCall] = errorScript.onUpdateStatus.args;
+        expect(errorLoadingCall[0].status).to.equals('LOADING');
+        expect(errorErrorCall[0].status).to.equals('ERROR');
+
+        expect(headerScript.onStateChange.callCount).to.equals(0);
+        expect(headerScript.render.callCount).to.equals(0);
+        expect(headerScript.hydrate.callCount).to.equals(1);
+        expect(headerScript.unmount.callCount).to.equals(0);
+        expect(headerScript.onUpdateStatus.callCount).to.equals(3);
+
+        const [loadingCall, errorCall, defaultCall] = headerScript.onUpdateStatus.args;
+        expect(loadingCall[0].status).to.equals('LOADING');
+        expect(errorCall[0].status).to.equals('ERROR');
+        expect(defaultCall[0].status).to.equals('DEFAULT');
       });
     });
-  });
 
-  describe('Queueing state changes', () => {
-    it('runs the init state changer and resets afterwards', async () => {
-      const config = {
-        apps: {
-          APP_A: { appPath: '/app-a', fragment: 'SCRIPT_A' },
-        },
-        fragments: {
-          SCRIPT_A: { slot: 'SLOT_A' },
-        },
-        slots: {
-          SLOT_A: { querySelector: null },
-        },
-      };
+    describe('update page', () => {
+      it('handles errors on update', async () => {
+        const headerScript = getSpyScript();
 
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
-      const appManager = initAppManager(windowStub);
-      const events = new EventEmitter();
+        const errorScript = {
+          version: 5,
+          onStateChange: sinon.stub().throws(),
+          onUpdateStatus: sinon.spy(),
+          hydrate: sinon.spy(),
+          render: sinon.spy(),
+          unmount: sinon.spy(),
+        };
 
-      const { getRunningStateChange } = appManager(config, events);
+        const config = {
+          routes: {
+            APP_A: { paths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+          },
+          fragments: {
+            ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
+            HEADER_FRAGMENT: { slot: 'HEADER_SLOT', loadScript() { return headerScript; } },
+          },
+          slots: {
+            APP_SLOT: { querySelector: '.app' },
+            HEADER_SLOT: { querySelector: '.header' },
+          },
+        };
 
-      const runningStateChange = getRunningStateChange();
+        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-      expect(runningStateChange).to.be.a('promise');
+        await stateChanger({ resource: '/app-a' });
 
-      const result = await runningStateChange;
+        await stateChanger({ resource: '/app-b' });
 
-      expect(result).to.be.undefined;
+        expect(errorScript.render.callCount).to.equals(0);
+        expect(errorScript.hydrate.callCount).to.equals(1);
+        expect(errorScript.onStateChange.callCount).to.equals(1);
+        expect(errorScript.unmount.callCount).to.equals(1);
+        expect(errorScript.onUpdateStatus.callCount).to.equals(4);
 
-      expect(getRunningStateChange()).to.be.null;
+        const [errorLoadingCall1, errorDefaultCall, errorLoadingCall2, errorErrorCall] = errorScript.onUpdateStatus.args;
+        expect(errorLoadingCall1[0].status).to.equals('LOADING');
+        expect(errorDefaultCall[0].status).to.equals('DEFAULT');
+        expect(errorLoadingCall2[0].status).to.equals('LOADING');
+        expect(errorErrorCall[0].status).to.equals('ERROR');
 
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-    });
+        expect(headerScript.onStateChange.callCount).to.equals(1);
+        expect(headerScript.render.callCount).to.equals(0);
+        expect(headerScript.hydrate.callCount).to.equals(1);
+        expect(headerScript.unmount.callCount).to.equals(0);
+        expect(headerScript.onUpdateStatus.callCount).to.equals(5);
 
-    it('skips over queued state changes if the state changes again while a state change is already in progress', async () => {
-      const loadScript = async () => {
-        await delay(20);
-        return { version: 5 };
-      };
-
-      const config = {
-        apps: {
-          APP_A: { appPath: '/app-a', fragment: 'FRAGMENT_A' },
-          APP_B: { appPath: '/app-b', fragment: 'FRAGMENT_B' },
-          APP_C: { appPath: '/app-c', fragment: 'FRAGMENT_C' },
-          APP_D: { appPath: '/app-d', fragment: 'FRAGMENT_D' },
-        },
-        fragments: {
-          FRAGMENT_A: { loadScript, slot: 'MAIN' },
-          FRAGMENT_B: { loadScript, slot: 'MAIN' },
-          FRAGMENT_C: { loadScript, slot: 'MAIN' },
-          FRAGMENT_D: { loadScript, slot: 'MAIN' },
-        },
-        slots: { MAIN: { querySelector: null } },
-      };
-
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
-      const appManager = initAppManager(windowStub);
-      const events = new EventEmitter();
-
-      const { getRunningStateChange, getState } = appManager(config, events);
-
-      await getRunningStateChange();
-
-      expect((getState(): any).app.name).to.equals('APP_A');
-
-      windowStub.history.pushState(null, null, '/app-b');
-      windowStub.history.pushState(null, null, '/app-c');
-      windowStub.history.pushState(null, null, '/app-d');
-
-      expect((getState(): any).app.name).to.equals('APP_B');
-
-      const firstRunningStateChange = getRunningStateChange();
-
-      expect(firstRunningStateChange).to.be.a('promise');
-
-      await firstRunningStateChange;
-
-      expect((getState(): any).app.name).to.equals('APP_D');
-
-      const secondRunningStateChange = getRunningStateChange();
-
-      expect(secondRunningStateChange).to.be.a('promise');
-
-      await secondRunningStateChange;
-
-      expect(getRunningStateChange()).to.be.null;
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
-    });
-
-    it('propagates errors and tries to continue if a state change fails', async () => {
-      const config = {
-        apps: {
-          APP_A: { appPath: '/app-a', fragment: 'FRAGMENT_A' },
-          APP_B: { appPath: '/app-b', fragment: 'FRAGMENT_B' },
-          APP_C: { appPath: '/app-c', fragment: 'FRAGMENT_C' },
-        },
-        fragments: {
-          FRAGMENT_A: { loadScript: async () => ({ version: 5 }), slot: 'MAIN' },
-          FRAGMENT_B: { loadScript: async () => ({ version: 5, render: (_container, _state) => { throw new Error('Nope'); } }), slot: 'MAIN' },
-          FRAGMENT_C: { loadScript: async () => ({ version: 5 }), slot: 'MAIN' },
-        },
-        slots: { MAIN: { querySelector: '.blah' } },
-      };
-
-      const windowStub = new WindowStub([{ data: null, title: null, url: '/app-a' }]);
-      const appManager = initAppManager(windowStub);
-      const events = new EventEmitter();
-
-      const { getState, getRunningStateChange } = appManager(config, events);
-
-      await getRunningStateChange();
-
-      windowStub.history.pushState(null, null, '/app-b');
-
-      const firstRunningStateChange = getRunningStateChange();
-
-      expect(firstRunningStateChange).to.be.a('promise');
-
-      const [err]: any = await awaitEvent(events, 'am-error');
-
-      expect(err.code).to.equals('mount');
-      expect(err.message).to.contain('Nope');
-
-      await firstRunningStateChange;
-
-      windowStub.history.pushState(null, null, '/app-c');
-
-      const secondRunningStateChange = getRunningStateChange();
-
-      expect(secondRunningStateChange).to.be.a('promise');
-
-      await secondRunningStateChange;
-
-      expect((getState(): any).app.name).to.equals('APP_C');
-      expect(getRunningStateChange()).to.be.null;
-
-      windowStub._events.emit(appManager.eventTitles.WINDOW_BEFORE_UNLOAD);
+        const [loadingCall1, defaultCall1, loadingCall2, errorCall, defaultCall2] = headerScript.onUpdateStatus.args;
+        expect(loadingCall1[0].status).to.equals('LOADING');
+        expect(defaultCall1[0].status).to.equals('DEFAULT');
+        expect(loadingCall2[0].status).to.equals('LOADING');
+        expect(errorCall[0].status).to.equals('ERROR');
+        expect(defaultCall2[0].status).to.equals('DEFAULT');
+      });
     });
   });
 });

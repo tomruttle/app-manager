@@ -1,62 +1,50 @@
 // @flow
 
-import type AppManagerError from './utils/app-manager-error';
-import { eventTitles, statuses, levels } from './constants';
+import { statuses, levels } from './constants';
+import type { EventsType, EventTitleType, StateChangeType } from './utils/history-callback';
 
-export type AppNameType = string;
+export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './utils/history-callback';
+
+export type RouteNameType = string;
 export type SlotNameType = string;
 export type FragmentNameType = string;
-export type EventTitleType = $Values<typeof eventTitles>;
 export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
 type StateAdditionsType = { [stateName: string]: any };
-type GetAppNameFromResourceType = (resource: string) => ?AppNameType;
-type GetAdditionalStateType = (appName: AppNameType, resource: string) => StateAdditionsType;
-type OnErrorType = (err: AppManagerError) => void;
+type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>;
+type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
+type GetElementType = (querySelector: string) => Promise<?Element>;
 
 export type OptionsType = {
   importTimeout: number,
-  domCheckInterval: number,
-  getAppNameFromResource: GetAppNameFromResourceType,
+  getRouteNameFromResource: GetRouteNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
-  onError: OnErrorType,
+  getElement: GetElementType,
 };
 
 export type OverrideOptionsType = {
   importTimeout?: number,
-  domCheckInterval?: number,
-  getAppNameFromResource?: GetAppNameFromResourceType,
+  getRouteNameFromResource?: GetRouteNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
-  onError?: OnErrorType,
+  getElement?: GetElementType,
 };
 
-export type BaseAppType = {
-  appPath?: string,
-  appPaths?: Array<string>,
+export type BaseRouteType = {
+  path?: string,
+  paths?: Array<string>,
   fragment?: FragmentNameType,
   fragments?: Array<FragmentNameType>,
 }
 
-export type AppType = BaseAppType & { name: AppNameType };
+export type RouteType = BaseRouteType & { name: RouteNameType };
 
-export type AppsMapType = { [appName: AppNameType]: AppType };
-
-export type EventCallbackType = (...data: Array<any>) => any;
-export type EmitterType = (eventTitle: EventTitleType, ...data: Array<any>) => void;
-export type SubscriberType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
-export type RemoveListenerType = (eventTitle: EventTitleType, callback: EventCallbackType) => void;
-
-export type EventsType = {
-  emit: EmitterType,
-  on: SubscriberType,
-  removeListener: RemoveListenerType,
-}
+export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
 
 export type StateType = {
   event: ?string,
-  prevApp: ?AppType,
-  app: AppType,
+  prevRoute: ?RouteType,
+  route: RouteType,
   resource: string,
 };
 
@@ -72,25 +60,40 @@ export type StatusDetailsType = {|
 
 export type HistoryType = Object;
 
-export interface ScriptVersion3Type {
-  version: 3;
-  hydrate(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  mount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  unmount(container: Element, history: HistoryType, currentApp: AppType): Promise<?void>;
-  onStateChange(history: HistoryType, currentApp: AppType): Promise<?void>;
-}
+type ScriptVersion5RouteType = {
+  appPath?: string,
+  appPaths?: Array<string>,
+  fragment?: FragmentNameType,
+  fragments?: Array<FragmentNameType>,
+};
+
+export type ScriptVersion5StateWithAdditionsType = {
+  event: ?string,
+  resource: string,
+  app: ScriptVersion5RouteType,
+  prevApp: ?ScriptVersion5RouteType,
+} & StateAdditionsType;
 
 export interface ScriptVersion4Type {
   version: 4;
-  hydrate?: (container: Element, currentApp: AppType) => Promise<?void>;
-  mount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
-  unmount: (container: Element, eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
-  onUpdateStatus?: (status: StatusType, currentApp: AppType) => Promise<?void>;
-  onStateChange?: (eventTitle: EventTitleType, currentApp: AppType) => Promise<?void>;
+  hydrate?: (container: Element, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
+  mount: (container: Element, eventTitle: ?EventTitleType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
+  unmount: (container: Element, eventTitle: ?EventTitleType, currentRoute: ?ScriptVersion5RouteType) => Promise<?void>;
+  onUpdateStatus?: (status: StatusType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
+  onStateChange?: (eventTitle: ?EventTitleType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
 }
 
 export interface ScriptVersion5Type {
   version: 5;
+  hydrate?: (container: Element, state: ScriptVersion5StateWithAdditionsType) => any;
+  render?: (container: Element, state: ScriptVersion5StateWithAdditionsType) => any;
+  unmount?: (container: Element, state: ScriptVersion5StateWithAdditionsType) => any;
+  onUpdateStatus?: (statusDetails: StatusDetailsType, state: ScriptVersion5StateWithAdditionsType) => any;
+  onStateChange?: (state: ScriptVersion5StateWithAdditionsType) => any;
+}
+
+export interface ScriptVersion6Type {
+  version: 6;
   hydrate?: (container: Element, state: StateWithAdditionsType) => any;
   render?: (container: Element, state: StateWithAdditionsType) => any;
   unmount?: (container: Element, state: StateWithAdditionsType) => any;
@@ -98,27 +101,27 @@ export interface ScriptVersion5Type {
   onStateChange?: (state: StateWithAdditionsType) => any;
 }
 
-export type LoadedScriptType = (ScriptVersion3Type | ScriptVersion4Type | ScriptVersion5Type);
+export type LoadedScriptType = (ScriptVersion4Type | ScriptVersion5Type | ScriptVersion6Type);
 
 export interface ScriptType {
-  hydrate: (container: Element) => Promise<void>;
-  render: (container: Element) => Promise<void>;
-  unmount: (container: Element) => Promise<void>;
-  onUpdateStatus: (statusDetails: StatusDetailsType) => Promise<void>;
-  onStateChange: () => Promise<void>;
+  hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  render: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  unmount: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  onUpdateStatus: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => Promise<void>;
+  onStateChange: (state: StateWithAdditionsType) => Promise<void>;
 }
 
 type BaseSlotType = {
   querySelector: ?string,
-  errorMarkup?: string,
-  loadingMarkup?: string,
+  getErrorMarkup?: (state: StateWithAdditionsType) => string | Promise<string>,
+  getLoadingMarkup?: (state: StateWithAdditionsType) => string | Promise<string>,
 };
 
 export type SlotType = BaseSlotType & { name: SlotNameType };
 
 export type SlotsMapType = { [slotName: SlotNameType]: SlotType };
 
-export type LoadScriptType = (state: StateType) => Promise<LoadedScriptType>;
+export type LoadScriptType = (state: ?StateType) => LoadedScriptType | Promise<LoadedScriptType>;
 
 type GetMarkupType = (state: StateWithAdditionsType, ...otherArgs: Array<any>) => string | Promise<string>;
 
@@ -129,8 +132,6 @@ type BaseFragmentType = {
   getMarkup?: GetMarkupType,
 };
 
-export type StateChangeType = Promise<void>;
-
 export type FragmentType = BaseFragmentType & { name: FragmentNameType };
 
 export type FragmentsMapType = { [fragmentName: FragmentNameType]: FragmentType };
@@ -140,12 +141,12 @@ export type PageMapType = { [slotName: SlotNameType]: FragmentNameType };
 export type PageDiffType = { unmount: PageMapType, mount: PageMapType, update: PageMapType };
 
 export type ConfigType = {|
-  apps: { [appName: AppNameType]: BaseAppType },
+  routes: { [routeName: RouteNameType]: BaseRouteType },
   slots: { [slotName: SlotNameType]: BaseSlotType },
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-declare export default (config: ConfigType, events: EventsType, options?: OptionsType) => {
-  getState(): StateWithAdditionsType,
-  getRunningStateChange(): ?StateChangeType,
+declare export default (config: ConfigType, events: EventsType, options?: OverrideOptionsType) => {
+  runningStateChange: ?StateChangeType,
+  queuedStateChange: mixed,
 }
