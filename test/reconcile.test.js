@@ -6,20 +6,20 @@ import initReconcile from '../lib/utils/reconcile';
 
 describe('reconcile', () => {
   it('mounts the fragments for a route into their slots', () => {
-    const config = {
-      routes: {
-        route_a: { fragment: 'fragment_a' },
-      },
-      fragments: {
-        fragment_a: { slots: ['app'] },
-      },
-      slots: {
-        app: { querySelector: null },
-        sidebar: { querySelector: null },
-      },
+    const routes = {
+      route_a: { name: 'route_a', fragment: 'fragment_a' },
     };
 
-    const reconcile = initReconcile(config);
+    const fragments = {
+      fragment_a: { name: 'fragment_a', slots: ['app'] },
+    };
+
+    const slots = {
+      app: { name: 'app', querySelector: null },
+      sidebar: { name: 'sidebar', querySelector: null },
+    };
+
+    const reconcile = initReconcile(slots, fragments, routes);
 
     const { unmount, mount, update } = reconcile('route_a');
 
@@ -29,23 +29,23 @@ describe('reconcile', () => {
   });
 
   it('updates and unmounts fragments when transitioning from one route to another', () => {
-    const config = {
-      routes: {
-        route_a: { fragments: ['fragment_a', 'fragment_b'] },
-        route_b: { fragments: ['fragment_b', 'fragment_c'] },
-      },
-      fragments: {
-        fragment_a: { slots: ['app'] },
-        fragment_b: { slots: ['sidebar'] },
-        fragment_c: { slot: 'app' },
-      },
-      slots: {
-        app: { querySelector: null },
-        sidebar: { querySelector: null },
-      },
+    const routes = {
+      route_a: { name: 'route_a', fragments: ['fragment_a', 'fragment_b'] },
+      route_b: { name: 'route_b', fragments: ['fragment_b', 'fragment_c'] },
     };
 
-    const reconcile = initReconcile(config);
+    const fragments = {
+      fragment_a: { name: 'fragment_a', slots: ['app'] },
+      fragment_b: { name: 'fragment_b', slots: ['sidebar'] },
+      fragment_c: { name: 'fragment_c', slot: 'app' },
+    };
+
+    const slots = {
+      app: { name: 'app', querySelector: null },
+      sidebar: { name: 'sidebar', querySelector: null },
+    };
+
+    const reconcile = initReconcile(slots, fragments, routes);
 
     const { unmount, mount, update } = reconcile('route_b', 'route_a');
 
@@ -55,22 +55,22 @@ describe('reconcile', () => {
   });
 
   it('can handle a route with no fragments', () => {
-    const config = {
-      routes: {
-        route_a: { fragments: ['fragment_a', 'fragment_b'] },
-        route_b: {},
-      },
-      fragments: {
-        fragment_a: { slots: ['app'] },
-        fragment_b: { slots: ['sidebar'] },
-      },
-      slots: {
-        app: { querySelector: null },
-        sidebar: { querySelector: null },
-      },
+    const routes = {
+      route_a: { name: 'route_a', fragments: ['fragment_a', 'fragment_b'] },
+      route_b: { name: 'route_b' },
     };
 
-    const reconcile = initReconcile(config);
+    const fragments = {
+      fragment_a: { name: 'fragment_a', slots: ['app'] },
+      fragment_b: { name: 'fragment_b', slots: ['sidebar'] },
+    };
+
+    const slots = {
+      app: { name: 'app', querySelector: null },
+      sidebar: { name: 'sidebar', querySelector: null },
+    };
+
+    const reconcile = initReconcile(slots, fragments, routes);
 
     const { unmount, mount, update } = reconcile('route_b', 'route_a');
 
@@ -80,15 +80,11 @@ describe('reconcile', () => {
   });
 
   it('errors if non_existent fragment is listed on a route', () => {
-    const config = {
-      routes: {
-        route_a: { fragment: 'missing' },
-      },
-      fragments: {},
-      slots: {},
+    const routes = {
+      route_a: { name: 'route_a', fragment: 'missing' },
     };
 
-    const reconcile = initReconcile(config);
+    const reconcile = initReconcile({}, {}, routes);
 
     try {
       reconcile('route_a');
@@ -100,17 +96,15 @@ describe('reconcile', () => {
   });
 
   it('can hanle a fragment with no slot', () => {
-    const config = {
-      routes: {
-        route_a: { fragment: 'fragment_a' },
-      },
-      fragments: {
-        fragment_a: {},
-      },
-      slots: {},
+    const routes = {
+      route_a: { name: 'route_a', fragment: 'fragment_a' },
     };
 
-    const reconcile = initReconcile(config);
+    const fragments = {
+      fragment_a: { name: 'fragment_a' },
+    };
+
+    const reconcile = initReconcile({}, fragments, routes);
 
     const { unmount, mount, update } = reconcile('route_a');
 
@@ -120,17 +114,15 @@ describe('reconcile', () => {
   });
 
   it('errors if slot is missing', () => {
-    const config = {
-      routes: {
-        route_a: { fragment: 'fragment_a' },
-      },
-      fragments: {
-        fragment_a: { slot: 'missing' },
-      },
-      slots: {},
+    const routes = {
+      route_a: { name: 'route_a', fragment: 'fragment_a' },
     };
 
-    const reconcile = initReconcile(config);
+    const fragments = {
+      fragment_a: { name: 'fragment_a', slot: 'missing' },
+    };
+
+    const reconcile = initReconcile({}, fragments, routes);
 
     try {
       reconcile('route_a');
@@ -142,13 +134,7 @@ describe('reconcile', () => {
   });
 
   it('errors if no new route is set', () => {
-    const config = {
-      routes: {},
-      fragments: {},
-      slots: {},
-    };
-
-    const reconcile = initReconcile(config);
+    const reconcile = initReconcile({}, {}, {});
 
     try {
       reconcile();
@@ -160,13 +146,7 @@ describe('reconcile', () => {
   });
 
   it('errors if new route is missing', () => {
-    const config = {
-      routes: {},
-      fragments: {},
-      slots: {},
-    };
-
-    const reconcile = initReconcile(config);
+    const reconcile = initReconcile({}, {}, {});
 
     try {
       reconcile('missing');
@@ -178,15 +158,11 @@ describe('reconcile', () => {
   });
 
   it('errors if old route is missing', () => {
-    const config = {
-      routes: {
-        route_a: {},
-      },
-      fragments: {},
-      slots: {},
+    const routes = {
+      route_a: { name: 'route_a' },
     };
 
-    const reconcile = initReconcile(config);
+    const reconcile = initReconcile({}, {}, routes);
 
     try {
       reconcile('route_a', 'missing');
