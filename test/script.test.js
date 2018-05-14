@@ -5,11 +5,9 @@ import sinon from 'sinon';
 
 import type { ScriptType } from '../index';
 
-import initScriptFunctions from '../lib/utils/script';
+import wrapScript from '../lib/utils/script';
 
 describe('Script Functions', () => {
-  const options = { importTimeout: 10 };
-
   const slotElement = null;
 
   const statusDetails = {
@@ -24,22 +22,6 @@ describe('Script Functions', () => {
     resource: '/path',
   };
 
-  it('Returns null if fragment has no loadScript function', async () => {
-    const fragments = {
-      FRAGMENT: { name: 'FRAGMENT' },
-    };
-
-    async function getFragmentScript() {
-      return { version: 5 };
-    }
-
-    const loadWrappedScript = initScriptFunctions(fragments, getFragmentScript, options);
-
-    const script = await loadWrappedScript('APP', 'FRAGMENT');
-
-    expect(script).to.be.null;
-  });
-
   it('Returns a wrapped script for version 4', async () => {
     const script = {
       version: 4,
@@ -50,13 +32,7 @@ describe('Script Functions', () => {
       onStateChange: sinon.spy(),
     };
 
-    const fragments = {
-      FRAGMENT: { name: 'FRAGMENT', loadScript() { return script; } },
-    };
-
-    const loadWrappedScript = initScriptFunctions(fragments, async () => script, options);
-
-    const wrappedScript: ScriptType = await loadWrappedScript('APP', 'FRAGMENT');
+    const wrappedScript: ScriptType = wrapScript(script);
 
     expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
 
@@ -96,13 +72,7 @@ describe('Script Functions', () => {
       onStateChange: sinon.spy(),
     };
 
-    const fragments = {
-      FRAGMENT: { name: 'FRAGMENT', loadScript() { return script; } },
-    };
-
-    const loadWrappedScript = initScriptFunctions(fragments, async () => script, options);
-
-    const wrappedScript: ScriptType = await loadWrappedScript('APP', 'FRAGMENT');
+    const wrappedScript: ScriptType = wrapScript(script);
 
     expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
 
@@ -146,13 +116,7 @@ describe('Script Functions', () => {
       onStateChange: sinon.spy(),
     };
 
-    const fragments = {
-      FRAGMENT: { name: 'FRAGMENT', loadScript() { return script; } },
-    };
-
-    const loadWrappedScript = initScriptFunctions(fragments, async () => script, options);
-
-    const wrappedScript: ScriptType = await loadWrappedScript('APP', 'FRAGMENT');
+    const wrappedScript: ScriptType = wrapScript(script);
 
     expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
 
