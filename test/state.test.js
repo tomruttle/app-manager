@@ -7,25 +7,20 @@ import initUpdateState from '../lib/utils/state';
 describe('Update state', () => {
   const routes = { ROUTE: { name: 'ROUTE' } };
 
-  const options = {
-    importTimeout: 10,
-    async getElement() { return null; },
-    async getRouteNameFromResource() { return 'ROUTE'; },
-    async getAdditionalState() { return { additional: 'state' }; },
-  };
+  async function getRouteNameFromResource() {
+    return 'ROUTE';
+  }
 
-  const updateState = initUpdateState(routes, options);
+  async function getAdditionalState() {
+    return { additional: 'state' };
+  }
+
+  const updateState = initUpdateState(routes, getRouteNameFromResource, getAdditionalState);
 
   it('returns null if route not found.', async () => {
     const browserState = { resource: '/path' };
 
-    const nullOptions = {
-      importTimeout: 10,
-      async getElement() { return null; },
-      async getRouteNameFromResource() { return null; },
-    };
-
-    const nullUpdateState = initUpdateState(routes, nullOptions);
+    const nullUpdateState = initUpdateState(routes, () => null);
 
     const state = await nullUpdateState(browserState);
 
@@ -35,13 +30,7 @@ describe('Update state', () => {
   it('returns null if routeName not in provided routes.', async () => {
     const browserState = { resource: '/path' };
 
-    const nullOptions = {
-      importTimeout: 10,
-      async getElement() { return null; },
-      async getRouteNameFromResource() { return 'missing-route'; },
-    };
-
-    const nullUpdateState = initUpdateState(routes, nullOptions);
+    const nullUpdateState = initUpdateState(routes, () => 'missing-route');
 
     const state = await nullUpdateState(browserState);
 

@@ -12,8 +12,8 @@ export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
 type StateAdditionsType = { [stateName: string]: any };
-type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>;
-type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
+export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>;
+export type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
 type GetElementType = (querySelector: string) => Promise<?Element>;
 
 export type OptionsType = {
