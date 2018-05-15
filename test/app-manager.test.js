@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import appManagerCallback from '../lib';
+import initAppManager from '../lib/app-manager';
 import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {

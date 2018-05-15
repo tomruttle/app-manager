@@ -54,7 +54,7 @@ export type StateWithAdditionsType = StateType & StateAdditionsType;
 
 export type GetStateType = () => ?StateWithAdditionsType;
 
-export type ContextType = {
+export type Context = {
   +state: StateWithAdditionsType,
   setState(state: StateWithAdditionsType): StateWithAdditionsType,
 }
