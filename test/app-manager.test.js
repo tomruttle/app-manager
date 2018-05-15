@@ -11,7 +11,8 @@ describe('app-manager', () => {
 
   const options = {
     importTimeout: 20,
-    async getElement(): Promise<?Element> { return (true: any); },
+    async getElement() { return (true: any); },
+    async getAdditionalState() { return { additional: 'state' }; },
   };
 
   describe('multi-step browser test', () => {
