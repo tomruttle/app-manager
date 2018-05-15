@@ -1,5 +1,5 @@
 /* eslint-disable no-var */
 
-var appManager = require('./es5/index');
+var appManager = require('./es5/app-manager').default;
 
-module.exports = appManager.default;
+module.exports = appManager;

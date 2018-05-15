@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import initReconcile from '../lib/utils/reconcile';
+import initReconcile from '../lib/reconcile';
 
 describe('reconcile', () => {
   it('mounts the fragments for a route into their slots', () => {

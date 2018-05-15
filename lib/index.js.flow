@@ -1,9 +1,9 @@
 // @flow
 
 import { statuses, levels } from './constants';
-import type { EventsType, EventTitleType, StateChangeType } from './utils/history-callback';
+import type { EventsType, EventTitleType, StateChangeType } from './history-callback';
 
-export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './utils/history-callback';
+export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './history-callback';
 
 export type RouteNameType = string;
 export type SlotNameType = string;
@@ -14,7 +14,7 @@ export type StatusLevelType = $Values<typeof levels>;
 type StateAdditionsType = { [stateName: string]: any };
 export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>;
 export type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
-type GetElementType = (querySelector: string) => Promise<?Element>;
+export type GetElementType = (querySelector: string) => Promise<?Element>;
 
 export type LifecycleType = AsyncGenerator<true, boolean, boolean>;
 
@@ -53,6 +53,11 @@ export type StateType = {
 export type StateWithAdditionsType = StateType & StateAdditionsType;
 
 export type GetStateType = () => ?StateWithAdditionsType;
+
+export type ContextType = {
+  +state: StateWithAdditionsType,
+  setState(state: StateWithAdditionsType): StateWithAdditionsType,
+}
 
 export type StatusDetailsType = {|
   status: StatusType,

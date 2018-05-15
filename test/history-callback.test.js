@@ -6,7 +6,7 @@ import EventEmitter from 'eventemitter3'; // eslint-disable-line import/no-extra
 
 import WindowStub, { windowEventTitles } from '../lib/utils/window-stub';
 import { delay } from '../lib/utils/config';
-import initHistoryCallback, { eventTitles } from '../lib/utils/history-callback';
+import initHistoryCallback, { eventTitles } from '../lib/history-callback';
 import { awaitEvent } from './utils';
 
 describe('history-callback', () => {
