@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import { delay, retry, setNames, defaultGetRouteNameFromResource, defaultGetElement } from '../lib/utils/config';
+import { delay, retry, setNames, defaultGetRouteNameFromResource, initDefaultGetElement } from '../lib/utils/config';
 
 describe('config', () => {
   describe('setNames', () => {
@@ -40,8 +40,8 @@ describe('config', () => {
   describe('defaultGetRouteNameFromResource', () => {
     it('finds the route name given a resource', () => {
       const getRouteNameFromResource = defaultGetRouteNameFromResource({
-        route_a: { paths: ['/route-a', '/route-a-2'] },
-        route_b: { path: '/route-b' },
+        route_a: { name: 'route_a', paths: ['/route-a', '/route-a-2'] },
+        route_b: { name: 'route_b', path: '/route-b' },
       });
 
       const routeName = getRouteNameFromResource('/route-b?test=123');
@@ -105,7 +105,7 @@ describe('config', () => {
 
   describe('defaultGetElement', () => {
     it('tries to get an element in the window', async () => {
-      const getElement = defaultGetElement({ document: { querySelector() { return (true: any); } } });
+      const getElement = initDefaultGetElement({ document: { querySelector() { return (true: any); } } });
 
       const element = await getElement('.test');
 
@@ -113,7 +113,7 @@ describe('config', () => {
     });
 
     it('tries to get an element in the window', async () => {
-      const getElement = defaultGetElement({ document: { querySelector() { return (true: any); } } });
+      const getElement = initDefaultGetElement({ document: { querySelector() { return (true: any); } } });
 
       try {
         // $ExpectError

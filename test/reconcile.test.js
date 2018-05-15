@@ -2,7 +2,8 @@
 
 import { expect } from 'chai';
 
-import initReconcile from '../lib/utils/reconcile';
+import initReconcile from '../lib/reconcile';
+import initGetPageFragments from '../lib/fragments';
 
 describe('reconcile', () => {
   it('mounts the fragments for a route into their slots', () => {
@@ -19,7 +20,8 @@ describe('reconcile', () => {
       sidebar: { name: 'sidebar', querySelector: null },
     };
 
-    const reconcile = initReconcile(slots, fragments, routes);
+    const getPageFragments = initGetPageFragments(slots, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     const { unmount, mount, update } = reconcile('route_a');
 
@@ -45,7 +47,8 @@ describe('reconcile', () => {
       sidebar: { name: 'sidebar', querySelector: null },
     };
 
-    const reconcile = initReconcile(slots, fragments, routes);
+    const getPageFragments = initGetPageFragments(slots, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     const { unmount, mount, update } = reconcile('route_b', 'route_a');
 
@@ -70,7 +73,8 @@ describe('reconcile', () => {
       sidebar: { name: 'sidebar', querySelector: null },
     };
 
-    const reconcile = initReconcile(slots, fragments, routes);
+    const getPageFragments = initGetPageFragments(slots, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     const { unmount, mount, update } = reconcile('route_b', 'route_a');
 
@@ -84,7 +88,8 @@ describe('reconcile', () => {
       route_a: { name: 'route_a', fragment: 'missing' },
     };
 
-    const reconcile = initReconcile({}, {}, routes);
+    const getPageFragments = initGetPageFragments({}, {}, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     try {
       reconcile('route_a');
@@ -104,7 +109,8 @@ describe('reconcile', () => {
       fragment_a: { name: 'fragment_a' },
     };
 
-    const reconcile = initReconcile({}, fragments, routes);
+    const getPageFragments = initGetPageFragments({}, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     const { unmount, mount, update } = reconcile('route_a');
 
@@ -122,7 +128,8 @@ describe('reconcile', () => {
       fragment_a: { name: 'fragment_a', slot: 'missing' },
     };
 
-    const reconcile = initReconcile({}, fragments, routes);
+    const getPageFragments = initGetPageFragments({}, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     try {
       reconcile('route_a');
@@ -134,7 +141,8 @@ describe('reconcile', () => {
   });
 
   it('errors if no new route is set', () => {
-    const reconcile = initReconcile({}, {}, {});
+    const getPageFragments = initGetPageFragments({}, {}, {});
+    const reconcile = initReconcile(getPageFragments);
 
     try {
       reconcile();
@@ -146,7 +154,8 @@ describe('reconcile', () => {
   });
 
   it('errors if new route is missing', () => {
-    const reconcile = initReconcile({}, {}, {});
+    const getPageFragments = initGetPageFragments({}, {}, {});
+    const reconcile = initReconcile(getPageFragments);
 
     try {
       reconcile('missing');
@@ -162,7 +171,8 @@ describe('reconcile', () => {
       route_a: { name: 'route_a' },
     };
 
-    const reconcile = initReconcile({}, {}, routes);
+    const getPageFragments = initGetPageFragments({}, {}, routes);
+    const reconcile = initReconcile(getPageFragments);
 
     try {
       reconcile('route_a', 'missing');

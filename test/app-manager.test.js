@@ -3,10 +3,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import appManagerCallback from '../lib/app-manager';
+import initAppManager from '../lib/app-manager';
 import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {
+  const appManager = initAppManager({ document: { querySelector() {} } });
+
   const options = {
     importTimeout: 20,
     async getElement(): Promise<?Element> { return (true: any); },
@@ -42,9 +44,9 @@ describe('app-manager', () => {
 
     const config = {
       routes: {
-        APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
-        APP_B: { paths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
-        APP_C: { path: '/app-c', fragment: 'SCRIPT_C' },
+        APP_A: { name: 'APP_A', path: '/app-a', fragment: 'SCRIPT_A' },
+        APP_B: { name: 'APP_A', paths: ['/app-b', '/app-b/next'], fragment: 'SCRIPT_B' },
+        APP_C: { name: 'APP_A', path: '/app-c', fragment: 'SCRIPT_C' },
       },
       slots: {
         APP: { querySelector: '.fragment' },
@@ -62,7 +64,7 @@ describe('app-manager', () => {
     let stateChanger;
 
     before(() => {
-      stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+      stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
     });
 
     it('correctly initialises app manager with first fragment', async () => {
@@ -213,13 +215,13 @@ describe('app-manager', () => {
     it('emits an error event if route tries to load missing fragment', async () => {
       const config = {
         routes: {
-          APP_A: { path: '/app-a', fragment: 'MISSING' },
+          APP_A: { name: 'APP_A', path: '/app-a', fragment: 'MISSING' },
         },
         fragments: {},
         slots: {},
       };
 
-      const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+      const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
       try {
         await stateChanger({ resource: '/app-a' });
@@ -248,7 +250,7 @@ describe('app-manager', () => {
 
         const config = {
           routes: {
-            APP_A: { path: '/app-a', fragment: 'SCRIPT_A' },
+            APP_A: { name: 'APP_A', path: '/app-a', fragment: 'SCRIPT_A' },
           },
           fragments: {
             SCRIPT_A: { slot: 'MAIN', loadScript() { return appScript; } },
@@ -258,7 +260,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 
@@ -287,7 +289,7 @@ describe('app-manager', () => {
 
         const config = {
           routes: {
-            APP_A: { path: '/app-a', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+            APP_A: { name: 'APP_A', path: '/app-a', fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
           },
           fragments: {
             ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
@@ -299,7 +301,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 
@@ -341,7 +343,7 @@ describe('app-manager', () => {
 
         const config = {
           routes: {
-            APP_A: { paths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
+            APP_A: { name: 'APP_A', paths: ['/app-a', '/app-b'], fragments: ['ERROR_FRAGMENT', 'HEADER_FRAGMENT'] },
           },
           fragments: {
             ERROR_FRAGMENT: { slot: 'APP_SLOT', loadScript() { return errorScript; } },
@@ -353,7 +355,7 @@ describe('app-manager', () => {
           },
         };
 
-        const stateChanger = appManagerCallback(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
         await stateChanger({ resource: '/app-a' });
 

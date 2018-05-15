@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 import type { ScriptType } from '../index';
 
-import wrapScript from '../lib/utils/script';
+import { wrapScript } from '../lib/script';
 
 describe('Script Functions', () => {
   const slotElement = null;

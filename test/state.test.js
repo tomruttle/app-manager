@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import initUpdateState from '../lib/utils/state';
+import initUpdateState from '../lib/state';
 
 describe('Update state', () => {
   const routes = { ROUTE: { name: 'ROUTE' } };
@@ -43,6 +43,7 @@ describe('Update state', () => {
     const state = await updateState(browserState);
 
     expect(state).to.deep.equal({
+      initialRender: true,
       event: 'am-replaceState',
       resource: '/path',
       prevRoute: null,
