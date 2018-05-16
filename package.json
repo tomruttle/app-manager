@@ -1,6 +1,6 @@
 {
   "name": "app-manager",
-  "version": "0.24.0",
+  "version": "0.24.1",
   "description": "Script for managing the lifecycles of multiple apps on a single page",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,8 @@
   },
   "files": [
     "es5",
-    "dist"
+    "dist",
+    "server.js"
   ],
   "repository": {
     "type": "git",
