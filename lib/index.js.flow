@@ -1,9 +1,6 @@
 // @flow
 
 import { statuses, levels } from './constants';
-import type { EventsType, StateChangeType, EventTitleType } from './history-callback';
-
-export type { BrowserStateType, StateChangeType, OnErrorCallbackType } from './history-callback';
 
 export type RouteNameType = string;
 export type SlotNameType = string;
@@ -88,10 +85,10 @@ type ScriptVersion5StateWithAdditionsType = {
 interface ScriptVersion4Type {
   version: 4;
   hydrate?: (container: Element, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
-  mount: (container: Element, eventTitle: ?EventTitleType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
-  unmount: (container: Element, eventTitle: ?EventTitleType, currentRoute: ?ScriptVersion5RouteType) => Promise<?void>;
+  mount: (container: Element, eventTitle: ?string, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
+  unmount: (container: Element, eventTitle: ?string, currentRoute: ?ScriptVersion5RouteType) => Promise<?void>;
   onUpdateStatus?: (status: StatusType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
-  onStateChange?: (eventTitle: ?EventTitleType, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
+  onStateChange?: (eventTitle: ?string, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
 }
 
 interface ScriptVersion5Type {
@@ -135,7 +132,13 @@ export type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-declare export default (config: ConfigType, events: EventsType, options?: OverrideOptionsType) => {
-  runningStateChange: ?StateChangeType,
-  queuedStateChange: mixed,
-}
+export type OnErrorCallbackType = (err: Error) => void | Promise<void>;
+
+export type BrowserStateType = {
+  resource: string,
+  title?: ?string,
+  state?: ?Object,
+  eventTitle?: ?mixed,
+};
+
+declare export default (browserState: BrowserStateType, onRecoverableError?: OnErrorCallbackType) => Promise<boolean>
