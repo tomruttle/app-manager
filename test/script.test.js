@@ -90,20 +90,20 @@ describe('Script Functions', () => {
     };
 
     expect(script.hydrate.callCount).to.equal(1);
-    expect(script.hydrate.args[0][1]).to.deep.equals(v5State);
+    expect(script.hydrate.args[0][1]).to.deep.include(v5State);
 
     expect(script.render.callCount).to.equal(1);
-    expect(script.render.args[0][1]).to.deep.equals(v5State);
+    expect(script.render.args[0][1]).to.deep.include(v5State);
 
     expect(script.unmount.callCount).to.equal(1);
-    expect(script.unmount.args[0][1]).to.deep.equals(v5State);
+    expect(script.unmount.args[0][1]).to.deep.include(v5State);
 
     expect(script.onStateChange.callCount).to.equal(1);
-    expect(script.onStateChange.args[0][0]).to.deep.equals(v5State);
+    expect(script.onStateChange.args[0][0]).to.deep.include(v5State);
 
     expect(script.onUpdateStatus.callCount).to.equal(1);
-    expect(script.onUpdateStatus.args[0][0]).to.deep.equals(statusDetails);
-    expect(script.onUpdateStatus.args[0][1]).to.deep.equals(v5State);
+    expect(script.onUpdateStatus.args[0][0]).to.deep.include(statusDetails);
+    expect(script.onUpdateStatus.args[0][1]).to.deep.include(v5State);
   });
 
   it('Returns a wrapped script for version 6', async () => {
