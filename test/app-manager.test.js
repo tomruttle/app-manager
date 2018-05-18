@@ -3,11 +3,11 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import initAppManager from '../lib/app-manager';
+import appManager from '../lib';
 import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {
-  const appManager = initAppManager({ document: { querySelector() {} } });
+  const container = ({ querySelector() { return true; } }: any);
 
   const options = {
     importTimeout: 20,
@@ -69,7 +69,7 @@ describe('app-manager', () => {
     });
 
     it('correctly initialises app manager with first fragment', async () => {
-      const proceed = await stateChanger({ resource: '/app-a' }, onError);
+      const proceed = await stateChanger.hydrate(container, { resource: '/app-a' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_A');
@@ -88,7 +88,7 @@ describe('app-manager', () => {
     });
 
     it('browses to new route', async () => {
-      const proceed = await stateChanger({ resource: '/app-b' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-b' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_B');
@@ -107,7 +107,7 @@ describe('app-manager', () => {
     });
 
     it('moves within a route', async () => {
-      const proceed = await stateChanger({ resource: '/app-b/next' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-b/next' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_B');
@@ -126,7 +126,7 @@ describe('app-manager', () => {
     });
 
     it('moves back within a route', async () => {
-      const proceed = await stateChanger({ resource: '/app-b' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-b' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_B');
@@ -145,7 +145,7 @@ describe('app-manager', () => {
     });
 
     it('moves back to the old route', async () => {
-      const proceed = await stateChanger({ resource: '/app-a' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-a' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_A');
@@ -164,7 +164,7 @@ describe('app-manager', () => {
     });
 
     it('moves forward again', async () => {
-      const proceed = await stateChanger({ resource: '/app-b' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-b' });
 
       expect(proceed).to.be.true;
       expect(stateChanger.state.route.name).to.equals('APP_B');
@@ -183,7 +183,7 @@ describe('app-manager', () => {
     });
 
     it('If a fragment does not have a loadScript function, emit a missing-scripts event', async () => {
-      const proceed = await stateChanger({ resource: '/app-c' }, onError);
+      const proceed = await stateChanger.onStateChange({ resource: '/app-c' });
 
       expect(proceed).to.be.false;
       expect(stateChanger.state.route.name).to.equals('APP_C');
@@ -225,7 +225,7 @@ describe('app-manager', () => {
       const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
       try {
-        await stateChanger({ resource: '/app-a' });
+        await stateChanger.onStateChange(container, { resource: '/app-a' });
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.code).to.equals('missing_fragment');
@@ -263,7 +263,7 @@ describe('app-manager', () => {
 
         const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-        await stateChanger({ resource: '/app-a' });
+        await stateChanger.hydrate(container, { resource: '/app-a' });
 
         expect(appScript.onStateChange.callCount).to.equals(0);
         expect(appScript.render.callCount).to.equals(0);
@@ -304,7 +304,7 @@ describe('app-manager', () => {
 
         const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-        await stateChanger({ resource: '/app-a' });
+        await stateChanger.hydrate(container, { resource: '/app-a' });
 
         expect(errorScript.onStateChange.callCount).to.equals(0);
         expect(errorScript.render.callCount).to.equals(0);
@@ -358,9 +358,9 @@ describe('app-manager', () => {
 
         const stateChanger = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
 
-        await stateChanger({ resource: '/app-a' });
+        await stateChanger.hydrate(container, { resource: '/app-a' });
 
-        await stateChanger({ resource: '/app-b' });
+        await stateChanger.onStateChange({ resource: '/app-b' });
 
         expect(errorScript.render.callCount).to.equals(0);
         expect(errorScript.hydrate.callCount).to.equals(1);

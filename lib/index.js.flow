@@ -9,7 +9,7 @@ export type StatusType = $Values<typeof statuses>;
 export type StatusLevelType = $Values<typeof levels>;
 
 export type GetElementWindowType = { document: { querySelector(querySelector: string): ?Element } };
-export type GetElementType = (querySelector: string) => Promise<?Element>;
+export type GetElementType = (container: Element, querySelector: string) => Promise<?Element>;
 export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>
 
 export type StateAdditionsType = { [stateName: string]: any };
@@ -42,11 +42,18 @@ export type RouteType = BaseRouteType & { name: RouteNameType };
 
 export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
 
+export type BrowserStateType = {
+  resource: string,
+  eventTitle?: ?mixed,
+  title?: ?string,
+  state?: ?Object,
+};
+
 export type StateType = {
+  resource: string,
   event: ?string,
   prevRoute: ?RouteType,
   route: RouteType,
-  resource: string,
   initialRender: boolean,
 };
 
@@ -134,11 +141,12 @@ export type ConfigType = {|
 
 export type OnErrorCallbackType = (err: Error) => void | Promise<void>;
 
-export type BrowserStateType = {
-  resource: string,
-  title?: ?string,
-  state?: ?Object,
-  eventTitle?: ?mixed,
-};
+export interface ScriptType {
+  hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  render: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  unmount: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  onUpdateStatus: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => Promise<void>;
+  onStateChange: (state: StateWithAdditionsType) => Promise<void>;
+}
 
-declare export default (browserState: BrowserStateType, onRecoverableError?: OnErrorCallbackType) => Promise<boolean>
+declare export default (config: ConfigType, overrideOptions?: OverrideOptionsType) => ScriptType;
