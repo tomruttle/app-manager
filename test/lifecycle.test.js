@@ -2,15 +2,15 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import WindowStub from 'window-stub';
 
 import Context from '../lib/utils/context';
 import initCreateLifecycle from '../lib/lifecycle';
 
 describe('Create lifecycle', () => {
   const defaultState = {
-    event: null,
+    eventTitle: 'event',
     resource: '/path',
-    initialRender: true,
     prevRoute: null,
     route: { name: 'ROUTE_A' },
   };
@@ -20,6 +20,7 @@ describe('Create lifecycle', () => {
   const errorMarkup = '<div>ERROR</div>';
   const loadingMarkup = '<div>LOADING</div>';
 
+  const windowStub = new WindowStub();
   const context = new Context(defaultState);
   const element = ({}: any);
 
@@ -62,7 +63,7 @@ describe('Create lifecycle', () => {
   it('calls getErrorMarkup and returns false if getFragmentScript fails.', async () => {
     const failFragmentScript = sinon.stub().rejects();
     const createLifecycle = initCreateLifecycle(slots, failFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName, onError);
 
     try {
       await lifecycle.next();
@@ -76,7 +77,7 @@ describe('Create lifecycle', () => {
 
   it('continues through the lifecycle of a script.', async () => {
     const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName, onError);
 
     await lifecycle.next();
     await lifecycle.next();
@@ -112,7 +113,7 @@ describe('Create lifecycle', () => {
 
   it('handles errors coming from other scripts.', async () => {
     const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName, onError);
 
     await lifecycle.next();
     await lifecycle.next();
@@ -152,7 +153,7 @@ describe('Create lifecycle', () => {
     const getErrorScript = sinon.stub().resolves(errorScript);
 
     const createLifecycle = initCreateLifecycle(slots, getErrorScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName, onError);
 
     await lifecycle.next();
     await lifecycle.next();

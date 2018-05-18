@@ -16,7 +16,7 @@ describe('Script Functions', () => {
   };
 
   const state = {
-    event: 'am-replaceState',
+    eventTitle: 'am-replaceState',
     prevRoute: { paths: ['/route2'], fragments: ['FRAGMENT2'] },
     route: { path: '/route1', fragment: 'FRAGMENT1' },
     resource: '/path',
@@ -86,7 +86,7 @@ describe('Script Functions', () => {
       app: { appPath: '/route1', fragment: 'FRAGMENT1' },
       prevApp: { appPaths: ['/route2'], fragments: ['FRAGMENT2'] },
       resource: '/path',
-      event: 'am-replaceState',
+      eventTitle: 'am-replaceState',
     };
 
     expect(script.hydrate.callCount).to.equal(1);

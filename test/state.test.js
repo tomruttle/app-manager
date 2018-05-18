@@ -43,8 +43,7 @@ describe('Update state', () => {
     const state = await updateState(browserState);
 
     expect(state).to.deep.equal({
-      initialRender: true,
-      event: 'am-replaceState',
+      eventTitle: 'am-replaceState',
       resource: '/path',
       prevRoute: null,
       route: { name: 'ROUTE' },

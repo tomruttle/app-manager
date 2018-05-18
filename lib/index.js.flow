@@ -13,9 +13,17 @@ export type GetElementType = (container: Element, querySelector: string) => Prom
 export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>
 
 export type StateAdditionsType = { [stateName: string]: any };
-export type GetAdditionalStateType = (routeName: RouteNameType, resource: string) => StateAdditionsType;
+export type GetAdditionalStateType = (routeName: ?RouteNameType, resource: string) => StateAdditionsType;
 
 export type LifecycleType = AsyncGenerator<true, boolean, boolean>;
+
+type EventCallbackType = (...data: Array<any>) => any;
+
+export type EventsType = {
+  emit(eventTitle: string, ...data: Array<any>): void,
+  on(eventTitle: string, callback: EventCallbackType): void,
+  removeListener(eventTitle: string, callback: EventCallbackType): void,
+}
 
 export type OptionsType = {
   importTimeout: number,
@@ -44,17 +52,16 @@ export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
 
 export type BrowserStateType = {
   resource: string,
-  eventTitle?: ?mixed,
+  eventTitle: string,
   title?: ?string,
   state?: ?Object,
 };
 
 export type StateType = {
   resource: string,
-  event: ?string,
+  eventTitle: string,
   prevRoute: ?RouteType,
-  route: RouteType,
-  initialRender: boolean,
+  route: ?RouteType,
 };
 
 export type StateWithAdditionsType = StateType & StateAdditionsType;
@@ -113,7 +120,7 @@ interface ScriptVersion6Type {
   render?: (container: Element, state: StateWithAdditionsType) => any;
   unmount?: (container: Element, state: StateWithAdditionsType) => any;
   onUpdateStatus?: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => any;
-  onStateChange?: (state: StateWithAdditionsType) => any;
+  onStateChange?: (container: Element, state: StateWithAdditionsType) => any;
 }
 
 export type LoadedScriptType = (ScriptVersion4Type | ScriptVersion5Type | ScriptVersion6Type);
@@ -145,8 +152,8 @@ export interface ScriptType {
   hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;
   render: (container: Element, state: StateWithAdditionsType) => Promise<void>;
   unmount: (container: Element, state: StateWithAdditionsType) => Promise<void>;
+  onStateChange: (container: Element, state: StateWithAdditionsType) => Promise<void>;
   onUpdateStatus: (statusDetails: StatusDetailsType, state: StateWithAdditionsType) => Promise<void>;
-  onStateChange: (state: StateWithAdditionsType) => Promise<void>;
 }
 
 declare export default (config: ConfigType, overrideOptions?: OverrideOptionsType) => ScriptType;
