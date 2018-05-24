@@ -66,7 +66,7 @@ describe('app-manager', () => {
     let script;
 
     before(() => {
-      script = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+      script = appManager(config, null, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
     });
 
     it('correctly initialises app manager with first fragment', async () => {

@@ -39,7 +39,7 @@ describe('Script Functions', () => {
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     expect(script.hydrate.callCount).to.equal(1);
@@ -79,7 +79,7 @@ describe('Script Functions', () => {
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     const v5State = {
@@ -123,7 +123,7 @@ describe('Script Functions', () => {
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     expect(script.hydrate.callCount).to.equal(1);
@@ -136,7 +136,7 @@ describe('Script Functions', () => {
     expect(script.unmount.args[0][1]).to.deep.equals(state);
 
     expect(script.onStateChange.callCount).to.equal(1);
-    expect(script.onStateChange.args[0][0]).to.deep.equals(state);
+    expect(script.onStateChange.args[0][1]).to.deep.equals(state);
 
     expect(script.onUpdateStatus.callCount).to.equal(1);
     expect(script.onUpdateStatus.args[0][0]).to.deep.equals(statusDetails);

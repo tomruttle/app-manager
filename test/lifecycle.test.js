@@ -9,7 +9,7 @@ import initCreateLifecycle from '../lib/lifecycle';
 
 describe('Create lifecycle', () => {
   const defaultState = {
-    eventTitle: 'event',
+    eventTitle: 'hc-initialise',
     resource: '/path',
     prevRoute: null,
     route: { name: 'ROUTE_A' },
@@ -103,7 +103,7 @@ describe('Create lifecycle', () => {
     await lifecycle.next();
     const result = await lifecycle.next(true);
 
-    expect(result).to.deep.equals({ done: true, value: true });
+    expect(result.done).to.be.true;
     expect(script.onUpdateStatus.callCount).to.equal(8);
     expect(script.onStateChange.callCount).to.equal(2);
     expect(script.unmount.callCount).to.equal(1);
@@ -133,7 +133,7 @@ describe('Create lifecycle', () => {
     await lifecycle.next();
     const result = await lifecycle.next(true);
 
-    expect(result).to.deep.equals({ done: true, value: true });
+    expect(result.done).to.be.true;
     expect(script.onUpdateStatus.callCount).to.equal(7);
     expect(script.onStateChange.callCount).to.equal(1);
     expect(script.unmount.callCount).to.equal(1);

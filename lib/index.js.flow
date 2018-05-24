@@ -15,14 +15,14 @@ export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType 
 export type StateAdditionsType = { [stateName: string]: any };
 export type GetAdditionalStateType = (routeName: ?RouteNameType, resource: string) => StateAdditionsType;
 
-export type LifecycleType = AsyncGenerator<true, boolean, boolean>;
+export type LifecycleType = AsyncGenerator<void, void, boolean>;
 
 type EventCallbackType = (...data: Array<any>) => any;
 
 export type EventsType = {
-  emit(eventTitle: string, ...data: Array<any>): void,
-  on(eventTitle: string, callback: EventCallbackType): void,
-  removeListener(eventTitle: string, callback: EventCallbackType): void,
+  emit(eventTitle: string, ...data: Array<any>): any,
+  on(eventTitle: string, callback: EventCallbackType): any,
+  removeListener(eventTitle: string, callback: EventCallbackType): any,
 }
 
 export type OptionsType = {

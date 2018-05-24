@@ -19,14 +19,14 @@ describe('history-callback', () => {
 
     const script = wrapScript({
       version: 6,
-      render: sinon.stub().returns(true),
-      onStateChange: sinon.stub().returns(true),
+      render: sinon.stub(),
+      onStateChange: sinon.stub(),
     });
 
-    let _stateChanger;
+    let stateChanger;
 
     before(() => {
-      _stateChanger = historyCallback(script, events);
+      stateChanger = historyCallback(script, events);
     });
 
     after(() => {
@@ -34,7 +34,7 @@ describe('history-callback', () => {
     });
 
     it('correctly initialises', async () => {
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.render.callCount).to.equal(1);
       expect(script.render.args[0][0]).to.deep.equals({
@@ -48,7 +48,7 @@ describe('history-callback', () => {
     it('pushState', async () => {
       windowStub.history.pushState(null, null, '/b');
 
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.onStateChange.callCount).to.equal(2);
       expect(script.onStateChange.args[1][0]).to.deep.equals({
@@ -62,7 +62,7 @@ describe('history-callback', () => {
     it('back', async () => {
       windowStub.history.back();
 
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.onStateChange.callCount).to.equal(3);
       expect(script.onStateChange.args[2][0]).to.deep.equals({
@@ -76,7 +76,7 @@ describe('history-callback', () => {
     it('forward', async () => {
       windowStub.history.forward();
 
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.onStateChange.callCount).to.equal(4);
       expect(script.onStateChange.args[3][0]).to.deep.equals({
@@ -90,7 +90,7 @@ describe('history-callback', () => {
     it('replaceState', async () => {
       windowStub.history.replaceState(null, null, '/c');
 
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.onStateChange.callCount).to.equal(5);
       expect(script.onStateChange.args[4][0]).to.deep.equals({
@@ -104,7 +104,7 @@ describe('history-callback', () => {
     it('go', async () => {
       windowStub.history.go(-1);
 
-      await _stateChanger.runningStateChange;
+      await stateChanger.runningStateChange;
 
       expect(script.onStateChange.callCount).to.equal(6);
       expect(script.onStateChange.args[5][0]).to.deep.equals({

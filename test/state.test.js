@@ -18,29 +18,44 @@ describe('Update state', () => {
   const updateState = initUpdateState(routes, getRouteNameFromResource, getAdditionalState);
 
   it('returns null if route not found.', async () => {
-    const browserState = { resource: '/path' };
+    const currentState = {
+      resource: '/path',
+      route: null,
+      prevRoute: null,
+      eventTitle: 'hc-initialise',
+    };
 
     const nullUpdateState = initUpdateState(routes, () => null);
 
-    const state = await nullUpdateState(browserState);
+    const state = await nullUpdateState(currentState);
 
-    expect(state).to.be.null;
+    expect(state).to.deep.equals(currentState);
   });
 
   it('returns null if routeName not in provided routes.', async () => {
-    const browserState = { resource: '/path' };
+    const currentState = {
+      resource: '/path',
+      route: null,
+      prevRoute: null,
+      eventTitle: 'hc-initialise',
+    };
 
     const nullUpdateState = initUpdateState(routes, () => 'missing-route');
 
-    const state = await nullUpdateState(browserState);
+    const state = await nullUpdateState(currentState);
 
-    expect(state).to.be.null;
+    expect(state).to.deep.equals(currentState);
   });
 
   it('returns new state.', async () => {
-    const browserState = { resource: '/path', eventTitle: 'am-replaceState' };
+    const currentState = {
+      resource: '/path',
+      route: null,
+      prevRoute: null,
+      eventTitle: 'am-replaceState',
+    };
 
-    const state = await updateState(browserState);
+    const state = await updateState(currentState);
 
     expect(state).to.deep.equal({
       eventTitle: 'am-replaceState',
