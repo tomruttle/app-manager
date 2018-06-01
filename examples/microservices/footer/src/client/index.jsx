@@ -37,7 +37,7 @@ class FooterScript implements ScriptVersion5Type {
 
   hydrate = async (container: Element) => { ReactDOM.hydrate(this._getApp(), container); }
 
-  onStateChange = async ({ route, prevRoute }: StateType) => {
+  onStateChange = async (container, { route, prevRoute }: StateType) => {
     const eventId = shortId.generate();
     const callback = this._updateEventsCallback;
 

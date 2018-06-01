@@ -26,7 +26,7 @@ class HeaderScript implements ScriptVersion5Type {
 
   hydrate = async (container: Element, { route }: StateType) => { ReactDOM.hydrate(this._getApp(route), container); };
 
-  onStateChange = async ({ route }: StateType) => {
+  onStateChange = async (container: Element, { route }: StateType) => {
     if (typeof this._activeAppCallback === 'function') {
       this._activeAppCallback(route.name);
     }

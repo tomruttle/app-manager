@@ -1,10 +1,8 @@
 // @flow
 
 import superagent from 'superagent';
+import getPathHelpers from 'am-path-helpers';
 
-import type { ParamsType } from '../../../../../lib/utils/path';
-
-import getPathHelpers from '../../../../../lib/utils/path';
 import { retry, delay } from '../../../../../lib/utils/config';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';

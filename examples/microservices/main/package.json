@@ -29,6 +29,7 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
+    "am-path-helpers": "0.0.1",
     "app-manager": "^0.16.5",
     "eventemitter3": "^3.0.0",
     "express": "^4.16.2",

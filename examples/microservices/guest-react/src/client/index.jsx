@@ -26,7 +26,7 @@ const secondScript: ScriptVersion5Type = {
 
   hydrate(container, { params }) { ReactDOM.hydrate(this._getApp(params), container); },
 
-  onStateChange({ params }) {
+  onStateChange(container, { params }) {
     if (typeof updateColour === 'function') {
       updateColour(params.colour);
     }
