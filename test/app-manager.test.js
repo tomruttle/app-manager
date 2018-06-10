@@ -3,8 +3,9 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import WindowStub from 'window-stub';
+import EventEmitter from 'eventemitter3';
 
-import { getAppManagerScript } from '../lib/app-manager';
+import getAppManagerCallback, { appManager, getAppManagerScript } from '../lib/app-manager';
 import { eventTitles } from '../lib/constants';
 import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
@@ -443,6 +444,49 @@ describe('app-manager', () => {
         expect(errorCall[0].status).to.equals('ERROR');
         expect(defaultCall2[0].status).to.equals('DEFAULT');
       });
+    });
+  });
+
+  describe('appManager', () => {
+    it('Exports a ScriptType script', () => {
+      const config = { fragments: {}, routes: {}, slots: {} };
+      const events = new EventEmitter();
+      const script = appManager(config, events, options);
+
+      expect(script).to.have.all.keys('hydrate', 'render', 'unmount', 'onStateChange', 'onUpdateStatus');
+    });
+  });
+
+  describe('getAppManagerCallback', () => {
+    it('Wraps appManager in a callback', async () => {
+      const config = {
+        routes: { APP_A: { path: '/app-a' } },
+        fragments: {},
+        slots: {},
+      };
+
+      const events = new EventEmitter();
+      const appManagerCallback = getAppManagerCallback(config, events, options);
+
+      const initResult = await appManagerCallback((true: any), {
+        rootState: true,
+        resource: '/app-a',
+        historyState: null,
+        eventTitle: eventTitles.INITIALISE,
+        title: null,
+      });
+
+      expect(initResult).to.be.undefined;
+
+      const updateResult = await appManagerCallback((true: any), {
+        rootState: true,
+        resource: '/app-b',
+        historyState: null,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        title: null,
+      });
+
+      expect(updateResult).to.be.undefined;
     });
   });
 });
