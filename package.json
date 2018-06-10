@@ -79,7 +79,7 @@
     "sinon": "^5.0.7",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3",
-    "window-stub": "0.0.2"
+    "window-stub": "0.0.3"
   },
   "dependencies": {}
 }
