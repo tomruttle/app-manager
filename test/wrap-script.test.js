@@ -3,12 +3,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import type { ScriptType } from '../index';
+import type { ScriptType } from '../lib/index';
 
 import wrapScript from '../lib/utils/wrap-script';
 
 describe('Script Functions', () => {
-  const slotElement = null;
+  const slotElement = (null: any);
 
   const statusDetails = {
     status: 'default',
@@ -17,8 +17,8 @@ describe('Script Functions', () => {
 
   const state = {
     eventTitle: 'am-replaceState',
-    prevRoute: { paths: ['/route2'], fragments: ['FRAGMENT2'] },
-    route: { path: '/route1', fragment: 'FRAGMENT1' },
+    prevRoute: { name: 'ROUTE2', paths: ['/route2'], fragments: ['FRAGMENT2'] },
+    route: { name: 'ROUTE1', path: '/route1', fragment: 'FRAGMENT1' },
     resource: '/path',
   };
 
