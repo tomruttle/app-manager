@@ -146,7 +146,7 @@ export type ConfigType = {|
   fragments: { [fragmentName: FragmentNameType]: BaseFragmentType },
 |};
 
-export type OnErrorCallbackType = (err: Error) => void | Promise<void>;
+export type OnErrorCallbackType = (err: Error) => void;
 
 export interface ScriptType {
   hydrate: (container: Element, state: StateWithAdditionsType) => Promise<void>;

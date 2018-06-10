@@ -18,7 +18,7 @@ describe('app-manager', () => {
 
   describe('multi-step browser test', () => {
     const mockA = {
-      version: 5,
+      version: 4,
       hydrate: sinon.spy(),
       render: sinon.spy(),
       onStateChange: sinon.spy(),
@@ -27,7 +27,7 @@ describe('app-manager', () => {
     };
 
     const mockB = {
-      version: 4,
+      version: 5,
       hydrate: sinon.spy(),
       mount: sinon.spy(),
       onStateChange: sinon.spy(),
@@ -36,9 +36,9 @@ describe('app-manager', () => {
     };
 
     const mockC = {
-      version: 3,
+      version: 6,
       hydrate: sinon.spy(),
-      mount: sinon.spy(),
+      render: sinon.spy(),
       onStateChange: sinon.spy(),
       onUpdateStatus: sinon.spy(),
       unmount: sinon.spy(),
