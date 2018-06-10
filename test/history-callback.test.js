@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import EventEmitter from 'eventemitter3';
 import WindowStub, { windowEventTitles } from 'window-stub';
 
-import wrapScript from '../lib/utils/wrap-script';
 import { eventTitles } from '../lib/constants';
 import initHistoryCallback from '../lib/history-callback';
 import { awaitEvent } from './utils';
@@ -17,16 +16,12 @@ describe('history-callback', () => {
     const historyCallback = initHistoryCallback(windowStub);
     const events = new EventEmitter();
 
-    const script = {
-      version: 6,
-      render: sinon.stub(),
-      onStateChange: sinon.stub(),
-    };
+    const callback = sinon.stub();
 
     let stateChanger;
 
     before(() => {
-      stateChanger = historyCallback(wrapScript(script), events);
+      stateChanger = historyCallback(callback, events);
     });
 
     after(() => {
@@ -36,13 +31,12 @@ describe('history-callback', () => {
     it('correctly initialises', async () => {
       await stateChanger.runningStateChange;
 
-      expect(script.render.callCount).to.equal(1);
-      expect(script.render.args[0][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(1);
+      expect(callback.args[0][1]).to.deep.equals({
         title: null,
         resource: '/a',
         eventTitle: eventTitles.INITIALISE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -52,13 +46,12 @@ describe('history-callback', () => {
 
       await stateChanger.runningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(1);
-      expect(script.onStateChange.args[0][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(2);
+      expect(callback.args[1][1]).to.deep.equals({
         title: null,
         resource: '/b',
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -68,13 +61,12 @@ describe('history-callback', () => {
 
       await stateChanger.runningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(2);
-      expect(script.onStateChange.args[1][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(3);
+      expect(callback.args[2][1]).to.deep.equals({
         title: null,
         resource: '/a',
         eventTitle: eventTitles.HISTORY_POP_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -84,13 +76,12 @@ describe('history-callback', () => {
 
       await stateChanger.runningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(3);
-      expect(script.onStateChange.args[2][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(4);
+      expect(callback.args[3][1]).to.deep.equals({
         title: null,
         resource: '/b',
         eventTitle: eventTitles.HISTORY_POP_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -100,13 +91,12 @@ describe('history-callback', () => {
 
       await stateChanger.runningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(4);
-      expect(script.onStateChange.args[3][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(5);
+      expect(callback.args[4][1]).to.deep.equals({
         title: null,
         resource: '/c',
         eventTitle: eventTitles.HISTORY_REPLACE_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -116,13 +106,12 @@ describe('history-callback', () => {
 
       await stateChanger.runningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(5);
-      expect(script.onStateChange.args[4][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(6);
+      expect(callback.args[5][1]).to.deep.equals({
         title: null,
         resource: '/a',
         eventTitle: eventTitles.HISTORY_POP_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
     });
@@ -188,15 +177,11 @@ describe('history-callback', () => {
       const windowStub = new WindowStub([{ data: null, title: null, url: '/a' }]);
       const historyCallback = initHistoryCallback(windowStub);
 
-      const script = {
-        version: 6,
-        render: sinon.stub(),
-        onStateChange: sinon.stub(),
-      };
+      const callback = sinon.stub();
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(wrapScript(script), events);
+      const stateChanger = historyCallback(callback, events);
 
       const { runningStateChange } = stateChanger;
 
@@ -215,28 +200,23 @@ describe('history-callback', () => {
       const windowStub = new WindowStub([{ data: null, title: null, url: '/a' }]);
       const historyCallback = initHistoryCallback(windowStub);
 
-      const script = {
-        version: 6,
-        render: sinon.stub(),
-        onStateChange: sinon.stub().returns(true).onSecondCall().returns((async () => {
-          await new Promise((resolve) => setTimeout(resolve, 20));
-          return true;
-        })()),
-      };
+      const callback = sinon.stub().returns(true).onThirdCall().returns((async () => {
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        return true;
+      })());
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(wrapScript(script), events);
+      const stateChanger = historyCallback(callback, events);
 
       await stateChanger.runningStateChange;
 
-      expect(script.render.callCount).to.equal(1);
-      expect(script.render.args[0][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(1);
+      expect(callback.args[0][1]).to.deep.equals({
         title: null,
         resource: '/a',
         eventTitle: eventTitles.INITIALISE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
 
@@ -244,13 +224,12 @@ describe('history-callback', () => {
       windowStub.history.pushState(null, null, '/c');
       windowStub.history.pushState(null, null, '/d');
 
-      expect(script.onStateChange.callCount).to.equal(1);
-      expect(script.onStateChange.args[0][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(2);
+      expect(callback.args[1][1]).to.deep.equals({
         title: null,
         resource: '/b',
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
 
@@ -260,13 +239,12 @@ describe('history-callback', () => {
 
       await firstRunningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(2);
-      expect(script.onStateChange.args[1][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(3);
+      expect(callback.args[2][1]).to.deep.equals({
         title: null,
         resource: '/d',
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
 
@@ -285,15 +263,11 @@ describe('history-callback', () => {
       const windowStub = new WindowStub([{ data: null, title: null, url: '/a' }]);
       const historyCallback = initHistoryCallback(windowStub);
 
-      const script = {
-        version: 6,
-        render: sinon.stub(),
-        onStateChange: sinon.stub().returns(true).returns(Promise.reject(new Error('Nope'))),
-      };
+      const callback = sinon.stub().onSecondCall().returns(Promise.reject(new Error('Nope')));
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(wrapScript(script), events);
+      const stateChanger = historyCallback(callback, events);
 
       await stateChanger.runningStateChange;
 
@@ -317,13 +291,12 @@ describe('history-callback', () => {
 
       await secondRunningStateChange;
 
-      expect(script.onStateChange.callCount).to.equal(2);
-      expect(script.onStateChange.args[1][1]).to.deep.equals({
+      expect(callback.callCount).to.equal(3);
+      expect(callback.args[2][1]).to.deep.equals({
         title: null,
         resource: '/c',
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
-        route: null,
-        prevRoute: null,
+        rootState: true,
         historyState: null,
       });
 

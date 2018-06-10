@@ -4,7 +4,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import WindowStub from 'window-stub';
 
-import appManager from '../lib/app-manager';
+import { getAppManagerScript } from '../lib/app-manager';
+import { eventTitles } from '../lib/constants';
 import { defaultGetRouteNameFromResource } from '../lib/utils/config';
 
 describe('app-manager', () => {
@@ -20,7 +21,7 @@ describe('app-manager', () => {
     const mockA = {
       version: 4,
       hydrate: sinon.spy(),
-      render: sinon.spy(),
+      mount: sinon.spy(),
       onStateChange: sinon.spy(),
       onUpdateStatus: sinon.spy(),
       unmount: sinon.spy(),
@@ -29,7 +30,7 @@ describe('app-manager', () => {
     const mockB = {
       version: 5,
       hydrate: sinon.spy(),
-      mount: sinon.spy(),
+      render: sinon.spy(),
       onStateChange: sinon.spy(),
       onUpdateStatus: sinon.spy(),
       unmount: sinon.spy(),
@@ -66,143 +67,171 @@ describe('app-manager', () => {
     let script;
 
     before(() => {
-      script = appManager(config, null, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+      script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
     });
 
     it('correctly initialises app manager with first fragment', async () => {
-      const proceed = await script.hydrate(windowStub.document, { resource: '/app-a' });
+      await script.render(windowStub.document, {
+        resource: '/app-a',
+        route: config.routes.APP_A,
+        prevRoute: null,
+        eventTitle: eventTitles.INITIALISE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(0);
+      expect(mockA.mount.callCount).to.equals(0);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(0);
       expect(mockA.onUpdateStatus.callCount).to.equals(2);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(0);
+      expect(mockB.render.callCount).to.equals(0);
       expect(mockB.onStateChange.callCount).to.equals(0);
       expect(mockB.unmount.callCount).to.equals(0);
       expect(mockB.onUpdateStatus.callCount).to.equals(0);
     });
 
     it('browses to new route', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-b' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-b',
+        route: config.routes.APP_B,
+        prevRoute: config.routes.APP_A,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(0);
+      expect(mockA.mount.callCount).to.equals(0);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(1);
       expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(1);
+      expect(mockB.render.callCount).to.equals(1);
       expect(mockB.onStateChange.callCount).to.equals(0);
       expect(mockB.unmount.callCount).to.equals(0);
       expect(mockB.onUpdateStatus.callCount).to.equals(2);
     });
 
     it('moves within a route', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-b/next' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-b/next',
+        route: config.routes.APP_B,
+        prevRoute: config.routes.APP_B,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(0);
+      expect(mockA.mount.callCount).to.equals(0);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(1);
       expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(1);
+      expect(mockB.render.callCount).to.equals(1);
       expect(mockB.onStateChange.callCount).to.equals(1);
       expect(mockB.unmount.callCount).to.equals(0);
       expect(mockB.onUpdateStatus.callCount).to.equals(4);
     });
 
     it('moves back within a route', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-b' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-b',
+        route: config.routes.APP_B,
+        prevRoute: config.routes.APP_B,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(0);
+      expect(mockA.mount.callCount).to.equals(0);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(1);
       expect(mockA.onUpdateStatus.callCount).to.equals(4);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(1);
+      expect(mockB.render.callCount).to.equals(1);
       expect(mockB.onStateChange.callCount).to.equals(2);
       expect(mockB.unmount.callCount).to.equals(0);
       expect(mockB.onUpdateStatus.callCount).to.equals(6);
     });
 
     it('moves back to the old route', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-a' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-a',
+        route: config.routes.APP_A,
+        prevRoute: config.routes.APP_B,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(1);
+      expect(mockA.mount.callCount).to.equals(1);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(1);
       expect(mockA.onUpdateStatus.callCount).to.equals(6);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(1);
+      expect(mockB.render.callCount).to.equals(1);
       expect(mockB.onStateChange.callCount).to.equals(2);
       expect(mockB.unmount.callCount).to.equals(1);
       expect(mockB.onUpdateStatus.callCount).to.equals(8);
     });
 
     it('moves forward again', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-b' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-b',
+        route: config.routes.APP_B,
+        prevRoute: config.routes.APP_A,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.true;
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(1);
+      expect(mockA.mount.callCount).to.equals(1);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(2);
       expect(mockA.onUpdateStatus.callCount).to.equals(8);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(2);
+      expect(mockB.render.callCount).to.equals(2);
       expect(mockB.onStateChange.callCount).to.equals(2);
       expect(mockB.unmount.callCount).to.equals(1);
       expect(mockB.onUpdateStatus.callCount).to.equals(10);
     });
 
     it('If a fragment does not have a loadScript function, emit a missing-scripts event', async () => {
-      const proceed = await script.onStateChange(windowStub.document, { resource: '/app-c' });
+      await script.onStateChange(windowStub.document, {
+        resource: '/app-c',
+        route: config.routes.APP_C,
+        prevRoute: config.routes.APP_B,
+        eventTitle: eventTitles.HISTORY_PUSH_STATE,
+      });
 
-      expect(proceed).to.be.false;
       expect(script.state.route.name).to.equals('APP_C');
 
       expect(mockA.hydrate.callCount).to.equals(1);
-      expect(mockA.render.callCount).to.equals(1);
+      expect(mockA.mount.callCount).to.equals(1);
       expect(mockA.onStateChange.callCount).to.equals(0);
       expect(mockA.unmount.callCount).to.equals(2);
       expect(mockA.onUpdateStatus.callCount).to.equals(8);
 
       expect(mockB.hydrate.callCount).to.equals(0);
-      expect(mockB.mount.callCount).to.equals(2);
+      expect(mockB.render.callCount).to.equals(2);
       expect(mockB.onStateChange.callCount).to.equals(2);
       expect(mockB.unmount.callCount).to.equals(2);
       expect(mockB.onUpdateStatus.callCount).to.equals(12);
 
       expect(mockC.hydrate.callCount).to.equals(0);
-      expect(mockC.mount.callCount).to.equals(0);
+      expect(mockC.render.callCount).to.equals(0);
       expect(mockC.onStateChange.callCount).to.equals(0);
       expect(mockC.unmount.callCount).to.equals(0);
       expect(mockC.onUpdateStatus.callCount).to.equals(0);
@@ -223,10 +252,16 @@ describe('app-manager', () => {
         slots: {},
       };
 
-      const script = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+      const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
       try {
-        await script.onStateChange(windowStub.document, { resource: '/app-a' });
+        await script.render(windowStub.document, {
+          resource: '/app-a',
+          route: config.routes.APP_A,
+          prevRoute: null,
+          eventTitle: eventTitles.INITIALISE,
+        });
+
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.code).to.equals('missing_fragment');
@@ -262,9 +297,14 @@ describe('app-manager', () => {
           },
         };
 
-        const script = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
-        await script.hydrate(windowStub.document, { resource: '/app-a' });
+        await script.render(windowStub.document, {
+          resource: '/app-a',
+          route: config.routes.APP_A,
+          prevRoute: null,
+          eventTitle: eventTitles.INITIALISE,
+        });
 
         expect(appScript.onStateChange.callCount).to.equals(0);
         expect(appScript.render.callCount).to.equals(0);
@@ -303,9 +343,14 @@ describe('app-manager', () => {
           },
         };
 
-        const script = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
-        await script.hydrate(windowStub.document, { resource: '/app-a' });
+        await script.render(windowStub.document, {
+          resource: '/app-a',
+          route: config.routes.APP_A,
+          prevRoute: null,
+          eventTitle: eventTitles.INITIALISE,
+        });
 
         expect(errorScript.onStateChange.callCount).to.equals(0);
         expect(errorScript.render.callCount).to.equals(0);
@@ -357,11 +402,21 @@ describe('app-manager', () => {
           },
         };
 
-        const script = appManager(config, Object.assign({}, options, { getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) }));
+        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
-        await script.hydrate(windowStub.document, { resource: '/app-a' });
+        await script.render(windowStub.document, {
+          resource: '/app-a',
+          route: config.routes.APP_A,
+          prevRoute: null,
+          eventTitle: eventTitles.INITIALISE,
+        });
 
-        await script.onStateChange(windowStub.document, { resource: '/app-b' });
+        await script.onStateChange(windowStub.document, {
+          resource: '/app-b',
+          route: config.routes.APP_A,
+          prevRoute: config.routes.APP_A,
+          eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        });
 
         expect(errorScript.render.callCount).to.equals(0);
         expect(errorScript.hydrate.callCount).to.equals(1);
