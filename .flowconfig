@@ -2,9 +2,9 @@
 <PROJECT_ROOT>/examples
 
 [lints]
-all=warn
-untyped-type-import=error
-sketchy-null-bool=off
+all=error
+unclear-type=off
+unsafe-getters-setters=off
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$ExpectError
