@@ -25,14 +25,6 @@ export type EventsType = {
   removeListener(eventTitle: string, callback: EventCallbackType): any,
 }
 
-export type OptionsType = {
-  importTimeout?: number,
-  getRouteNameFromResource?: GetRouteNameFromResourceType,
-  getAdditionalState?: GetAdditionalStateType,
-  getElement?: GetElementType,
-  ssrHaltOnError?: boolean,
-};
-
 export type BaseRouteType = {
   path?: string,
   paths?: Array<string>,
@@ -41,15 +33,6 @@ export type BaseRouteType = {
 }
 
 export type RouteType = BaseRouteType & { name: RouteNameType };
-
-export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
-
-export type BrowserStateType = {
-  resource: string,
-  eventTitle: string,
-  title?: ?string,
-  state?: ?Object,
-};
 
 export type ServerStateType = {|
   serverState: true,
@@ -71,6 +54,25 @@ export type StateType = {
   route: RouteType,
   prevRoute: ?RouteType,
 } & StateAdditionsType;
+
+export type OptionsType = {
+  importTimeout?: number,
+  getRouteNameFromResource?: GetRouteNameFromResourceType,
+  getAdditionalState?: GetAdditionalStateType,
+  getElement?: GetElementType,
+  ssrHaltOnError?: boolean,
+  parentQuerySelector?: string,
+  getLayout?: (state: StateType) => string | Promise<string>
+};
+
+export type RoutesMapType = { [routeName: RouteNameType]: RouteType };
+
+export type BrowserStateType = {
+  resource: string,
+  eventTitle: string,
+  title?: ?string,
+  state?: ?Object,
+};
 
 export type StatusDetailsType = {|
   status: StatusType,

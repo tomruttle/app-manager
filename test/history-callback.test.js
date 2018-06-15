@@ -20,8 +20,8 @@ describe('history-callback', () => {
 
     let stateChanger;
 
-    before(() => {
-      stateChanger = historyCallback(callback, events);
+    before(async () => {
+      stateChanger = await historyCallback(callback, events);
     });
 
     after(() => {
@@ -181,7 +181,7 @@ describe('history-callback', () => {
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(callback, events);
+      const stateChanger = await historyCallback(callback, events);
 
       const { runningStateChange } = stateChanger;
 
@@ -207,7 +207,7 @@ describe('history-callback', () => {
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(callback, events);
+      const stateChanger = await historyCallback(callback, events);
 
       await stateChanger.runningStateChange;
 
@@ -267,7 +267,7 @@ describe('history-callback', () => {
 
       const events = new EventEmitter();
 
-      const stateChanger = historyCallback(callback, events);
+      const stateChanger = await historyCallback(callback, events);
 
       await stateChanger.runningStateChange;
 

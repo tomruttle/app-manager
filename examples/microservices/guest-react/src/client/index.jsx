@@ -38,4 +38,12 @@ config.fragments.FRAGMENT.loadScript = () => {
   };
 };
 
-export default appManager(config);
+function getLayout() {
+  const { querySelector } = config.slots.APP;
+
+  return /* @html */`
+    <div class="${querySelector.slice(1)}"></div>
+  `;
+}
+
+export default appManager(config, null, { getLayout });
