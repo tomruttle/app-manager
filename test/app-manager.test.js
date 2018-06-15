@@ -79,6 +79,10 @@ describe('app-manager', () => {
         eventTitle: eventTitles.INITIALISE,
       });
 
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
+
       expect(script.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
@@ -101,6 +105,10 @@ describe('app-manager', () => {
         prevRoute: config.routes.APP_A,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
+
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
 
       expect(script.state.route.name).to.equals('APP_B');
 
@@ -125,6 +133,10 @@ describe('app-manager', () => {
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
 
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
+
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
@@ -147,6 +159,10 @@ describe('app-manager', () => {
         prevRoute: config.routes.APP_B,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
+
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
 
       expect(script.state.route.name).to.equals('APP_B');
 
@@ -171,6 +187,10 @@ describe('app-manager', () => {
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
 
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
+
       expect(script.state.route.name).to.equals('APP_A');
 
       expect(mockA.hydrate.callCount).to.equals(1);
@@ -194,6 +214,10 @@ describe('app-manager', () => {
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
 
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
+
       expect(script.state.route.name).to.equals('APP_B');
 
       expect(mockA.hydrate.callCount).to.equals(1);
@@ -216,6 +240,10 @@ describe('app-manager', () => {
         prevRoute: config.routes.APP_B,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
       });
+
+      if (!script.state.route) {
+        throw new Error('Expected route to be set.');
+      }
 
       expect(script.state.route.name).to.equals('APP_C');
 

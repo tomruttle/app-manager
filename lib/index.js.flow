@@ -51,7 +51,7 @@ export type RootStateType = {|
 export type StateType = {
   resource: string,
   eventTitle: string,
-  route: RouteType,
+  route: ?RouteType,
   prevRoute: ?RouteType,
 } & StateAdditionsType;
 
