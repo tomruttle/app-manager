@@ -146,7 +146,7 @@ export type LoadedScriptType = (ScriptVersion4Type | ScriptVersion5Type | Script
 
 type LoadScriptType = (state: StateType) => LoadedScriptType | Promise<LoadedScriptType>;
 
-type GetMarkupType = (state: StateType, ...otherArgs: Array<any>) => string | Promise<string>;
+type GetMarkupType = (querySelector: ?string, state: StateType, ...otherArgs: Array<any>) => string | Promise<string>;
 
 type BaseFragmentType = {
   slot?: SlotNameType,

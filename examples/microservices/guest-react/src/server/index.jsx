@@ -21,12 +21,17 @@ app.use((req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/app/:colour?', (req, res) => {
-  const { colour } = req.params;
+  const { querySelector } = req.query;
   const sheet = new ServerStyleSheet();
-  const markup = ReactDOM.renderToString(sheet.collectStyles(<GuestReactApp colour={colour} />));
+  const markup = ReactDOM.renderToString(sheet.collectStyles(<GuestReactApp colour={req.params.colour} />));
   const styles = sheet.getStyleTags();
 
-  return res.json({ markup, styles });
+  return res.send(/* @html */`
+    ${styles}
+    <div class="${querySelector.slice(1)}">
+      <div class="nested-slot">${markup}</div>
+    </div>
+  `);
 });
 
 app.listen(PORT_NUMBER, () => {

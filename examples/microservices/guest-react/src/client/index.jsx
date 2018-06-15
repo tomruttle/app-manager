@@ -3,36 +3,68 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import type { ScriptVersion5Type } from '../../../../../lib/index';
+import { appManager } from '../../../../../dist/app-manager';
 
 import GuestReact from '../common/app';
 
-let updateColour;
+function loadScript() {
+  let updateColour;
 
-const secondScript: ScriptVersion5Type = {
-  version: 6,
+  return {
+    version: 6,
 
-  _getApp(params) {
-    return (
-      <GuestReact colour={params.colour}>
-        {(updateColourCallback) => {
-          updateColour = updateColourCallback;
-        }}
-      </GuestReact>
-    );
+    _getApp(params) {
+      return (
+        <GuestReact colour={params.colour}>
+          {(updateColourCallback) => {
+            updateColour = updateColourCallback;
+          }}
+        </GuestReact>
+      );
+    },
+
+    render(container, { params }) { ReactDOM.render(this._getApp(params), container); },
+
+    hydrate(container, { params }) { ReactDOM.hydrate(this._getApp(params), container); },
+
+    onStateChange(container, { params }) {
+      if (typeof updateColour === 'function') {
+        updateColour(params.colour);
+      }
+    },
+
+    unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
+  };
+}
+
+export default appManager({
+  slots: {
+    APP: {
+      querySelector: '.nested-slot',
+    },
   },
 
-  render(container, { params }) { ReactDOM.render(this._getApp(params), container); },
-
-  hydrate(container, { params }) { ReactDOM.hydrate(this._getApp(params), container); },
-
-  onStateChange(container, { params }) {
-    if (typeof updateColour === 'function') {
-      updateColour(params.colour);
-    }
+  fragments: {
+    FRAGMENT: {
+      slot: 'APP',
+      loadScript,
+    },
   },
 
-  unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
-};
+  routes: {
+    MAROON_ROUTE: {
+      path: '/apps/guest-react',
+      fragment: 'FRAGMENT',
+    },
 
-export default secondScript;
+    GREEN_ROUTE: {
+      path: '/apps/guest-react/green',
+      fragment: 'FRAGMENT',
+    },
+
+    BLUE_ROUTE: {
+      path: '/apps/guest-react/blue',
+      fragment: 'FRAGMENT',
+    },
+  },
+});
