@@ -111,7 +111,9 @@ export interface AppManagerScriptType {
   state: StateType,
   version: 6;
   render: (container: Element, state: StateType | RootStateType) => any;
+  hydrate: (container: Element, state: StateType | RootStateType) => any;
   onStateChange: (container: Element, state: StateType | RootStateType) => any;
+  unmount: (container: Element, state: StateType | RootStateType) => any;
 }
 
 interface ScriptVersion4Type {
