@@ -78,10 +78,13 @@ export type StatusDetailsType = {|
   message?: ?string,
 |}
 
+type SSRGetMarkupType = (querySelector: ?string, state: StateType, ...otherArgs: Array<any>) => string | Promise<string>;
+
 type BaseSlotType = {
   querySelector: ?string,
-  getErrorMarkup?: (state: StateType) => string | Promise<string>,
   getLoadingMarkup?: (state: StateType) => string | Promise<string>,
+  getErrorMarkup?: (state: StateType) => string | Promise<string>,
+  ssrGetErrorMarkup?: SSRGetMarkupType,
 };
 
 export type SlotType = BaseSlotType & { name: SlotNameType };
@@ -140,13 +143,11 @@ export type LoadedScriptType = (ScriptVersion4Type | ScriptVersion5Type | Script
 
 type LoadScriptType = (state: StateType) => LoadedScriptType | Promise<LoadedScriptType>;
 
-type GetMarkupType = (querySelector: ?string, state: StateType, ...otherArgs: Array<any>) => string | Promise<string>;
-
 type BaseFragmentType = {
   slot?: SlotNameType,
   slots?: Array<SlotNameType>,
   loadScript?: LoadScriptType,
-  getMarkup?: GetMarkupType,
+  ssrGetMarkup?: SSRGetMarkupType,
 };
 
 export type FragmentType = BaseFragmentType & { name: FragmentNameType };

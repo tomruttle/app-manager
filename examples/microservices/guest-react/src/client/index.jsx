@@ -5,9 +5,10 @@ import ReactDOM from 'react-dom';
 
 import { appManager } from '../../../../../dist/app-manager';
 
+import config from '../common/config';
 import GuestReact from '../common/app';
 
-function loadScript() {
+config.fragments.FRAGMENT.loadScript = () => {
   let updateColour;
 
   return {
@@ -35,36 +36,6 @@ function loadScript() {
 
     unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
   };
-}
+};
 
-export default appManager({
-  slots: {
-    APP: {
-      querySelector: '.nested-slot',
-    },
-  },
-
-  fragments: {
-    FRAGMENT: {
-      slot: 'APP',
-      loadScript,
-    },
-  },
-
-  routes: {
-    MAROON_ROUTE: {
-      path: '/apps/guest-react',
-      fragment: 'FRAGMENT',
-    },
-
-    GREEN_ROUTE: {
-      path: '/apps/guest-react/green',
-      fragment: 'FRAGMENT',
-    },
-
-    BLUE_ROUTE: {
-      path: '/apps/guest-react/blue',
-      fragment: 'FRAGMENT',
-    },
-  },
-});
+export default appManager(config);
