@@ -26,17 +26,11 @@ export type EventsType = {
 }
 
 export type OptionsType = {
-  importTimeout: number,
-  getRouteNameFromResource: GetRouteNameFromResourceType,
-  getAdditionalState?: GetAdditionalStateType,
-  getElement: GetElementType,
-};
-
-export type OverrideOptionsType = {
   importTimeout?: number,
   getRouteNameFromResource?: GetRouteNameFromResourceType,
   getAdditionalState?: GetAdditionalStateType,
   getElement?: GetElementType,
+  ssrHaltOnError?: boolean,
 };
 
 export type BaseRouteType = {
@@ -175,4 +169,4 @@ export interface ScriptType {
   onUpdateStatus: (statusDetails: StatusDetailsType, state: StateType) => Promise<void>;
 }
 
-declare export default (config: ConfigType, overrideOptions?: OverrideOptionsType) => ScriptType;
+declare export default (config: ConfigType, options?: OptionsType) => ScriptType;
