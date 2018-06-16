@@ -30,7 +30,7 @@ export default class HeaderApp extends Component<HeaderAppProps, HeaderAppState>
   }
 
   handleClick = (e: SyntheticInputEvent<*>) => {
-    window.history.pushState({}, null, e.currentTarget.href);
+    window.history.pushState(null, null, e.currentTarget.href);
     e.preventDefault();
   }
 
