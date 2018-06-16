@@ -10,10 +10,8 @@ export type StatusLevelType = $Values<typeof levels>;
 
 export type GetElementWindowType = { document: { querySelector(querySelector: string): ?Element } };
 export type GetElementType = (container: Element, querySelector: string) => Promise<?Element>;
-export type GetRouteNameFromResourceType = (resource: string) => ?RouteNameType | Promise<?RouteNameType>
 
 export type StateAdditionsType = { [stateName: string]: any };
-export type GetAdditionalStateType = (routeName: ?RouteNameType, resource: string) => StateAdditionsType;
 
 export type LifecycleType = AsyncGenerator<void, void, boolean>;
 
@@ -55,9 +53,14 @@ export type StateType = {
   prevRoute: ?RouteType,
 } & StateAdditionsType;
 
+export type AnyStateType = ServerStateType | RootStateType | StateType;
+
+export type GetRouteNameType = (state: AnyStateType) => ?RouteNameType | Promise<?RouteNameType>
+export type GetAdditionalStateType = (routeName: ?RouteNameType, state: AnyStateType) => StateAdditionsType;
+
 export type OptionsType = {
   importTimeout?: number,
-  getRouteNameFromResource?: GetRouteNameFromResourceType,
+  getRouteName?: GetRouteNameType,
   getAdditionalState?: GetAdditionalStateType,
   getElement?: GetElementType,
   ssrHaltOnError?: boolean,
@@ -116,7 +119,7 @@ export interface AppManagerScriptType {
   unmount: (container: Element, state: StateType | RootStateType) => any;
 }
 
-interface ScriptVersion4Type {
+export interface ScriptVersion4Type {
   version: 4;
   hydrate?: (container: Element, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
   mount: (container: Element, eventTitle: ?string, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
@@ -125,7 +128,7 @@ interface ScriptVersion4Type {
   onStateChange?: (eventTitle: ?string, currentRoute: ScriptVersion5RouteType) => Promise<?void>;
 }
 
-interface ScriptVersion5Type {
+export interface ScriptVersion5Type {
   version: 5;
   hydrate?: (container: Element, state: ScriptVersion5StateType) => any;
   render?: (container: Element, state: ScriptVersion5StateType) => any;
@@ -134,7 +137,7 @@ interface ScriptVersion5Type {
   onStateChange?: (state: ScriptVersion5StateType) => any;
 }
 
-interface ScriptVersion6Type {
+export interface ScriptVersion6Type {
   version: 6;
   hydrate?: (container: Element, state: StateType) => any;
   render?: (container: Element, state: StateType) => any;

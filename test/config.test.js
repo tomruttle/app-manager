@@ -2,9 +2,15 @@
 
 import { expect } from 'chai';
 
-import { delay, retry, setNames, defaultGetRouteNameFromResource, defaultGetElement } from '../lib/utils/config';
+import { delay, retry, setNames, defaultGetRouteName, defaultGetElement } from '../lib/utils/config';
 
 describe('config', () => {
+  const state = {
+    route: null,
+    prevRoute: null,
+    eventTitle: 'string',
+  };
+
   describe('setNames', () => {
     it('adds names to objects', () => {
       const withNames = setNames({ a: {}, b: {} });
@@ -37,22 +43,22 @@ describe('config', () => {
     });
   });
 
-  describe('defaultGetRouteNameFromResource', () => {
+  describe('defaultGetRouteName', () => {
     it('finds the route name given a resource', () => {
-      const getRouteNameFromResource = defaultGetRouteNameFromResource({
+      const getRouteNameFromResource = defaultGetRouteName({
         route_a: { name: 'route_a', paths: ['/route-a', '/route-a-2'] },
         route_b: { name: 'route_b', path: '/route-b' },
       });
 
-      const routeName = getRouteNameFromResource('/route-b?test=123');
+      const routeName = getRouteNameFromResource({ ...state, resource: '/route-b?test=123' });
 
       expect(routeName).to.equal('route_b');
     });
 
     it('returns null if no resource given', () => {
-      const getRouteNameFromResource = defaultGetRouteNameFromResource({});
+      const getRouteNameFromResource = defaultGetRouteName({});
 
-      const routeName = getRouteNameFromResource('');
+      const routeName = getRouteNameFromResource({ ...state, resource: '' });
 
       expect(routeName).to.equal(null);
     });
@@ -60,7 +66,7 @@ describe('config', () => {
     it('errors if invalid routes are given', () => {
       try {
         // $ExpectError
-        defaultGetRouteNameFromResource('invalid');
+        defaultGetRouteName('invalid');
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.code).to.equal('invalid_routes');

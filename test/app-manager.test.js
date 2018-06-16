@@ -7,7 +7,7 @@ import EventEmitter from 'eventemitter3';
 
 import getAppManagerCallback, { appManager, getAppManagerScript } from '../lib/app-manager';
 import { eventTitles } from '../lib/constants';
-import { defaultGetRouteNameFromResource } from '../lib/utils/config';
+import { defaultGetRouteName } from '../lib/utils/config';
 
 describe('app-manager', () => {
   const windowStub = new WindowStub();
@@ -68,7 +68,7 @@ describe('app-manager', () => {
     let script;
 
     before(() => {
-      script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+      script = getAppManagerScript(config, null, { ...options, getRouteName: defaultGetRouteName(config.routes) });
     });
 
     it('correctly initialises app manager with first fragment', async () => {
@@ -284,7 +284,7 @@ describe('app-manager', () => {
         slots: {},
       };
 
-      const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+      const script = getAppManagerScript(config, null, { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
       try {
         await script.render(windowStub.document, {
@@ -329,7 +329,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, null, { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
         await script.render(windowStub.document, {
           resource: '/app-a',
@@ -375,7 +375,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
         await script.render(windowStub.document, {
           resource: '/app-a',
@@ -434,7 +434,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
         await script.render(windowStub.document, {
           resource: '/app-a',
@@ -493,7 +493,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, null, { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
         await script.hydrate(windowStub.document, {
           resource: '/app-a',
@@ -531,7 +531,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, null, { ...options, getRouteName: defaultGetRouteName(config.routes) });
 
         await script.hydrate(windowStub.document, {
           resource: '/app-a',
