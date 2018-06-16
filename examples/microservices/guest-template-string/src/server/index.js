@@ -17,7 +17,14 @@ app.use((req, res, next) => {
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/app', (req, res) => res.send(appMarkup));
+app.get('/app', (req, res) => {
+  const { querySelector } = req.query;
+  return res.send(/* @html */`
+    <div class="${querySelector.slice(1)}">
+      ${appMarkup}
+    </div>
+  `);
+});
 
 app.listen(PORT_NUMBER, () => {
   /* eslint-disable no-console */

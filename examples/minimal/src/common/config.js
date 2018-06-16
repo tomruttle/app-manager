@@ -18,7 +18,7 @@ module.exports = {
           render(container) { container.innerHTML = example1Markup; },
         };
       },
-      getMarkup() {
+      ssrGetMarkup() {
         return `<div class="app">${example1Markup}</div>`;
       },
     },
@@ -31,7 +31,7 @@ module.exports = {
           render(container) { container.innerHTML = example2Markup; },
         };
       },
-      getMarkup() {
+      ssrGetMarkup() {
         return `<div class="app">${example2Markup}</div>`;
       },
     }

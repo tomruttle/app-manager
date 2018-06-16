@@ -21,6 +21,7 @@ module.exports = {
     'import/extensions': 0,
     'arrow-parens': ['error', 'always'],
     'import/prefer-default-export': 0,
-    'no-unused-vars': ["error", { "argsIgnorePattern": "^_" }],
+    'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'ignoreRestSiblings': true }],
+    'no-extra-boolean-cast': 0,
   },
 };

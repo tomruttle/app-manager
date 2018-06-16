@@ -2,9 +2,9 @@
   "name": "app-manager-examples-microservices-guest-react",
   "version": "0.0.1",
   "description": "",
-  "main": "src/server/index.jsx",
+  "main": "src/server/index.js",
   "scripts": {
-    "start": "babel-node src/server/index.jsx",
+    "start": "babel-node src/server/index.js",
     "bundle": "webpack",
     "bundle:watch": "webpack --watch",
     "lint": "eslint --ext .js,.jsx .",

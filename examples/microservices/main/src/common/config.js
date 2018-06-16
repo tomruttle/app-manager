@@ -1,10 +1,8 @@
 // @flow
 
 import superagent from 'superagent';
+import getPathHelpers from 'am-path-helpers';
 
-import type { ParamsType } from '../../../../../lib/utils/path';
-
-import getPathHelpers from '../../../../../lib/utils/path';
 import { retry, delay } from '../../../../../lib/utils/config';
 
 const TIMEOUT_CONTENT = '<p>Oh no!</p>';
@@ -28,6 +26,10 @@ function loadScriptFromWindow(scriptName: string) {
   };
 }
 
+const mainErrorMessage = /* @html */`
+  <div>THERE WAS AN ERROR!</div>
+`;
+
 const slots = {
   HEADER: {
     name: 'HEADER',
@@ -37,8 +39,13 @@ const slots = {
   MAIN: {
     name: 'MAIN',
     querySelector: '.app-slot',
-    getErrorMarkup() { return '<div>THERE WAS AN ERROR!</div>'; },
     getLoadingMarkup() { return '<div>WAIT HERE!</div>'; },
+    getErrorMarkup() { return mainErrorMessage; },
+    ssrGetErrorMarkup(querySelector) {
+      return /* @html */`
+        <div class="${querySelector.slice(1)}">${mainErrorMessage}</div>
+      `;
+    },
   },
 
   FOOTER: {
@@ -52,13 +59,9 @@ const fragments = {
     name: 'HEADER_FRAGMENT',
     slots: [slots.HEADER.name],
     loadScript: loadScriptFromWindow('header'),
-    getMarkup: async () => {
-      const res = await superagent('http://localhost:8081/app');
-      const { markup, styles } = res.body;
-      return /* @html */`
-        ${styles}
-        <div class="header-slot">${markup}</div>
-      `;
+    ssrGetMarkup: async (querySelector) => {
+      const res = await superagent(`http://localhost:8081/app${querySelector ? `?querySelector=${querySelector}` : ''}`);
+      return res.text;
     },
   },
 
@@ -66,11 +69,9 @@ const fragments = {
     name: 'GUEST_TEMPLATE_STRING_FRAGMENT',
     slots: [slots.MAIN.name],
     loadScript: loadScriptFromWindow('guest-template-string'),
-    getMarkup: async () => {
-      const res = await superagent('http://localhost:8084/app');
-      return /* @html */`
-        <div class="app-slot">${res.text}</div>
-      `;
+    ssrGetMarkup: async (querySelector) => {
+      const res = await superagent(`http://localhost:8084/app${querySelector ? `?querySelector=${querySelector}` : ''}`);
+      return res.text;
     },
   },
 
@@ -78,13 +79,9 @@ const fragments = {
     name: 'GUEST_REACT_FRAGMENT',
     slots: [slots.MAIN.name],
     loadScript: loadScriptFromWindow('guest-react'),
-    getMarkup: async ({ params }: { params: ParamsType }) => {
-      const res = await superagent(`http://localhost:8083/app${params.colour ? `/${params.colour}` : ''}`);
-      const { markup, styles } = res.body;
-      return /* @html */`
-        ${styles}
-        <div class="app-slot">${markup}</div>
-      `;
+    ssrGetMarkup: async (querySelector, { params }: { params: ParamsType }) => {
+      const res = await superagent(`http://localhost:8083/app${params.colour ? `/${params.colour}` : ''}${querySelector ? `?querySelector=${querySelector}` : ''}`);
+      return res.text;
     },
   },
 
@@ -106,20 +103,16 @@ const fragments = {
         },
       };
     },
-    getMarkup: async () => /* @html */`<div class="app-slot">${TIMEOUT_CONTENT}</div>`,
+    ssrGetMarkup: () => /* @html */`<div class="app-slot">${TIMEOUT_CONTENT}</div>`,
   },
 
   FOOTER_FRAGMENT: {
     name: 'FOOTER_FRAGMENT',
     slots: [slots.FOOTER.name],
     loadScript: loadScriptFromWindow('footer'),
-    getMarkup: async () => {
-      const res = await superagent('http://localhost:8082/app');
-      const { markup, styles } = res.body;
-      return /* @html */`
-        ${styles}
-        <div class="footer-slot">${markup}</div>
-      `;
+    ssrGetMarkup: async (querySelector) => {
+      const res = await superagent(`http://localhost:8082/app${querySelector ? `?querySelector=${querySelector}` : ''}`);
+      return res.text;
     },
   },
 };

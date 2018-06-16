@@ -2,11 +2,8 @@
 
 import express from 'express';
 import path from 'path';
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-import { ServerStyleSheet } from 'styled-components';
 
-import GuestReactApp from '../common/app';
+import getSlotsMarkup from './get-slots-markup';
 
 const PORT_NUMBER = 8083;
 
@@ -20,13 +17,13 @@ app.use((req, res, next) => {
 
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
-app.get('/app/:colour?', (req, res) => {
-  const { colour } = req.params;
-  const sheet = new ServerStyleSheet();
-  const markup = ReactDOM.renderToString(sheet.collectStyles(<GuestReactApp colour={colour} />));
-  const styles = sheet.getStyleTags();
-
-  return res.json({ markup, styles });
+app.get('/app/:colour?', async (req, res, next) => {
+  try {
+    const slotsMarkup = await getSlotsMarkup(req.originalUrl);
+    return res.send(slotsMarkup.APP);
+  } catch (err) {
+    return next(err);
+  }
 });
 
 app.listen(PORT_NUMBER, () => {

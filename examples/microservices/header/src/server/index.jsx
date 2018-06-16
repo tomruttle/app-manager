@@ -21,11 +21,15 @@ app.use((req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 app.get('/app', (req, res) => {
+  const { querySelector } = req.query;
   const sheet = new ServerStyleSheet();
   const markup = ReactDOM.renderToString(sheet.collectStyles(<HeaderApp />));
   const styles = sheet.getStyleTags();
 
-  return res.json({ markup, styles });
+  return res.send(/* @html */`
+    ${styles}
+    <div class="${querySelector.slice(1)}">${markup}</div>
+  `);
 });
 
 app.listen(PORT_NUMBER, () => {

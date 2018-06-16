@@ -3,12 +3,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import type { ScriptType } from '../index';
+import type { ScriptType } from '../lib/index';
 
 import wrapScript from '../lib/utils/wrap-script';
 
 describe('Script Functions', () => {
-  const slotElement = null;
+  const slotElement = (null: any);
 
   const statusDetails = {
     status: 'default',
@@ -16,9 +16,9 @@ describe('Script Functions', () => {
   };
 
   const state = {
-    event: 'am-replaceState',
-    prevRoute: { paths: ['/route2'], fragments: ['FRAGMENT2'] },
-    route: { path: '/route1', fragment: 'FRAGMENT1' },
+    eventTitle: 'am-replaceState',
+    prevRoute: { name: 'ROUTE2', paths: ['/route2'], fragments: ['FRAGMENT2'] },
+    route: { name: 'ROUTE1', path: '/route1', fragment: 'FRAGMENT1' },
     resource: '/path',
   };
 
@@ -34,12 +34,12 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     expect(script.hydrate.callCount).to.equal(1);
@@ -74,19 +74,19 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     const v5State = {
       app: { appPath: '/route1', fragment: 'FRAGMENT1' },
       prevApp: { appPaths: ['/route2'], fragments: ['FRAGMENT2'] },
       resource: '/path',
-      event: 'am-replaceState',
+      eventTitle: 'am-replaceState',
     };
 
     expect(script.hydrate.callCount).to.equal(1);
@@ -118,12 +118,12 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.unmount(slotElement, state)).to.be.undefined;
-    expect(await wrappedScript.onStateChange(state)).to.be.undefined;
+    expect(await wrappedScript.onStateChange(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.onUpdateStatus(statusDetails, state)).to.be.undefined;
 
     expect(script.hydrate.callCount).to.equal(1);
@@ -136,7 +136,7 @@ describe('Script Functions', () => {
     expect(script.unmount.args[0][1]).to.deep.equals(state);
 
     expect(script.onStateChange.callCount).to.equal(1);
-    expect(script.onStateChange.args[0][0]).to.deep.equals(state);
+    expect(script.onStateChange.args[0][1]).to.deep.equals(state);
 
     expect(script.onUpdateStatus.callCount).to.equal(1);
     expect(script.onUpdateStatus.args[0][0]).to.deep.equals(statusDetails);

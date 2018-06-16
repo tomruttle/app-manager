@@ -2,15 +2,15 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import WindowStub from 'window-stub';
 
 import Context from '../lib/utils/context';
 import initCreateLifecycle from '../lib/lifecycle';
 
 describe('Create lifecycle', () => {
   const defaultState = {
-    event: null,
+    eventTitle: 'hc-initialise',
     resource: '/path',
-    initialRender: true,
     prevRoute: null,
     route: { name: 'ROUTE_A' },
   };
@@ -20,6 +20,7 @@ describe('Create lifecycle', () => {
   const errorMarkup = '<div>ERROR</div>';
   const loadingMarkup = '<div>LOADING</div>';
 
+  const windowStub = new WindowStub();
   const context = new Context(defaultState);
   const element = ({}: any);
 
@@ -61,8 +62,8 @@ describe('Create lifecycle', () => {
 
   it('calls getErrorMarkup and returns false if getFragmentScript fails.', async () => {
     const failFragmentScript = sinon.stub().rejects();
-    const createLifecycle = initCreateLifecycle(slots, failFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const createLifecycle = initCreateLifecycle(slots, failFragmentScript, getSlotElement, context, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName);
 
     try {
       await lifecycle.next();
@@ -75,8 +76,8 @@ describe('Create lifecycle', () => {
   });
 
   it('continues through the lifecycle of a script.', async () => {
-    const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName);
 
     await lifecycle.next();
     await lifecycle.next();
@@ -102,7 +103,7 @@ describe('Create lifecycle', () => {
     await lifecycle.next();
     const result = await lifecycle.next(true);
 
-    expect(result).to.deep.equals({ done: true, value: true });
+    expect(result.done).to.be.true;
     expect(script.onUpdateStatus.callCount).to.equal(8);
     expect(script.onStateChange.callCount).to.equal(2);
     expect(script.unmount.callCount).to.equal(1);
@@ -111,8 +112,8 @@ describe('Create lifecycle', () => {
   });
 
   it('handles errors coming from other scripts.', async () => {
-    const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const createLifecycle = initCreateLifecycle(slots, getFragmentScript, getSlotElement, context, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName);
 
     await lifecycle.next();
     await lifecycle.next();
@@ -132,7 +133,7 @@ describe('Create lifecycle', () => {
     await lifecycle.next();
     const result = await lifecycle.next(true);
 
-    expect(result).to.deep.equals({ done: true, value: true });
+    expect(result.done).to.be.true;
     expect(script.onUpdateStatus.callCount).to.equal(7);
     expect(script.onStateChange.callCount).to.equal(1);
     expect(script.unmount.callCount).to.equal(1);
@@ -151,8 +152,8 @@ describe('Create lifecycle', () => {
 
     const getErrorScript = sinon.stub().resolves(errorScript);
 
-    const createLifecycle = initCreateLifecycle(slots, getErrorScript, getSlotElement, context);
-    const lifecycle = createLifecycle(slotName, fragmentName, onError);
+    const createLifecycle = initCreateLifecycle(slots, getErrorScript, getSlotElement, context, onError);
+    const lifecycle = createLifecycle(windowStub.document, slotName, fragmentName);
 
     await lifecycle.next();
     await lifecycle.next();

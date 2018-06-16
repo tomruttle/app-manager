@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import { delay, retry, setNames, defaultGetRouteNameFromResource, initDefaultGetElement } from '../lib/utils/config';
+import { delay, retry, setNames, defaultGetRouteNameFromResource, defaultGetElement } from '../lib/utils/config';
 
 describe('config', () => {
   describe('setNames', () => {
@@ -104,20 +104,18 @@ describe('config', () => {
   });
 
   describe('defaultGetElement', () => {
-    it('tries to get an element in the window', async () => {
-      const getElement = initDefaultGetElement({ document: { querySelector() { return (true: any); } } });
+    const container = ({ querySelector() { return true; } }: any);
 
-      const element = await getElement('.test');
+    it('tries to get an element in the window', async () => {
+      const element = await defaultGetElement(container, '.test');
 
       expect(element).to.be.true;
     });
 
     it('tries to get an element in the window', async () => {
-      const getElement = initDefaultGetElement({ document: { querySelector() { return (true: any); } } });
-
       try {
         // $ExpectError
-        await getElement({ invalid: 'test' });
+        await defaultGetElement(container, { invalid: 'test' });
         throw new Error('Should not get here.');
       } catch (err) {
         expect(err.code).to.equal('invalid_query_selector');

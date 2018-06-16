@@ -26,12 +26,12 @@ describe('Server', () => {
         fragment_a: {
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
-          getMarkup: sinon.stub().returns(Promise.resolve('fragment_a')),
+          ssrGetMarkup: sinon.stub().returns(Promise.resolve('fragment_a')),
         },
         fragment_b: {
           slots: ['app'],
           loadScript: () => { throw new Error('Should not be called.'); },
-          getMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),
+          ssrGetMarkup: sinon.stub().returns(Promise.resolve('fragment_b')),
         },
         fragment_c: {
           slots: ['app'],
@@ -39,8 +39,8 @@ describe('Server', () => {
         },
       },
       slots: {
-        app: { querySelector: null },
-        other: { querySelector: null },
+        app: { querySelector: '.app' },
+        other: { querySelector: '.other' },
       },
     };
   }
@@ -58,22 +58,23 @@ describe('Server', () => {
       }
     });
 
-    it('returns the async return value of getMarkup for the correct fragment in the correct slot', async () => {
+    it('returns the async return value of ssrGetMarkup for the correct fragment in the correct slot', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
       const appMarkup = await appManagerServer.getSlotsMarkup('/app-a');
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_a' });
 
-      const getMarkupStubB = config.fragments.fragment_b.getMarkup;
-      expect(getMarkupStubB.called).to.be.false;
+      const ssrGetMarkupStubB = config.fragments.fragment_b.ssrGetMarkup;
+      expect(ssrGetMarkupStubB.called).to.be.false;
 
-      const getMarkupStubA = config.fragments.fragment_a.getMarkup;
-      expect(getMarkupStubA.calledOnce).to.be.true;
+      const ssrGetMarkupStubA = config.fragments.fragment_a.ssrGetMarkup;
+      expect(ssrGetMarkupStubA.calledOnce).to.be.true;
 
-      const args = getMarkupStubA.args[0];
-      expect(args).to.be.an('array').with.length(1);
-      expect(args[0].route.name).to.equals('app_a');
+      const args = ssrGetMarkupStubA.args[0];
+      expect(args).to.be.an('array').with.length(2);
+      expect(args[0]).to.equals('.app');
+      expect(args[1].route.name).to.equals('app_a');
     });
 
     it('can handle additional arguments', async () => {
@@ -83,19 +84,20 @@ describe('Server', () => {
 
       expect(appMarkup).to.deep.equals({ app: 'fragment_b' });
 
-      const getMarkupStubA = config.fragments.fragment_a.getMarkup;
-      expect(getMarkupStubA.called).to.be.false;
+      const ssrGetMarkupStubA = config.fragments.fragment_a.ssrGetMarkup;
+      expect(ssrGetMarkupStubA.called).to.be.false;
 
-      const getMarkupStubB = config.fragments.fragment_b.getMarkup;
-      expect(getMarkupStubB.calledOnce).to.be.true;
+      const ssrGetMarkupStubB = config.fragments.fragment_b.ssrGetMarkup;
+      expect(ssrGetMarkupStubB.calledOnce).to.be.true;
 
-      const args = getMarkupStubB.args[0];
-      expect(args).to.be.an('array').with.length(2);
-      expect(args[0].route.name).to.equals('app_b');
-      expect(args[1]).to.equals('additional data');
+      const args = ssrGetMarkupStubB.args[0];
+      expect(args).to.be.an('array').with.length(3);
+      expect(args[0]).to.equal('.app');
+      expect(args[1].route.name).to.equals('app_b');
+      expect(args[2]).to.equals('additional data');
     });
 
-    it('can handle fragments without getMarkup', async () => {
+    it('can handle fragments without ssrGetMarkup', async () => {
       const config = getConfig();
       const appManagerServer = new AppManagerServer(config);
       const appMarkup = await appManagerServer.getSlotsMarkup('/app-c');

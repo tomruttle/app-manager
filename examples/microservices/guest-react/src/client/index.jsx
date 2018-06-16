@@ -3,36 +3,47 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import type { ScriptVersion5Type } from '../../../../../lib/index';
+import { appManager } from '../../../../../dist/app-manager';
 
+import config from '../common/config';
 import GuestReact from '../common/app';
 
-let updateColour;
+config.fragments.FRAGMENT.loadScript = () => {
+  let updateColour;
 
-const secondScript: ScriptVersion5Type = {
-  version: 6,
+  return {
+    version: 6,
 
-  _getApp(params) {
-    return (
-      <GuestReact colour={params.colour}>
-        {(updateColourCallback) => {
-          updateColour = updateColourCallback;
-        }}
-      </GuestReact>
-    );
-  },
+    _getApp(params) {
+      return (
+        <GuestReact colour={params.colour}>
+          {(updateColourCallback) => {
+            updateColour = updateColourCallback;
+          }}
+        </GuestReact>
+      );
+    },
 
-  render(container, { params }) { ReactDOM.render(this._getApp(params), container); },
+    render(container, { params }) { ReactDOM.render(this._getApp(params), container); },
 
-  hydrate(container, { params }) { ReactDOM.hydrate(this._getApp(params), container); },
+    hydrate(container, { params }) { ReactDOM.hydrate(this._getApp(params), container); },
 
-  onStateChange({ params }) {
-    if (typeof updateColour === 'function') {
-      updateColour(params.colour);
-    }
-  },
+    onStateChange(container, { params }) {
+      if (typeof updateColour === 'function') {
+        updateColour(params.colour);
+      }
+    },
 
-  unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
+    unmount: async (container, _state) => ReactDOM.unmountComponentAtNode(container),
+  };
 };
 
-export default secondScript;
+function getLayout() {
+  const { querySelector } = config.slots.APP;
+
+  return /* @html */`
+    <div class="${querySelector.slice(1)}"></div>
+  `;
+}
+
+export default appManager(config, null, { getLayout });
