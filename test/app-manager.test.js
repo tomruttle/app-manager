@@ -372,7 +372,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
         await script.render(windowStub.document, {
           resource: '/app-a',
@@ -431,7 +431,7 @@ describe('app-manager', () => {
           },
         };
 
-        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+        const script = getAppManagerScript(config, new EventEmitter(), { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
 
         await script.render(windowStub.document, {
           resource: '/app-a',
@@ -481,14 +481,14 @@ describe('app-manager', () => {
       const events = new EventEmitter();
       const script = appManager(config, events, options);
 
-      expect(script).to.have.all.keys('hydrate', 'render', 'unmount', 'onStateChange', 'onUpdateStatus');
+      expect(script).to.have.all.keys('hydrate', 'render', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
     });
   });
 
   describe('getAppManagerCallback', () => {
     it('Wraps appManager in a callback', async () => {
       const config = {
-        routes: { APP_A: { path: '/app-a' } },
+        routes: { APP_A: { path: '/app-a' }, APP_B: { path: '/app-b' } },
         fragments: {},
         slots: {},
       };

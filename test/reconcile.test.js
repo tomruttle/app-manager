@@ -57,6 +57,31 @@ describe('reconcile', () => {
     expect(unmount).to.deep.equals({ app: 'fragment_a' });
   });
 
+  it('unmounts all previous fragments if new empty route set', () => {
+    const routes = {
+      route_a: { name: 'route_a', fragments: ['fragment_a', 'fragment_b'] },
+    };
+
+    const fragments = {
+      fragment_a: { name: 'fragment_a', slots: ['app'] },
+      fragment_b: { name: 'fragment_b', slots: ['sidebar'] },
+    };
+
+    const slots = {
+      app: { name: 'app', querySelector: null },
+      sidebar: { name: 'sidebar', querySelector: null },
+    };
+
+    const getPageFragments = initGetPageFragments(slots, fragments, routes);
+    const reconcile = initReconcile(getPageFragments);
+
+    const { unmount, mount, update } = reconcile(null, 'route_a');
+
+    expect(mount).to.deep.equals({});
+    expect(update).to.deep.equals({});
+    expect(unmount).to.deep.equals({ app: 'fragment_a', sidebar: 'fragment_b' });
+  });
+
   it('can handle a route with no fragments', () => {
     const routes = {
       route_a: { name: 'route_a', fragments: ['fragment_a', 'fragment_b'] },
@@ -137,19 +162,6 @@ describe('reconcile', () => {
     } catch (err) {
       expect(err.code).to.equal('invalid_slots');
       expect(err.source).to.equal('get_page_fragments');
-    }
-  });
-
-  it('errors if no new route is set', () => {
-    const getPageFragments = initGetPageFragments({}, {}, {});
-    const reconcile = initReconcile(getPageFragments);
-
-    try {
-      reconcile();
-      throw new Error('Should not get here.');
-    } catch (err) {
-      expect(err.code).to.equal('no_current_route');
-      expect(err.source).to.equal('reconcile');
     }
   });
 

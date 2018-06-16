@@ -181,7 +181,7 @@ describe('history-callback', () => {
 
       const events = new EventEmitter();
 
-      const stateChanger = await historyCallback(callback, events);
+      const stateChanger = historyCallback(callback, events);
 
       const { runningStateChange } = stateChanger;
 

@@ -34,7 +34,7 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
@@ -74,7 +74,7 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;
@@ -118,7 +118,7 @@ describe('Script Functions', () => {
 
     const wrappedScript: ScriptType = wrapScript(script);
 
-    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus');
+    expect(wrappedScript).to.have.keys('render', 'hydrate', 'unmount', 'onStateChange', 'onUpdateStatus', 'version');
 
     expect(await wrappedScript.render(slotElement, state)).to.be.undefined;
     expect(await wrappedScript.hydrate(slotElement, state)).to.be.undefined;

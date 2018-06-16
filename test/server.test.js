@@ -39,8 +39,8 @@ describe('Server', () => {
         },
       },
       slots: {
-        app: { querySelector: null },
-        other: { querySelector: null },
+        app: { querySelector: '.app' },
+        other: { querySelector: '.other' },
       },
     };
   }
@@ -72,8 +72,9 @@ describe('Server', () => {
       expect(ssrGetMarkupStubA.calledOnce).to.be.true;
 
       const args = ssrGetMarkupStubA.args[0];
-      expect(args).to.be.an('array').with.length(1);
-      expect(args[0].route.name).to.equals('app_a');
+      expect(args).to.be.an('array').with.length(2);
+      expect(args[0]).to.equals('.app');
+      expect(args[1].route.name).to.equals('app_a');
     });
 
     it('can handle additional arguments', async () => {
@@ -90,9 +91,10 @@ describe('Server', () => {
       expect(ssrGetMarkupStubB.calledOnce).to.be.true;
 
       const args = ssrGetMarkupStubB.args[0];
-      expect(args).to.be.an('array').with.length(2);
-      expect(args[0].route.name).to.equals('app_b');
-      expect(args[1]).to.equals('additional data');
+      expect(args).to.be.an('array').with.length(3);
+      expect(args[0]).to.equal('.app');
+      expect(args[1].route.name).to.equals('app_b');
+      expect(args[2]).to.equals('additional data');
     });
 
     it('can handle fragments without ssrGetMarkup', async () => {

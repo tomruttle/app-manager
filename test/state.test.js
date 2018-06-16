@@ -18,7 +18,7 @@ describe('Update state', () => {
 
   const updateState = initUpdateState(routes, getRouteNameFromResource, getAdditionalState);
 
-  it('returns null if route not found.', async () => {
+  it('returns null route if route not found.', async () => {
     const currentState = {
       rootState: true,
       resource: '/path',
@@ -31,10 +31,10 @@ describe('Update state', () => {
 
     const state = await nullUpdateState(currentState);
 
-    expect(state).to.be.null;
+    expect(state.route).to.be.null;
   });
 
-  it('returns null if routeName not in provided routes.', async () => {
+  it('returns null route if routeName not in provided routes.', async () => {
     const currentState = {
       rootState: true,
       resource: '/path',
@@ -47,7 +47,7 @@ describe('Update state', () => {
 
     const state = await nullUpdateState(currentState);
 
-    expect(state).to.be.null;
+    expect(state.route).to.be.null;
   });
 
   it('returns new state.', async () => {
