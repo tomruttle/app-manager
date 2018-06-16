@@ -74,9 +74,10 @@ describe('app-manager', () => {
     it('correctly initialises app manager with first fragment', async () => {
       await script.render(windowStub.document, {
         resource: '/app-a',
-        route: config.routes.APP_A,
-        prevRoute: null,
         eventTitle: eventTitles.INITIALISE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -101,9 +102,10 @@ describe('app-manager', () => {
     it('browses to new route', async () => {
       await script.onStateChange(windowStub.document, {
         resource: '/app-b',
-        route: config.routes.APP_B,
-        prevRoute: config.routes.APP_A,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -128,9 +130,10 @@ describe('app-manager', () => {
     it('moves within a route', async () => {
       await script.onStateChange(windowStub.document, {
         resource: '/app-b/next',
-        route: config.routes.APP_B,
-        prevRoute: config.routes.APP_B,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -155,9 +158,10 @@ describe('app-manager', () => {
     it('moves back within a route', async () => {
       await script.onStateChange(windowStub.document, {
         resource: '/app-b',
-        route: config.routes.APP_B,
-        prevRoute: config.routes.APP_B,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -182,9 +186,10 @@ describe('app-manager', () => {
     it('moves back to the old route', async () => {
       await script.onStateChange(windowStub.document, {
         resource: '/app-a',
-        route: config.routes.APP_A,
-        prevRoute: config.routes.APP_B,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -209,9 +214,10 @@ describe('app-manager', () => {
     it('moves forward again', async () => {
       await script.onStateChange(windowStub.document, {
         resource: '/app-b',
-        route: config.routes.APP_B,
-        prevRoute: config.routes.APP_A,
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
       if (!script.state.route) {
@@ -233,19 +239,16 @@ describe('app-manager', () => {
       expect(mockB.onUpdateStatus.callCount).to.equals(10);
     });
 
-    it('If a fragment does not have a loadScript function, emit a missing-scripts event', async () => {
-      await script.onStateChange(windowStub.document, {
-        resource: '/app-c',
-        route: config.routes.APP_C,
-        prevRoute: config.routes.APP_B,
+    it('Unmounts all scripts on exit', async () => {
+      await script.unmount(windowStub.document, {
+        resource: '/app-d',
         eventTitle: eventTitles.HISTORY_PUSH_STATE,
+        historyState: null,
+        title: null,
+        rootState: true,
       });
 
-      if (!script.state.route) {
-        throw new Error('Expected route to be set.');
-      }
-
-      expect(script.state.route.name).to.equals('APP_C');
+      expect(script.state.route).to.be.null;
 
       expect(mockA.hydrate.callCount).to.equals(1);
       expect(mockA.mount.callCount).to.equals(1);
@@ -471,6 +474,80 @@ describe('app-manager', () => {
         expect(loadingCall2[0].status).to.equals('LOADING');
         expect(errorCall[0].status).to.equals('ERROR');
         expect(defaultCall2[0].status).to.equals('DEFAULT');
+      });
+
+      it('throws error if attempting to browse to fragment with no loadScript', async () => {
+        const spyScript = getSpyScript();
+
+        const config = {
+          routes: {
+            APP_A: { name: 'APP_A', path: '/app-a', fragment: 'FRAGMENT' },
+            APP_B: { name: 'APP_B', path: '/app-b', fragment: 'ERROR_FRAGMENT' },
+          },
+          fragments: {
+            ERROR_FRAGMENT: { slot: 'APP_SLOT' },
+            FRAGMENT: { slot: 'APP_SLOT', loadScript() { return spyScript; } },
+          },
+          slots: {
+            APP_SLOT: { querySelector: '.app' },
+          },
+        };
+
+        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+
+        await script.hydrate(windowStub.document, {
+          resource: '/app-a',
+          eventTitle: eventTitles.INITIALISE,
+          historyState: null,
+          title: null,
+          rootState: true,
+        });
+
+        try {
+          await script.onStateChange(windowStub.document, {
+            resource: '/app-b',
+            eventTitle: eventTitles.HISTORY_PUSH_STATE,
+            historyState: null,
+            title: null,
+            rootState: true,
+          });
+
+          throw new Error('Should not get here.');
+        } catch (err) {
+          expect(err.code).to.equal('get_script');
+        }
+      });
+
+      it('handles updating a hydrated fragment with no loadScript', async () => {
+        const config = {
+          routes: {
+            APP_A: { name: 'APP_A', paths: ['/app-a', '/app-b'], fragment: 'ERROR_FRAGMENT' },
+          },
+          fragments: {
+            ERROR_FRAGMENT: { slot: 'APP_SLOT' },
+          },
+          slots: {
+            APP_SLOT: { querySelector: '.app' },
+          },
+        };
+
+        const script = getAppManagerScript(config, null, { ...options, getRouteNameFromResource: defaultGetRouteNameFromResource(config.routes) });
+
+        await script.hydrate(windowStub.document, {
+          resource: '/app-a',
+          eventTitle: eventTitles.INITIALISE,
+          historyState: null,
+          title: null,
+          rootState: true,
+        });
+
+        await script.onStateChange(windowStub.document, {
+          resource: '/app-b',
+          eventTitle: eventTitles.HISTORY_PUSH_STATE,
+          historyState: null,
+          title: null,
+          rootState: true,
+        });
       });
     });
   });
