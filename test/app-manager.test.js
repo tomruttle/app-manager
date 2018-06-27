@@ -292,6 +292,8 @@ describe('app-manager', () => {
           route: config.routes.APP_A,
           prevRoute: null,
           eventTitle: eventTitles.INITIALISE,
+          title: null,
+          historyState: null,
         });
 
         throw new Error('Should not get here.');
@@ -336,6 +338,8 @@ describe('app-manager', () => {
           route: config.routes.APP_A,
           prevRoute: null,
           eventTitle: eventTitles.INITIALISE,
+          title: null,
+          historyState: null,
         });
 
         expect(appScript.onStateChange.callCount).to.equals(0);
@@ -382,6 +386,8 @@ describe('app-manager', () => {
           route: config.routes.APP_A,
           prevRoute: null,
           eventTitle: eventTitles.INITIALISE,
+          title: null,
+          historyState: null,
         });
 
         expect(errorScript.onStateChange.callCount).to.equals(0);
@@ -441,6 +447,8 @@ describe('app-manager', () => {
           route: config.routes.APP_A,
           prevRoute: null,
           eventTitle: eventTitles.INITIALISE,
+          title: null,
+          historyState: null,
         });
 
         await script.onStateChange(windowStub.document, {
@@ -448,6 +456,8 @@ describe('app-manager', () => {
           route: config.routes.APP_A,
           prevRoute: config.routes.APP_A,
           eventTitle: eventTitles.HISTORY_PUSH_STATE,
+          title: null,
+          historyState: null,
         });
 
         expect(errorScript.render.callCount).to.equals(0);

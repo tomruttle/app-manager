@@ -9,6 +9,8 @@ describe('config', () => {
     route: null,
     prevRoute: null,
     eventTitle: 'string',
+    title: null,
+    historyState: null,
   };
 
   describe('setNames', () => {

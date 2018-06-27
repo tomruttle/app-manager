@@ -13,6 +13,8 @@ describe('Create lifecycle', () => {
     resource: '/path',
     prevRoute: null,
     route: { name: 'ROUTE_A' },
+    title: null,
+    historyState: null,
   };
 
   const slotName = 'SLOT_A';

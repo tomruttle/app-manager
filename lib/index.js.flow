@@ -51,7 +51,6 @@ export type StateType = {
   eventTitle: string,
   route: ?RouteType,
   prevRoute: ?RouteType,
-  eventTitle: string,
   title: ?string,
   historyState: ?Object,
 } & StateAdditionsType;

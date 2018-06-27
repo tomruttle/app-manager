@@ -20,6 +20,8 @@ describe('Script Functions', () => {
     prevRoute: { name: 'ROUTE2', paths: ['/route2'], fragments: ['FRAGMENT2'] },
     route: { name: 'ROUTE1', path: '/route1', fragment: 'FRAGMENT1' },
     resource: '/path',
+    title: null,
+    historyState: null,
   };
 
   it('Returns a wrapped script for version 4', async () => {
