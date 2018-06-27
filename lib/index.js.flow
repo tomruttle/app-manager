@@ -51,12 +51,15 @@ export type StateType = {
   eventTitle: string,
   route: ?RouteType,
   prevRoute: ?RouteType,
+  eventTitle: string,
+  title: ?string,
+  historyState: ?Object,
 } & StateAdditionsType;
 
 export type AnyStateType = ServerStateType | RootStateType | StateType;
 
 export type GetRouteNameType = (state: AnyStateType) => ?RouteNameType | Promise<?RouteNameType>
-export type GetAdditionalStateType = (routeName: ?RouteNameType, state: AnyStateType) => StateAdditionsType;
+export type GetAdditionalStateType = (state: StateType) => StateAdditionsType | Promise<StateAdditionsType>;
 
 export type OptionsType = {
   importTimeout?: number,

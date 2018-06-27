@@ -18,38 +18,49 @@ Script for managing the lifecycles of multiple apps on a single page
 export default {
   slots: {
     APP: {
-      name: 'APP',
       querySelector: '.app',
     },
   },
 
   fragments: {
     EXAMPLE1_FRAGMENT: {
-      name: 'EXAMPLE1_FRAGMENT',
-      slots: ['APP'],
-      loadScript: async (state) => fetchScriptForExample1(state),
-      getMarkup: async (state) => fetchMarkupForExample1(state),
+      slot: 'APP',
+      async loadScript(state) {
+        return fetchScriptForExample1(state);
+      },
+      async ssrGetMarkup(querySelector, state, query) {
+        return /* @html */`
+          <div class="${querySelector.slice(1)}">
+            ${await fetchMarkupForExample1(state, query)}
+          </div>
+        `;
+      },
     },
 
     EXAMPLE2_FRAGMENT: {
-      name: 'EXAMPLE2_FRAGMENT',
-      slots: ['APP'],
-      loadScript: async (state) => fetchScriptForExample2(state),
-      getMarkup: async (state) => fetchMarkupForExample2(state),
+      slot: 'APP',
+      async loadScript(state) {
+        return fetchScriptForExample2(state);
+      },
+      async ssrGetMarkup(querySelector, state, query) {
+        return /* @html */`
+          <div class="${querySelector.slice(1)}">
+            ${await fetchMarkupForExample2(state, query)}
+          </div>
+        `;
+      },
     }
   },
 
   routes: {
     EXAMPLE1_APP: {
-      name: 'EXAMPLE1_APP',
       path: '/apps/example1',
-      fragments: ['EXAMPLE1_FRAGMENT'],
+      fragment: 'EXAMPLE1_FRAGMENT',
     },
 
     EXAMPLE2_APP: {
-      name: 'EXAMPLE2_APP',
       path: '/apps/example2',
-      fragments: ['EXAMPLE2_FRAGMENT'],
+      fragment: 'EXAMPLE2_FRAGMENT',
     }
   }
 }
@@ -58,31 +69,33 @@ export default {
 ### client.js
 
 ```js
-import AppManager from 'app-manager';
+import appManager from 'app-manager';
 
 import config from './config';
 
 // ...
 
-const appManager = new AppManager(config, eventEmitter);
+const options = {
+  importTimeout: 3000,
+};
 
-appManager.init();
+appManager(config, eventEmitter, options);
 ```
 
 ### server.js
 
 ```js
-import AppManagerServer from 'app-manager/server';
+import appManagerServer from 'app-manager/server';
 
 import config from './config';
 
-const appManagerServer = new AppManagerServer(config);
+const { getSlotsMarkup } = appManagerServer(config);
 
 // ...
 
 app.get('/apps/*', async (req, res, next) => {
   try {
-    const renderedMarkup = await appManagerServer.getSlotsMarkup(req.originalUrl);
+    const renderedMarkup = await getSlotsMarkup(req.originalUrl, req.query);
 
     return res.send(/* @html */`
       <!DOCTYPE html>
@@ -101,104 +114,56 @@ app.get('/apps/*', async (req, res, next) => {
 
 ## Api
 
-`app-manager` exports a class `AppManager` whose constructor takes two parameters: `config`, an `events` module with the same API as the native node.js module, and (optionally) `options`:
+`app-manager` exports a function that takes three parameters:
 
-## Concepts
+* `config` - describes your app to app-manager
+* `events` - a event emitter module with the same API as the native node.js module
+* `options` - Optional options object
 
-### App
+## Config
 
-An `app` determines which fragments are displayed on which `paths`.
+An object containing maps of the slots, fragments, and routes that comprise your app.
 
 ```js
 {
-  name: 'APP_NAME', // Uniquely identifies the app. Must match the app's key on the config map.
-  path: '/app/:path', // Path that uniquely identifies this app. Analogous to a route in express.
-  fragments: ['FRAGMENT_NAME'], // Ordered array of fragment names. If two fragments occupy the same slot, the first will take precedence.
+  slots: {
+    SLOT_NAME: slot, // As below
+  },
+  fragments: {
+    FRAGMENT_NAME: fragment, // As below
+  },
+  routes: {
+    ROUTE_NAME: route, // As below
+  },
 }
 ```
 
-### Fragment
+### State
 
-A `fragment` is the container for your `script`.
+The state object is passed as a parameter into almost every function within and without app-manager. It contains the useful current state of the browser and the derived state of the application.
 
 ```js
 {
-  name: 'FRAGMENT_NAME', // Uniquely identifies the fragment. Must match the fragment's key on the config map.
-  slots: ['SLOT_NAME'], // Ordered array of slot names. Fragment will be loaded in the first empty slot possible.
-  loadScript, // As below.
-  getMarkup, // Optional. As below.
+  resource: '/app/some-path?query=value', // The pathname and query string currently displayed in the browser
+  title: 'My Page', // The current document page title
+  historyState: null, // The current contents of the history state object
+  eventTitle: 'hc-initialise', // The name of the event (as below) that caused the current action to occur
+  route, // The config for the current route (as below)
+  prevRoute, // The config for the route that was previous to the current one. Is null when app is first loaded.
+  ...additionalState, // Any additional state returned from the getAdditionalState function passed into options (as below)
 }
-
-// * Optional function (only needed if using app-manager to manage client-side lifecycle) that fetches the script (as below) for your fragment.
-
-async function loadScript(state) {
-  // ...
-
-  return script;
-}
-
-// * Optional function (only needed if using app-manager for server-side rendering) that fetches the markup needed to render your fragment into a DOM.
-// * Should contain any serialised app state you wish to use to hydrate the app on the client, any inline styles, etc.
-// * Function is called with state (as below) and any arguments you pass into the 'appManagerServer.getSlotsMarkup' function.
-
-async function getMarkup(state, ...otherArgs) {
-  // ...
-
-  return markupString;
-}
-
 ```
 
-### Script
+### Route
 
-A `script` is the entry-point to your code, and will likely be served from a remote app.
-
-It should contain the lifecycle methods to be called as the user browses around your site:
+A `route` determines which fragments are displayed on which `path`.
 
 ```js
 {
-  version: 5 // Lets app-manager the schema it expect from your script
-  hydrate,
-  render,
-  onStateChange,
-  unmount,
-}
-
-// * Optional function that will be called if the parent fragment is included on the page on first load
-// * If rendering your app isomorphically, you will likely wish to read app state from the DOM here.
-// * Function is called with the element into which the fragment is to be mounted and state (as below)
-
-async function hydrate(container, state) {
-  // Example:
-  // const appState = window['__yourapp_state__']
-  // ReactDOM.hydrate(container, <YourApp {...appState} />);
-}
-
-// * Optional function that will be called if the user browses onto an path for which the parent fragment is to be mounted.
-// * If your app relies on initial state, you should fetch it here
-// * Function is called with the element into which the fragment is to be mounted and state (as below)
-
-async function render(container, state) {
-  // Example:
-  // const props = await getInitialStateFromServer(state.params);
-  // ReactDOM.render(container, <YourApp {...props} />);
-}
-
-// * Optional function that will be called when the user browses away from an path on which the parent fragment is mounted.
-// * Useful to clear up any event listeners, and to reset any mutable state.
-// * Function is called with the element into which the fragment is to be mounted and state (as below)
-
-async function unmount(container, state) {
-  // Example:
-  // ReactDOM.unmountComponentAtNode(container);
-}
-
-// * Optional function that will be called when an event is fired from the history api, and the fragment is to remain mounted on the page
-// * If your fragment has multiple views that should be routed between (for example with path params), this lifecycle method will be where routing is managed.
-// * Function is called with state (as below)
-
-async function onStateChange(state) {
-  // ...
+  path: '/app/:path', // Path or...
+  paths: ['/app/:path1', '/app/:path2'], // ...paths that uniquely identifies this app. Analogous to a route in express.
+  fragment: 'FRAGMENT_NAME', // Fragment name or...
+  fragments: ['APP_FRAGMENT_NAME', 'HEADER_FRAGMENT_NAME'], // ...ordered array of fragment names to be displayed for that route. If two fragments occupy the same slot, the first will take precedence.
 }
 ```
 
@@ -208,60 +173,167 @@ A `slot` is a wrapper for a DOM element on a page.
 
 ```js
 {
-  name: 'APP', // Uniquely identifies the slot. Must match the slot's key on the config map.
   querySelector: '.app', // Uniquely returns a single DOM element when passed to document.querySelector.
+  async getLoadingMarkup(state) {
+    // Optional function that should return some markup to be displayed in a slot between a fragment being unmounted and a new one being mounted in its place.
+
+    return /* @html */`<img src="/spinner.gif" alt="Loading ${state.route.name}" />`
+  },
+  async getErrorMarkup(state) {
+    // Optional function that returns a markup string to be displayed in a slot if one of the lifecycle methods for a script throws an error.
+
+    return /* @html */`<p class="error">An error occurred while browsing to ${state.route.name}.`;
+  },
+  async ssrGetErrorMarkup(querySelector, state, ...otherArgs) {
+    // Optional function that's called if options.ssrHaltOnError is false and ssrGetMarkup for a fragment which is being loaded into this slot throws an error. Should return a markup string.
+
+    return /* @html */`
+      <div class="${querySelector.slice(1)}">
+        <p class="error">An error occurred while loading ${state.route.name}.</p>
+      </div>
+    `;
+  },
 },
 ```
 
-### State
+### Fragment
+
+A `fragment` is the container for your `script`.
 
 ```js
 {
-  event: 'am-pushstate' // Name of event (as below) that triggered the lifecycle to fire, if there is one.
-  path: '/app/path', // Current path as per html5 history.
-  params: { pathParam: value }, // Map containing parsed path parameters for the current path.
-  query: { queryParam: value }, // Map containing parsed query parameters for the current path.
-  prevApp: // The previously mounted app (as above), if there was one.
-  app, // The current app (as above).
-}
+  slot: 'SLOT_NAME', // Slot name or...
+  slots: ['LEFT_SLOT_NAME', 'RIGHT_SLOT_NAME'], // ...ordered array of slot names. Fragment will be loaded in the first empty slot possible.
+  async loadScript(state) {
+    // * Optional function (only needed if using app-manager to manage client-side lifecycle) that fetches the script (as below) for your fragment.
 
+    // ...
+
+    return script;
+  },
+  async ssrGetMarkup(querySelector, state, ...otherArgs) {
+    // * Optional function (only needed if using app-manager for server-side rendering) that fetches the markup needed to render your fragment into a DOM.
+    // * Should contain any serialised app state you wish to use to hydrate the app on the client, any inline styles, etc.
+    // * Function is called with the querySelector of the slot into which it is being mounted, state (as below), and any arguments you pass into the 'appManagerServer.getSlotsMarkup' function.
+
+    // ...
+
+    return markupString;
+  },
+}
 ```
 
-### Events
+### Script
 
-List of events emitted by app-manager:
+A `script` is the entry-point to your code.
 
-* am-beforeunload,
-* am-popstate,
-* am-replacestate,
-* am-pushstate,
-* am-statechange,
-* am-statuschange,
-* am-error,
-* am-external-link,
+It should contain the lifecycle methods to be called as the user browses around your site:
 
-## Dependencies
+```js
+{
+  version: 6 // Lets app-manager know which schema to expect from your script
+  async hydrate(container, state) {
+    // * Optional function that will be called if the parent fragment is included on the page on first load
+    // * If rendering your app isomorphically, you will likely wish to read app state from the DOM here.
+    // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
-### path-to-regexp
+    const appState = window['__your_app_state__']
+    ReactDOM.hydrate(container, <YourApp {...appState} />);
+  },
+  async render(container, state) {
+    // * Optional function that will be called if the user browses onto an path for which the parent fragment is to be mounted.
+    // * If your app relies on initial state, you should fetch it here
+    // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
-This is the same library Express uses to parse route paths, so if you have used Express you should be familiar with the syntax (`/path/:param(valid|options)/:optional?`). `app-manager` uses it to determine which `app` to display, and to extract url parameters.
+    const props = await getInitialStateFromServer(state.params);
 
-[https://github.com/pillarjs/path-to-regexp](https://github.com/pillarjs/path-to-regexp)
+    ReactDOM.render(container, <YourApp {...props} />);
+  },
+  async onStateChange(container, state) {
+    // * Optional function that will be called when an event is fired from the history api, and the fragment is to remain mounted on the page
+    // * If your fragment has multiple views that should be routed between (for example with path params), this lifecycle method will be where routing is managed.
+    // * Function is called with state (as below)
 
-### slot-finder
+    await updateAppState(state);
+  },
+  async unmount(container, state) {
+    // * Optional function that will be called when the user browses away from an path on which the parent fragment is mounted.
+    // * Useful to clear up any event listeners, and to reset any mutable state.
+    // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
-A small script that provides the algorithm to decide which script goes in which slot.
+    ReactDOM.unmountComponentAtNode(container);
+  },
+}
+```
 
-[https://github.com/tomruttle/slot-finder](https://github.com/tomruttle/slot-finder)
+## Events
 
-### qs
+Suggested: [EventEmitter3](https://github.com/primus/eventemitter3)
 
-For query string parsing.
+```js
+{
+  emit(eventTitle, data) {
+    // ...
+  },
+  on(eventTitle, callback) {
+    // ...
+  },
+  removeListener(eventTitle, callback) {
+    // ...
+  },
+}
+```
 
-[https://www.npmjs.com/package/qs](https://www.npmjs.com/package/qs)
+### List of events emitted by app-manager
 
-### html5 history API
+* hc-halted
+* hc-error
+* hc-warning
+* hc-beforeunload
+* hc-popstate
+* hc-replacestate
+* hc-pushstate
+* hc-statechange
+* hc-initialise
 
-Native history module. Used to handle client-side routing.
+## Options
 
-[https://developer.mozilla.org/en-US/docs/Web/API/History](https://developer.mozilla.org/en-US/docs/Web/API/History)
+All properties in the options object are optional.
+
+```js
+{
+  importTimeout: 4000, // Timeout for loading scripts and finding elements in the DOM. Defaults to 4000
+  ssrHaltOnError: false, // Boolean value that determines whether the getSlotsMarkup function should throw on error or call the slot's ssrGetErrorMarkup. Defaults to false.
+  parentQuerySelector: '.app', // Query selector that is passed into the getElement function  (below) to find the parent element of your app. If not provided, document.body is used.
+  async getRouteName(state) {
+    // Function that takes a state object and returns the name of a route derived from that state.
+    // Defaults to a function that scans the list of routes passed in config and performs an equality check between the current resource (pathname + query) and each route's path
+
+    const params = await deriveParamsFromResource(state.resource);
+
+    return params.routeName;
+  },
+  async getAdditionalState(state) {
+    // Function that allows you to return an object of arbitrary values that will be passed into the state object
+
+    const params = await deriveParamsFromResource(state.resource);
+
+    return {
+      params,
+    };
+  },
+  async getElement(container, querySelector) {
+    // Function that takes a parent DOM Element and the query selector for the slot we're trying to find on the page, and should return a DOM Element.
+    // Defaults to container.querySelector(querySelector)
+
+    return container.querySelector(querySelector);
+  },
+  async getLayout(state) {
+    // Function that is called when browsing onto an app-manager controlled page without hydrating.
+    // Allows you to set the default static DOM into which the app will be rendered.
+    // Useful when nesting app-manager instances.
+
+    return /* @html */`<div class="app"></div>`;
+  }.
+}
+```
