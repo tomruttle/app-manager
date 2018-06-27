@@ -122,7 +122,7 @@ app.get('/apps/*', async (req, res, next) => {
 
 ## Config
 
-An object containing maps of the slots, fragments, and routes that comprise your app.
+An object containing maps of the slots, fragments, and routes that comprise your app. Provided values are illustrative.
 
 ```js
 {
@@ -140,53 +140,75 @@ An object containing maps of the slots, fragments, and routes that comprise your
 
 ### State
 
-The state object is passed as a parameter into almost every function within and without app-manager. It contains the useful current state of the browser and the derived state of the application.
+The state object is passed as a parameter into almost every function within and without app-manager. It contains the useful current state of the browser and the derived state of the application. Provided values are illustrative.
 
 ```js
 {
-  resource: '/app/some-path?query=value', // The pathname and query string currently displayed in the browser
-  title: 'My Page', // The current document page title
-  historyState: null, // The current contents of the history state object
-  eventTitle: 'hc-initialise', // The name of the event (as below) that caused the current action to occur
-  route, // The config for the current route (as below)
-  prevRoute, // The config for the route that was previous to the current one. Is null when app is first loaded.
-  ...additionalState, // Any additional state returned from the getAdditionalState function passed into options (as below)
+  // The pathname and query string currently displayed in the browser
+  resource: '/app/some-path?query=value',
+
+  // The current document page title
+  title: 'My Page',
+
+  // The current contents of the history state object
+  historyState: null,
+
+  // The name of the event (as below) that caused the current action to occur
+  eventTitle: 'hc-initialise',
+
+   // The config for the current route (as below)
+  route,
+
+  // The config for the route that was previous to the current one. Is null when app is first loaded.
+  prevRoute,
+
+  // Any additional state returned from the getAdditionalState function passed into options (as below)
+  ...additionalState,
 }
 ```
 
 ### Route
 
-A `route` determines which fragments are displayed on which `path`.
+A `route` determines which fragments are displayed on which `path`. Provided values are illustrative.
 
 ```js
 {
-  path: '/app/:path', // Path or...
-  paths: ['/app/:path1', '/app/:path2'], // ...paths that uniquely identifies this app. Analogous to a route in express.
-  fragment: 'FRAGMENT_NAME', // Fragment name or...
-  fragments: ['APP_FRAGMENT_NAME', 'HEADER_FRAGMENT_NAME'], // ...ordered array of fragment names to be displayed for that route. If two fragments occupy the same slot, the first will take precedence.
+  // Path, or paths that uniquely identifies this app. Analogous to a route in express.
+  path: '/app/:path',
+  paths: ['/app/:path1', '/app/:path2'],
+
+  // Fragment name or ordered array of fragment names to be displayed for that route.
+  // If two fragments occupy the same slot, the first will take precedence.
+  fragment: 'FRAGMENT_NAME',
+  fragments: ['APP_FRAGMENT_NAME', 'HEADER_FRAGMENT_NAME'],
 }
 ```
 
 ### Slot
 
-A `slot` is a wrapper for a DOM element on a page.
+A `slot` is a wrapper for a DOM element on a page. Provided values are illustrative.
 
 ```js
 {
-  querySelector: '.app', // Uniquely returns a single DOM element when passed to document.querySelector.
-  async getLoadingMarkup(state) {
-    // Optional function that should return some markup to be displayed in a slot between a fragment being unmounted and a new one being mounted in its place.
+  // Uniquely returns a single DOM element when passed to document.querySelector.
+  querySelector: '.app',
 
+  // Optional function that should return some markup to be displayed in a slot
+  // between a fragment being unmounted and a new one being mounted in its place.
+  async getLoadingMarkup(state) {
     return /* @html */`<img src="/spinner.gif" alt="Loading ${state.route.name}" />`
   },
-  async getErrorMarkup(state) {
-    // Optional function that returns a markup string to be displayed in a slot if one of the lifecycle methods for a script throws an error.
 
+  // Optional function that returns a markup string to be displayed in a slot
+  // if one of the lifecycle methods for a script throws an error.
+  async getErrorMarkup(state) {
     return /* @html */`<p class="error">An error occurred while browsing to ${state.route.name}.`;
   },
-  async ssrGetErrorMarkup(querySelector, state, ...otherArgs) {
-    // Optional function that's called if options.ssrHaltOnError is false and ssrGetMarkup for a fragment which is being loaded into this slot throws an error. Should return a markup string.
 
+  // Optional function that's called if options.ssrHaltOnError is false and ssrGetMarkup
+  // for a fragment which is being loaded into this slot throws an error.
+  // Should return a markup string.
+  async ssrGetErrorMarkup(querySelector, state, ...otherArgs) {
     return /* @html */`
       <div class="${querySelector.slice(1)}">
         <p class="error">An error occurred while loading ${state.route.name}.</p>
@@ -202,22 +224,26 @@ A `fragment` is the container for your `script`.
 
 ```js
 {
-  slot: 'SLOT_NAME', // Slot name or...
-  slots: ['LEFT_SLOT_NAME', 'RIGHT_SLOT_NAME'], // ...ordered array of slot names. Fragment will be loaded in the first empty slot possible.
+  // Slot name or ordered array of slot names.
+  // Fragment will be loaded in the first empty slot possible.
+  slot: 'SLOT_NAME',
+  slots: ['LEFT_SLOT_NAME', 'RIGHT_SLOT_NAME'],
+
+  // Optional function (only needed if using app-manager to manage client-side lifecycle)
+  // that fetches the script (as below) for your fragment.
   async loadScript(state) {
-    // * Optional function (only needed if using app-manager to manage client-side lifecycle) that fetches the script (as below) for your fragment.
-
-    // ...
-
     return script;
   },
+
+  // Optional function (only needed if using app-manager for server-side rendering)
+  // that fetches the markup needed to render your fragment into a DOM.
+  //
+  // Should contain any serialised app state you wish to use to hydrate the
+  // app on the client, any inline styles, etc.
+  //
+  // Function is called with the querySelector of the slot into which it is being mounted,
+  // state (as above), and any arguments you pass into 'appManagerServer.getSlotsMarkup'.
   async ssrGetMarkup(querySelector, state, ...otherArgs) {
-    // * Optional function (only needed if using app-manager for server-side rendering) that fetches the markup needed to render your fragment into a DOM.
-    // * Should contain any serialised app state you wish to use to hydrate the app on the client, any inline styles, etc.
-    // * Function is called with the querySelector of the slot into which it is being mounted, state (as below), and any arguments you pass into the 'appManagerServer.getSlotsMarkup' function.
-
-    // ...
-
     return markupString;
   },
 }
@@ -227,40 +253,54 @@ A `fragment` is the container for your `script`.
 
 A `script` is the entry-point to your code.
 
-It should contain the lifecycle methods to be called as the user browses around your site:
+It should contain the lifecycle methods to be called as the user browses around your site. Provided values are illustrative.
 
 ```js
 {
-  version: 6 // Lets app-manager know which schema to expect from your script
-  async hydrate(container, state) {
-    // * Optional function that will be called if the parent fragment is included on the page on first load
-    // * If rendering your app isomorphically, you will likely wish to read app state from the DOM here.
-    // * Function is called with the element into which the fragment is to be mounted and state (as below)
+  // Lets app-manager know which schema to expect from your script
+  version: 6,
 
+  // Optional function that will be called if the parent fragment is included
+  // on the page on first load
+  //
+  // If rendering your app isomorphically, you will likely wish to read app state from the DOM here.
+  //
+  // Function is called with the element into which the fragment is to be mounted and state (as above)
+  async hydrate(container, state) {
     const appState = window['__your_app_state__']
     ReactDOM.hydrate(container, <YourApp {...appState} />);
   },
-  async render(container, state) {
-    // * Optional function that will be called if the user browses onto an path for which the parent fragment is to be mounted.
-    // * If your app relies on initial state, you should fetch it here
-    // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
+  // Optional function that will be called if the user browses onto an path for which
+  // the parent fragment is to be mounted.
+  //
+  // If your app relies on initial state, you should fetch it here
+  //
+  // Function is called with the element into which the fragment is to be mounted and state (as above)
+  async render(container, state) {
     const props = await getInitialStateFromServer(state.params);
 
     ReactDOM.render(container, <YourApp {...props} />);
   },
-  async onStateChange(container, state) {
-    // * Optional function that will be called when an event is fired from the history api, and the fragment is to remain mounted on the page
-    // * If your fragment has multiple views that should be routed between (for example with path params), this lifecycle method will be where routing is managed.
-    // * Function is called with state (as below)
 
+  // Optional function that will be called when an event is fired from the history api,
+  // and the fragment is to remain mounted on the page
+  //
+  // If your fragment has multiple views that should be routed between (for example with path params),
+  // this lifecycle method will be where routing is managed.
+  //
+  // Function is called with state (as above)
+  async onStateChange(container, state) {
     await updateAppState(state);
   },
-  async unmount(container, state) {
-    // * Optional function that will be called when the user browses away from an path on which the parent fragment is mounted.
-    // * Useful to clear up any event listeners, and to reset any mutable state.
-    // * Function is called with the element into which the fragment is to be mounted and state (as below)
 
+  // Optional function that will be called when the user browses away from an path
+  // on which the parent fragment is mounted.
+  //
+  // Useful to clear up any event listeners, and to reset any mutable state.
+  //
+  // Function is called with the element into which the fragment is to be mounted and state (as above)
+  async unmount(container, state) {
     ReactDOM.unmountComponentAtNode(container);
   },
 }
@@ -298,41 +338,51 @@ Suggested: [EventEmitter3](https://github.com/primus/eventemitter3)
 
 ## Options
 
-All properties in the options object are optional.
+All properties in the options object are optional. Provided values are illustrative.
 
 ```js
 {
-  importTimeout: 4000, // Timeout for loading scripts and finding elements in the DOM. Defaults to 4000
-  ssrHaltOnError: false, // Boolean value that determines whether the getSlotsMarkup function should throw on error or call the slot's ssrGetErrorMarkup. Defaults to false.
-  parentQuerySelector: '.app', // Query selector that is passed into the getElement function  (below) to find the parent element of your app. If not provided, document.body is used.
-  async getRouteName(state) {
-    // Function that takes a state object and returns the name of a route derived from that state.
-    // Defaults to a function that scans the list of routes passed in config and performs an equality check between the current resource (pathname + query) and each route's path
+  // Timeout for loading scripts and finding elements in the DOM. Defaults to 4000
+  importTimeout: 4000,
 
+  // Boolean value that determines whether the getSlotsMarkup function should throw on error
+  // or call the slot's ssrGetErrorMarkup. Defaults to false.
+  ssrHaltOnError: false,
+
+  // Query selector that is passed into the getElement function  (below) to find
+  // the parent element of your app. If not provided, document.body is used.
+  parentQuerySelector: '.app',
+
+  // Function that takes a state object and returns the name of a route derived from that state.
+  // Defaults to a function that scans the list of routes passed in config and
+  // performs an equality check between the current resource (pathname + query) and each route's path
+  async getRouteName(state) {
     const params = await deriveParamsFromResource(state.resource);
 
     return params.routeName;
   },
-  async getAdditionalState(state) {
-    // Function that allows you to return an object of arbitrary values that will be passed into the state object
 
+  // Function that allows you to return an object of arbitrary values that will
+  // be passed into the state object
+  async getAdditionalState(state) {
     const params = await deriveParamsFromResource(state.resource);
 
     return {
       params,
     };
   },
-  async getElement(container, querySelector) {
-    // Function that takes a parent DOM Element and the query selector for the slot we're trying to find on the page, and should return a DOM Element.
-    // Defaults to container.querySelector(querySelector)
 
+  // Function that takes a parent DOM Element and the query selector for the slot we're
+  // trying to find on the page, and should return a DOM Element.
+  // Defaults to container.querySelector(querySelector)
+  async getElement(container, querySelector) {
     return container.querySelector(querySelector);
   },
-  async getLayout(state) {
-    // Function that is called when browsing onto an app-manager controlled page without hydrating.
-    // Allows you to set the default static DOM into which the app will be rendered.
-    // Useful when nesting app-manager instances.
 
+  // Function that is called when browsing onto an app-manager controlled page without hydrating.
+  // Allows you to set the default static DOM into which the app will be rendered.
+  // Useful when nesting app-manager instances.
+  async getLayout(state) {
     return /* @html */`<div class="app"></div>`;
   }.
 }
